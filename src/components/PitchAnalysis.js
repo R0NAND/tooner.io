@@ -14,9 +14,9 @@ class PitchAnalysis extends AudioWorkletProcessor {
         this._bufferSize = 2048;
         this._buffer = new Float32Array(this._bufferSize);
         this._isProcessingBuffer = true;
-        this._pitchFinder = Pitchfinder.YIN({sampleRate: sampleRate});
+        this._pitchFinder = Pitchfinder.DynamicWavelet({sampleRate: sampleRate});
         if(sampleRate / this._sampleFrequency < this._bufferSize){
-            throw new Error('Sample Frequency of ${this._sampleFrequency} HZ is too high!');
+            throw new Error('Sample Frequency of ${this._sampleFrequency} HZ is too high!'); //TODO fix this string
         }
         this._bufferCount = 0;
         this._timingCount = 0; // Used to tell how much time has elapsed to maintain sampling frequency

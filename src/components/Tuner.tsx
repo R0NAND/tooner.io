@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import head from "./assets/guitar-head.svg";
 import TuningButton from "./TuningButton";
 import * as Tone from "tone";
+import TuningGauge from "./TuningGauge";
 
 const tuningDictionary = {
   Standard: {
@@ -109,7 +110,10 @@ const Tuner = () => {
     <>
       <div style={{ position: "relative" }}>
         <img className="guitar-head" src={head} alt="" width="800"></img>
-        <h1
+        <div style={{ position: "absolute", top: "50%", left: "45%" }}>
+          <TuningGauge>{pitch}</TuningGauge>
+        </div>
+        {/* <h1
           style={{
             position: "absolute",
             top: "50%",
@@ -118,7 +122,7 @@ const Tuner = () => {
           }}
         >
           {pitch < 1000 && pitch > 30 ? Tone.Frequency(pitch).toNote() : ""}
-        </h1>
+        </h1> */}
         {
           //@ts-ignore
           tuningDictionary[tuning].notes.map((n, index) => (
