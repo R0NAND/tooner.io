@@ -70,7 +70,6 @@ const TuningButton = ({ children, onClick }: Props) => {
       letterIndex = notes.length - 1;
     }
     setNote(notes[letterIndex] + octave.toString());
-    console.log(this);
   };
   const rotatePeg = (e: React.MouseEvent) => {
     //@ts-ignore

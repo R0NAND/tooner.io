@@ -23,13 +23,24 @@ class PitchAnalysis extends AudioWorkletProcessor {
     }
 
     _appendToBuffer(value) {
-        for (let i = 0; i < value.length; i++) {
-            this._buffer[this._bufferCount + i] = value[i]; //TODO: Check what happend is buffer size is not factor of 128
+        try{
+            for (let i = 0; i < value.length; i++) {
+                this._buffer[this._bufferCount + i] = value[i]; //TODO: Check what happend is buffer size is not factor of 128
+            }
+            this._bufferCount += value.length;
+        }catch{
+            throw console.error(value);
+            
         }
-        this._bufferCount += value.length;
     }
 
     process(inputs, outputs, parameters) {
+        if(inputs[0][0] === undefined){
+            // An empty array gets passed in as input when the mic is turned off
+            // This prevents check prevents the processor crashing in such a case
+            return true;
+        }
+
         if(this._isProcessingBuffer){ 
             this._appendToBuffer(inputs[0][0]);
             if(this._bufferCount >= this._bufferSize){

@@ -3,6 +3,8 @@ import head from "./assets/guitar-head.svg";
 import TuningButton from "./TuningButton";
 import * as Tone from "tone";
 import TuningGauge from "./TuningGauge";
+import micOn from "./assets/mic-on.svg";
+import micOff from "./assets/mic-off.svg";
 
 const tuningDictionary = {
   Standard: {
@@ -69,47 +71,100 @@ const peg_positions = [
 const Tuner = () => {
   const [tuning, setNotes] = useState("Standard");
   const [pitch, setPitch] = useState(0);
+  const [isMicEnabled, setIsMicEnabled] = useState(false);
 
   const sampler = useRef(new Tone.Sampler());
+  const mic = useRef(new Tone.UserMedia());
 
   useEffect(() => {
-    navigator.mediaDevices
-      .getUserMedia({ video: false, audio: true })
-      .then((stream) => {
-        //@ts-ignore
-        window.localStream = stream; // A
-        const context = new AudioContext();
-        const source = context.createMediaStreamSource(stream);
-        context.audioWorklet
-          .addModule("src/components/PitchAnalysis.js")
-          .then(() => {
-            let pitchAnalyzer = new AudioWorkletNode(context, "PitchAnalysis");
-            source.connect(pitchAnalyzer);
-            pitchAnalyzer.port.onmessage = (e) => {
-              setPitch(Math.round(e.data.frequency));
-            };
-          });
-        Tone.setContext(context);
-        sampler.current = new Tone.Sampler({
-          urls: {
-            E2: "acoustic-guitar-e2.wav",
-            A2: "acoustic-guitar-a2.wav",
-            D3: "acoustic-guitar-d3.wav",
-            G3: "acoustic-guitar-g3.wav",
-            B3: "acoustic-guitar-b3.wav",
-            E4: "acoustic-guitar-e4.wav",
-          },
-          baseUrl: "src/components/assets/",
-        }).toDestination();
-      })
-      .catch((err) => {
-        console.error(`you got an error: ${err}`);
+    Tone.getContext()
+      .addAudioWorkletModule("src/components/PitchAnalysis.js")
+      .then(() => {
+        const analyzer =
+          Tone.getContext().createAudioWorkletNode("PitchAnalysis");
+        analyzer.port.onmessage = (e) => {
+          setPitch(Math.round(e.data.frequency));
+        };
+        mic.current.connect(analyzer);
       });
+    sampler.current = new Tone.Sampler({
+      urls: {
+        E2: "acoustic-guitar-e2.wav",
+        A2: "acoustic-guitar-a2.wav",
+        D3: "acoustic-guitar-d3.wav",
+        G3: "acoustic-guitar-g3.wav",
+        B3: "acoustic-guitar-b3.wav",
+        E4: "acoustic-guitar-e4.wav",
+      },
+      baseUrl: "src/components/assets/",
+    }).toDestination();
   }, []);
+
+  // useEffect(() => {
+  //   navigator.mediaDevices
+  //     .getUserMedia({ video: false, audio: true })
+  //     .then((stream) => {
+  //       //@ts-ignore
+  //       window.localStream = stream; // A
+  //       Tone.getContext().rawContext;
+  //       const context = new AudioContext();
+  //       const source = context.createMediaStreamSource(stream);
+  //       context.audioWorklet
+  //         .addModule("src/components/PitchAnalysis.js")
+  //         .then(() => {
+  //           let pitchAnalyzer = new AudioWorkletNode(context, "PitchAnalysis");
+  //           source.connect(pitchAnalyzer);
+  //           pitchAnalyzer.port.onmessage = (e) => {
+  //             setPitch(Math.round(e.data.frequency));
+  //           };
+  //         });
+  //       Tone.setContext(context);
+  //       sampler.current = new Tone.Sampler({
+  //         urls: {
+  //           E2: "acoustic-guitar-e2.wav",
+  //           A2: "acoustic-guitar-a2.wav",
+  //           D3: "acoustic-guitar-d3.wav",
+  //           G3: "acoustic-guitar-g3.wav",
+  //           B3: "acoustic-guitar-b3.wav",
+  //           E4: "acoustic-guitar-e4.wav",
+  //         },
+  //         baseUrl: "src/components/assets/",
+  //       }).toDestination();
+  //     })
+  //     .catch((err) => {
+  //       console.error(`you got an error: ${err}`);
+  //     });
+  // }, []);
+
+  const toggleMic = () => {
+    if (isMicEnabled) {
+      mic.current.close();
+      setIsMicEnabled(false);
+    } else {
+      mic.current.open();
+      setIsMicEnabled(true);
+    }
+  };
   return (
     <>
       <div style={{ position: "relative" }}>
         <img className="guitar-head" src={head} alt="" width="800"></img>
+        <button
+          onClick={() => toggleMic()}
+          style={{
+            width: "200",
+            position: "absolute",
+            top: "30%",
+            left: "45%",
+            background: isMicEnabled ? "red" : "green",
+          }}
+        >
+          {isMicEnabled ? (
+            <img src={micOff} alt="" width="150"></img>
+          ) : (
+            <img src={micOn} alt="" width="150"></img>
+          )}
+        </button>
         <div style={{ position: "absolute", top: "50%", left: "45%" }}>
           <TuningGauge>{pitch}</TuningGauge>
         </div>
