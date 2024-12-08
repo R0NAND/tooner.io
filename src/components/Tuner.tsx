@@ -152,17 +152,17 @@ const Tuner = () => {
         <button
           onClick={() => toggleMic()}
           style={{
-            width: "200",
             position: "absolute",
+            borderRadius: "50%",
             top: "30%",
             left: "45%",
             background: isMicEnabled ? "red" : "green",
           }}
         >
           {isMicEnabled ? (
-            <img src={micOff} alt="" width="150"></img>
+            <img className="mic-icon" src={micOff} alt="" width="150"></img>
           ) : (
-            <img src={micOn} alt="" width="150"></img>
+            <img className="mic-icon" src={micOn} alt="" width="150"></img>
           )}
         </button>
         <div style={{ position: "absolute", top: "50%", left: "45%" }}>

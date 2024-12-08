@@ -40,7 +40,7 @@ const TuningGauge = ({ children }: Props) => {
             ry={children < target ? 50 - 40 * fraction : "49"}
             cx="50"
             cy="50"
-            fill={fraction <= 0.1 ? "green" : "red"}
+            fill={fraction <= 0.2 ? "green" : "red"}
             stroke="yellow"
           />
         </svg>
