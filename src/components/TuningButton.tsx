@@ -22,7 +22,6 @@ const TuningButton = ({ children, onClick }: Props) => {
   }
 
   const [note, setNote] = useState(children);
-
   const [isFocused, setIsFocused] = useState(false);
 
   const incrementNote = () => {
@@ -71,6 +70,7 @@ const TuningButton = ({ children, onClick }: Props) => {
     }
     setNote(notes[letterIndex] + octave.toString());
   };
+
   const rotatePeg = (e: React.MouseEvent) => {
     //@ts-ignore
     e.target.parentElement.style.animation = "rotateImage 1s";
@@ -114,7 +114,15 @@ const TuningButton = ({ children, onClick }: Props) => {
   };
   return (
     <>
-      <div className="tuning-button">
+      <div
+        className="tuning-button"
+        onFocus={(e) => {
+          setIsFocused(true);
+        }}
+        onBlur={(e) => {
+          setIsFocused(false);
+        }}
+      >
         <img className="peg-vector" src={peg} alt="" width="150"></img>
         <button
           className="top-peg-button"

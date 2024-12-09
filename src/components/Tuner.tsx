@@ -3,6 +3,7 @@ import head from "./assets/guitar-head.svg";
 import TuningButton from "./TuningButton";
 import * as Tone from "tone";
 import TuningGauge from "./TuningGauge";
+import TuningMessage from "./TuningGauge";
 import micOn from "./assets/mic-on.svg";
 import micOff from "./assets/mic-off.svg";
 
@@ -75,6 +76,8 @@ const Tuner = () => {
 
   const sampler = useRef(new Tone.Sampler());
   const mic = useRef(new Tone.UserMedia());
+  const heardNote = useRef("");
+  const consecutiveTimesHeard = useRef(0);
 
   useEffect(() => {
     Tone.getContext()
@@ -100,46 +103,24 @@ const Tuner = () => {
     }).toDestination();
   }, []);
 
-  // useEffect(() => {
-  //   navigator.mediaDevices
-  //     .getUserMedia({ video: false, audio: true })
-  //     .then((stream) => {
-  //       //@ts-ignore
-  //       window.localStream = stream; // A
-  //       Tone.getContext().rawContext;
-  //       const context = new AudioContext();
-  //       const source = context.createMediaStreamSource(stream);
-  //       context.audioWorklet
-  //         .addModule("src/components/PitchAnalysis.js")
-  //         .then(() => {
-  //           let pitchAnalyzer = new AudioWorkletNode(context, "PitchAnalysis");
-  //           source.connect(pitchAnalyzer);
-  //           pitchAnalyzer.port.onmessage = (e) => {
-  //             setPitch(Math.round(e.data.frequency));
-  //           };
-  //         });
-  //       Tone.setContext(context);
-  //       sampler.current = new Tone.Sampler({
-  //         urls: {
-  //           E2: "acoustic-guitar-e2.wav",
-  //           A2: "acoustic-guitar-a2.wav",
-  //           D3: "acoustic-guitar-d3.wav",
-  //           G3: "acoustic-guitar-g3.wav",
-  //           B3: "acoustic-guitar-b3.wav",
-  //           E4: "acoustic-guitar-e4.wav",
-  //         },
-  //         baseUrl: "src/components/assets/",
-  //       }).toDestination();
-  //     })
-  //     .catch((err) => {
-  //       console.error(`you got an error: ${err}`);
-  //     });
-  // }, []);
+  const handleTuningMsgCallback = (a: TuningMessage) => {
+    if (a.isInTune && a.note === heardNote.current) {
+      consecutiveTimesHeard.current += 1;
+    } else {
+      consecutiveTimesHeard.current = 0;
+    }
+    heardNote.current = a.note;
+
+    if (consecutiveTimesHeard.current == 3) {
+      consecutiveTimesHeard.current = 0;
+    }
+  };
 
   const toggleMic = () => {
     if (isMicEnabled) {
       mic.current.close();
       setIsMicEnabled(false);
+      setPitch(0);
     } else {
       mic.current.open();
       setIsMicEnabled(true);
@@ -166,7 +147,12 @@ const Tuner = () => {
           )}
         </button>
         <div style={{ position: "absolute", top: "50%", left: "45%" }}>
-          <TuningGauge>{pitch}</TuningGauge>
+          <TuningGauge
+            sensitivity={0.7}
+            tuningCallback={handleTuningMsgCallback}
+          >
+            {pitch}
+          </TuningGauge>
         </div>
         {/* <h1
           style={{

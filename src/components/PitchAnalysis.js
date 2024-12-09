@@ -25,12 +25,11 @@ class PitchAnalysis extends AudioWorkletProcessor {
     _appendToBuffer(value) {
         try{
             for (let i = 0; i < value.length; i++) {
-                this._buffer[this._bufferCount + i] = value[i]; //TODO: Check what happend is buffer size is not factor of 128
+                this._buffer[this._bufferCount + i] = value[i]; //TODO: Check what happens if buffer size is not factor of 128
             }
             this._bufferCount += value.length;
         }catch{
             throw console.error(value);
-            
         }
     }
 
@@ -46,7 +45,7 @@ class PitchAnalysis extends AudioWorkletProcessor {
             if(this._bufferCount >= this._bufferSize){
                 let pitch = this._pitchFinder(this._buffer);
                 if(pitch == null){
-                    console.log(inputs[0][0]);
+                    //console.log(inputs[0][0]);
                 }
                 this.port.postMessage({
                     eventType: 'data',
