@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as Tone from "tone";
 import peg from "./assets/peg.svg";
 
@@ -10,10 +10,10 @@ let frequencies = [
 
 interface Props {
   children: string;
-  onClick: (e: React.MouseEvent) => void;
+  sampler: Tone.Sampler;
 }
 
-const TuningButton = ({ children, onClick }: Props) => {
+const TuningButton = ({ children, sampler }: Props) => {
   const noteRegex = /^([A-G|a-g][#b]?)([0-8])$/;
   if (noteRegex.exec(children) === null) {
     throw new Error(
@@ -22,7 +22,10 @@ const TuningButton = ({ children, onClick }: Props) => {
   }
 
   const [note, setNote] = useState(children);
+  const [isTuned, setIsTuned] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+
+  const notePlucker = useRef(sampler);
 
   const incrementNote = () => {
     let regexResult = noteRegex.exec(note);
@@ -136,9 +139,13 @@ const TuningButton = ({ children, onClick }: Props) => {
         </button>
         <button
           className="middle-peg-button"
-          style={{ display: "block" }}
+          style={{
+            display: "block",
+            borderColor: isTuned ? "green" : "red",
+            borderWidth: "5px",
+          }}
           onClick={(e) => {
-            onClick(e);
+            notePlucker.current.triggerAttackRelease(note, "1n");
           }}
         >
           {note}

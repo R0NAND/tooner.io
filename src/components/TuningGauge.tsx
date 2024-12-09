@@ -3,13 +3,8 @@ import * as Tone from "tone";
 
 interface Props {
   children: number;
-  tuningCallback: (arg0: TuningMessage) => void;
+  tuningCallback: (note: string, isInTune: boolean) => void;
   sensitivity: number;
-}
-
-export interface TuningMessage {
-  note: string;
-  isInTune: boolean;
 }
 
 const TuningGauge = ({
@@ -33,7 +28,7 @@ const TuningGauge = ({
     fraction = (children - target) / (upper_bound - target);
   }
 
-  tuningCallback({ note: note, isInTune: fraction <= tolerance });
+  tuningCallback(note, fraction <= tolerance);
 
   return (
     <>

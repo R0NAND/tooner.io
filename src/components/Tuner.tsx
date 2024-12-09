@@ -3,7 +3,6 @@ import head from "./assets/guitar-head.svg";
 import TuningButton from "./TuningButton";
 import * as Tone from "tone";
 import TuningGauge from "./TuningGauge";
-import TuningMessage from "./TuningGauge";
 import micOn from "./assets/mic-on.svg";
 import micOff from "./assets/mic-off.svg";
 
@@ -73,6 +72,7 @@ const Tuner = () => {
   const [tuning, setNotes] = useState("Standard");
   const [pitch, setPitch] = useState(0);
   const [isMicEnabled, setIsMicEnabled] = useState(false);
+  const [focusedButton, setFocusedButton] = useState(null);
 
   const sampler = useRef(new Tone.Sampler());
   const mic = useRef(new Tone.UserMedia());
@@ -103,13 +103,13 @@ const Tuner = () => {
     }).toDestination();
   }, []);
 
-  const handleTuningMsgCallback = (a: TuningMessage) => {
-    if (a.isInTune && a.note === heardNote.current) {
+  const handleTuningMsgCallback = (note: string, isInTune: boolean) => {
+    if (isInTune && note === heardNote.current) {
       consecutiveTimesHeard.current += 1;
     } else {
       consecutiveTimesHeard.current = 0;
     }
-    heardNote.current = a.note;
+    heardNote.current = note;
 
     if (consecutiveTimesHeard.current == 3) {
       consecutiveTimesHeard.current = 0;
@@ -154,16 +154,6 @@ const Tuner = () => {
             {pitch}
           </TuningGauge>
         </div>
-        {/* <h1
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            margin: "auto",
-          }}
-        >
-          {pitch < 1000 && pitch > 30 ? Tone.Frequency(pitch).toNote() : ""}
-        </h1> */}
         {
           //@ts-ignore
           tuningDictionary[tuning].notes.map((n, index) => (
@@ -176,18 +166,7 @@ const Tuner = () => {
                 transform: peg_positions[index].transform,
               }}
             >
-              <TuningButton
-                onClick={(e) => {
-                  //@ts-ignore
-                  sampler.current.triggerAttackRelease(
-                    //@ts-ignore
-                    e.target.innerHTML,
-                    "1n"
-                  );
-                }}
-              >
-                {n.note}
-              </TuningButton>
+              <TuningButton sampler={sampler.current}>{n.note}</TuningButton>
             </div>
           ))
         }

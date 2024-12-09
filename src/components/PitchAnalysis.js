@@ -10,11 +10,11 @@ class PitchAnalysis extends AudioWorkletProcessor {
 
     constructor() {
         super();
-        this._sampleFrequency = 5; // times per second
+        this._sampleFrequency = 10; // times per second
         this._bufferSize = 2048;
         this._buffer = new Float32Array(this._bufferSize);
         this._isProcessingBuffer = true;
-        this._pitchFinder = Pitchfinder.DynamicWavelet({sampleRate: sampleRate});
+        this._pitchFinder = Pitchfinder.AMDF({sampleRate: sampleRate});
         if(sampleRate / this._sampleFrequency < this._bufferSize){
             throw new Error('Sample Frequency of ${this._sampleFrequency} HZ is too high!'); //TODO fix this string
         }
