@@ -76,15 +76,15 @@ const Tuner = () => {
 
   const sampler = useRef(new Tone.Sampler());
   const mic = useRef(new Tone.UserMedia());
-  const heardNote = useRef("");
-  const consecutiveTimesHeard = useRef(0);
 
   useEffect(() => {
     Tone.getContext()
       .addAudioWorkletModule("src/components/PitchAnalysis.js")
       .then(() => {
-        const analyzer =
-          Tone.getContext().createAudioWorkletNode("PitchAnalysis");
+        const analyzer = Tone.getContext().createAudioWorkletNode(
+          "PitchAnalysis",
+          { processorOptions: { sampleFrequency: 10 } }
+        );
         analyzer.port.onmessage = (e) => {
           setPitch(Math.round(e.data.frequency));
         };
@@ -103,17 +103,12 @@ const Tuner = () => {
     }).toDestination();
   }, []);
 
-  const handleTuningMsgCallback = (note: string, isInTune: boolean) => {
-    if (isInTune && note === heardNote.current) {
-      consecutiveTimesHeard.current += 1;
-    } else {
-      consecutiveTimesHeard.current = 0;
-    }
-    heardNote.current = note;
+  const playNoteCallback = (note: string) => {
+    sampler.current.triggerAttackRelease(note, "1n");
+  };
 
-    if (consecutiveTimesHeard.current == 3) {
-      consecutiveTimesHeard.current = 0;
-    }
+  const tunedCallbackHandler = (note: string) => {
+    console.log("Tuned Note detected!");
   };
 
   const toggleMic = () => {
@@ -148,8 +143,8 @@ const Tuner = () => {
         </button>
         <div style={{ position: "absolute", top: "50%", left: "45%" }}>
           <TuningGauge
+            tunedNoteCallback={tunedCallbackHandler}
             sensitivity={0.7}
-            tuningCallback={handleTuningMsgCallback}
           >
             {pitch}
           </TuningGauge>
@@ -166,7 +161,9 @@ const Tuner = () => {
                 transform: peg_positions[index].transform,
               }}
             >
-              <TuningButton sampler={sampler.current}>{n.note}</TuningButton>
+              <TuningButton playNoteCallback={playNoteCallback}>
+                {n.note}
+              </TuningButton>
             </div>
           ))
         }

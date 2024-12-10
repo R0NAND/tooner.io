@@ -1,17 +1,20 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import * as Tone from "tone";
 
 interface Props {
   children: number;
-  tuningCallback: (note: string, isInTune: boolean) => void;
+  tunedNoteCallback: (note: string) => void;
   sensitivity: number;
 }
 
 const TuningGauge = ({
   children,
-  tuningCallback,
+  tunedNoteCallback,
   sensitivity = 0.7,
 }: Props) => {
+  const heardNote = useRef("");
+  const consecutiveTimesHeard = useRef(0);
+
   if (sensitivity >= 0.95) {
     throw new Error("Highest allowable sensitivity is 0.95");
   }
@@ -28,7 +31,17 @@ const TuningGauge = ({
     fraction = (children - target) / (upper_bound - target);
   }
 
-  tuningCallback(note, fraction <= tolerance);
+  if (fraction <= tolerance && note === heardNote.current) {
+    consecutiveTimesHeard.current += 1;
+  } else {
+    consecutiveTimesHeard.current = 0;
+  }
+  heardNote.current = note;
+
+  if (consecutiveTimesHeard.current === 3) {
+    consecutiveTimesHeard.current = 0;
+    tunedNoteCallback(note);
+  }
 
   return (
     <>

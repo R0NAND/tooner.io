@@ -1,16 +1,16 @@
 import * as Pitchfinder from "pitchfinder";
 
 class PitchAnalysis extends AudioWorkletProcessor {
-    // static get parameterDescriptors() {
-    //     return [{
-    //         name: 'audio pitch analyzer',
-    //         defaultValue: 0
-    //     }];
-    // }
 
-    constructor() {
+    constructor(options) {
         super();
-        this._sampleFrequency = 10; // times per second
+
+        if(options.processorOptions['sampleFrequency']){
+            this._sampleFrequency = options.processorOptions['sampleFrequency'];
+        }else{
+            this._sampleFrequency = 5; //efaults to 5Hz
+        }
+        
         this._bufferSize = 2048;
         this._buffer = new Float32Array(this._bufferSize);
         this._isProcessingBuffer = true;
@@ -34,12 +34,13 @@ class PitchAnalysis extends AudioWorkletProcessor {
     }
 
     process(inputs, outputs, parameters) {
+        
         if(inputs[0][0] === undefined){
             // An empty array gets passed in as input when the mic is turned off
-            // This prevents check prevents the processor crashing in such a case
+            // This check prevents the processor crashing in such a case
             return true;
         }
-
+        
         if(this._isProcessingBuffer){ 
             this._appendToBuffer(inputs[0][0]);
             if(this._bufferCount >= this._bufferSize){

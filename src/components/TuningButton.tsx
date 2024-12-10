@@ -10,10 +10,10 @@ let frequencies = [
 
 interface Props {
   children: string;
-  sampler: Tone.Sampler;
+  playNoteCallback: (note: string) => void;
 }
 
-const TuningButton = ({ children, sampler }: Props) => {
+const TuningButton = ({ children, playNoteCallback }: Props) => {
   const noteRegex = /^([A-G|a-g][#b]?)([0-8])$/;
   if (noteRegex.exec(children) === null) {
     throw new Error(
@@ -24,8 +24,6 @@ const TuningButton = ({ children, sampler }: Props) => {
   const [note, setNote] = useState(children);
   const [isTuned, setIsTuned] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-
-  const notePlucker = useRef(sampler);
 
   const incrementNote = () => {
     let regexResult = noteRegex.exec(note);
@@ -144,8 +142,8 @@ const TuningButton = ({ children, sampler }: Props) => {
             borderColor: isTuned ? "green" : "red",
             borderWidth: "5px",
           }}
-          onClick={(e) => {
-            notePlucker.current.triggerAttackRelease(note, "1n");
+          onClick={() => {
+            playNoteCallback(note);
           }}
         >
           {note}
