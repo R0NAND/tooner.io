@@ -69,7 +69,8 @@ const peg_positions = [
 ];
 
 const Tuner = () => {
-  const [tuning, setNotes] = useState("Standard");
+  const [notes, setNotes] = useState(tuningDictionary["Standard"].notes);
+  const [tuning, setTuning] = useState("Standard");
   const [pitch, setPitch] = useState(0);
   const [isMicEnabled, setIsMicEnabled] = useState(false);
   const [focusedButton, setFocusedButton] = useState(null);
@@ -151,7 +152,7 @@ const Tuner = () => {
         </div>
         {
           //@ts-ignore
-          tuningDictionary[tuning].notes.map((n, index) => (
+          notes.map((n, index) => (
             <div
               key={tuning + index}
               style={{
@@ -173,7 +174,8 @@ const Tuner = () => {
         id="tuning"
         onChange={(e) => {
           //@ts-ignore
-          setNotes(e.target.value);
+          setNotes(tuningDictionary[e.target.value].notes);
+          setTuning(e.target.value);
         }}
       >
         {Object.keys(tuningDictionary).map((key) => (
