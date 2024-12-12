@@ -29,6 +29,16 @@ const peg_positions = [
 
 const Tuner = () => {
   const [notes, setNotes] = useState(tuningDictionary["Standard"]);
+  const [areFocused, setAreFocused] = useState(
+    tuningDictionary["Standard"].map(() => {
+      return false;
+    })
+  );
+  const [areTuned, setAreTuned] = useState(
+    tuningDictionary["Standard"].map(() => {
+      return false;
+    })
+  );
   const [tuning, setTuning] = useState("Standard");
   const [pitch, setPitch] = useState(0);
   const [isMicEnabled, setIsMicEnabled] = useState(false);
@@ -43,7 +53,7 @@ const Tuner = () => {
       .then(() => {
         const analyzer = Tone.getContext().createAudioWorkletNode(
           "PitchAnalysis",
-          { processorOptions: { sampleFrequency: 10 } }
+          { processorOptions: { sampleFrequency: 5 } }
         );
         analyzer.port.onmessage = (e) => {
           setPitch(Math.round(e.data.frequency));
@@ -68,7 +78,14 @@ const Tuner = () => {
   };
 
   const tunedCallbackHandler = (note: string) => {
-    console.log("Tuned Note detected!");
+    console.log(note);
+    const focusedIndex = areFocused.indexOf(true);
+    if (focusedIndex !== -1 && note === notes[focusedIndex]) {
+      const newAreTuned = areTuned.map((s, i) => {
+        return i === focusedIndex ? true : s;
+      });
+      setAreTuned(newAreTuned);
+    }
   };
 
   const setFocusedPeg = () => {
@@ -125,13 +142,16 @@ const Tuner = () => {
               top: peg_positions[index].top,
               left: peg_positions[index].left,
               transform: peg_positions[index].transform,
-              backgroundColor: index === focusedIndex ? "green" : "Red",
+              backgroundColor: areFocused[index] ? "green" : "red",
             }}
           >
             <TuningButton
               playNoteCallback={(note: string) => {
                 playNoteCallback(note);
-                setFocusedIndex(index);
+                const newFocusList = areFocused.map((state, i) => {
+                  return i === index ? true : false;
+                });
+                setAreFocused(newFocusList);
               }}
               changeNoteCallback={(newNote: string) => {
                 const newTuning = notes.map((newNotes, i) => {
@@ -141,13 +161,21 @@ const Tuner = () => {
                     return newNotes;
                   }
                 });
+                const newAreTuned = areTuned.map((s, i) => {
+                  return i === index ? false : s;
+                });
                 setNotes(newTuning);
                 setTuning("Custom");
-                setFocusedIndex(index);
+                const newFocusList = areFocused.map((state, i) => {
+                  return i === index ? true : false;
+                });
+                setAreFocused(newFocusList);
+                setAreTuned(newAreTuned);
               }}
               lostFocusCallback={() => {
                 setFocusedIndex(-1);
               }}
+              isTuned={areTuned[index]}
             >
               {n}
             </TuningButton>

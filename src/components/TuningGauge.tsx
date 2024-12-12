@@ -38,7 +38,7 @@ const TuningGauge = ({
   }
   heardNote.current = note;
 
-  if (consecutiveTimesHeard.current === 3) {
+  if (consecutiveTimesHeard.current === 2) {
     consecutiveTimesHeard.current = 0;
     tunedNoteCallback(note);
   }

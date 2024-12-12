@@ -10,6 +10,7 @@ let frequencies = [
 
 interface Props {
   children: string;
+  isTuned: boolean;
   playNoteCallback: (note: string) => void;
   changeNoteCallback: (newNote: string) => void;
   lostFocusCallback: () => void;
@@ -17,6 +18,7 @@ interface Props {
 
 const TuningButton = ({
   children,
+  isTuned,
   playNoteCallback,
   changeNoteCallback,
   lostFocusCallback,
@@ -28,14 +30,12 @@ const TuningButton = ({
     );
   }
 
-  const [isTuned, setIsTuned] = useState(false);
-  const [isFocused, setIsFocused] = useState(false);
-
   const incrementNote = () => {
     let regexResult = noteRegex.exec(children);
-    //@ts-ignore
+    if (regexResult === null) {
+      throw new Error("Invalid note passed in to decrementer");
+    }
     let letter = regexResult[1];
-    //@ts-ignore
     let octave = Number(regexResult[2]);
 
     if (letter === "B") {
@@ -52,15 +52,17 @@ const TuningButton = ({
       letterIndex = 0;
     }
 
-    changeNoteCallback(notes[letterIndex] + octave.toString());
-    //setNote(notes[letterIndex] + octave.toString());
+    const newNote = notes[letterIndex] + octave.toString();
+    playNoteCallback(newNote);
+    changeNoteCallback(newNote);
   };
 
   const decrementNote = () => {
     let regexResult = noteRegex.exec(children);
-    //@ts-ignore
+    if (regexResult === null) {
+      throw new Error("Invalid note passed in to decrementer");
+    }
     let letter = regexResult[1];
-    //@ts-ignore
     let octave = Number(regexResult[2]);
 
     if (letter === "C") {
@@ -77,8 +79,9 @@ const TuningButton = ({
       letterIndex = notes.length - 1;
     }
 
-    changeNoteCallback(notes[letterIndex] + octave.toString());
-    //setNote(notes[letterIndex] + octave.toString());
+    const newNote = notes[letterIndex] + octave.toString();
+    playNoteCallback(newNote);
+    changeNoteCallback(newNote);
   };
 
   const rotatePeg = (e: React.MouseEvent) => {
