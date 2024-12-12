@@ -11,9 +11,16 @@ let frequencies = [
 interface Props {
   children: string;
   playNoteCallback: (note: string) => void;
+  changeNoteCallback: (newNote: string) => void;
+  lostFocusCallback: () => void;
 }
 
-const TuningButton = ({ children, playNoteCallback }: Props) => {
+const TuningButton = ({
+  children,
+  playNoteCallback,
+  changeNoteCallback,
+  lostFocusCallback,
+}: Props) => {
   const noteRegex = /^([A-G|a-g][#b]?)([0-8])$/;
   if (noteRegex.exec(children) === null) {
     throw new Error(
@@ -21,12 +28,11 @@ const TuningButton = ({ children, playNoteCallback }: Props) => {
     );
   }
 
-  const [note, setNote] = useState(children);
   const [isTuned, setIsTuned] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
   const incrementNote = () => {
-    let regexResult = noteRegex.exec(note);
+    let regexResult = noteRegex.exec(children);
     //@ts-ignore
     let letter = regexResult[1];
     //@ts-ignore
@@ -46,11 +52,12 @@ const TuningButton = ({ children, playNoteCallback }: Props) => {
       letterIndex = 0;
     }
 
-    setNote(notes[letterIndex] + octave.toString());
+    changeNoteCallback(notes[letterIndex] + octave.toString());
+    //setNote(notes[letterIndex] + octave.toString());
   };
 
   const decrementNote = () => {
-    let regexResult = noteRegex.exec(note);
+    let regexResult = noteRegex.exec(children);
     //@ts-ignore
     let letter = regexResult[1];
     //@ts-ignore
@@ -69,7 +76,9 @@ const TuningButton = ({ children, playNoteCallback }: Props) => {
     if (letterIndex < 0) {
       letterIndex = notes.length - 1;
     }
-    setNote(notes[letterIndex] + octave.toString());
+
+    changeNoteCallback(notes[letterIndex] + octave.toString());
+    //setNote(notes[letterIndex] + octave.toString());
   };
 
   const rotatePeg = (e: React.MouseEvent) => {
@@ -117,11 +126,8 @@ const TuningButton = ({ children, playNoteCallback }: Props) => {
     <>
       <div
         className="tuning-button"
-        onFocus={(e) => {
-          setIsFocused(true);
-        }}
         onBlur={(e) => {
-          setIsFocused(false);
+          lostFocusCallback();
         }}
       >
         <img className="peg-vector" src={peg} alt="" width="150"></img>
@@ -143,10 +149,10 @@ const TuningButton = ({ children, playNoteCallback }: Props) => {
             borderWidth: "5px",
           }}
           onClick={() => {
-            playNoteCallback(note);
+            playNoteCallback(children);
           }}
         >
-          {note}
+          {children}
         </button>
         <button
           className="bottom-peg-button"

@@ -6,57 +6,16 @@ import TuningGauge from "./TuningGauge";
 import micOn from "./assets/mic-on.svg";
 import micOff from "./assets/mic-off.svg";
 
-const tuningDictionary = {
-  Standard: {
-    notes: [
-      { note: "E2" },
-      { note: "A2" },
-      { note: "D3" },
-      { note: "G3" },
-      { note: "B3" },
-      { note: "E4" },
-    ],
-  },
-  "Drop D": {
-    notes: [
-      { note: "D2" },
-      { note: "A2" },
-      { note: "D3" },
-      { note: "G3" },
-      { note: "B3" },
-      { note: "E4" },
-    ],
-  },
-  DADGAD: {
-    notes: [
-      { note: "D2" },
-      { note: "A2" },
-      { note: "D3" },
-      { note: "G3" },
-      { note: "A3" },
-      { note: "D4" },
-    ],
-  },
-  "Half step down": {
-    notes: [
-      { note: "D#2" },
-      { note: "G#2" },
-      { note: "C#3" },
-      { note: "F#3" },
-      { note: "A#3" },
-      { note: "D#4" },
-    ],
-  },
-  "Full step down": {
-    notes: [
-      { note: "D2" },
-      { note: "G2" },
-      { note: "C3" },
-      { note: "F3" },
-      { note: "A3" },
-      { note: "D4" },
-    ],
-  },
+type TuningDictionary = {
+  [key: string]: string[];
+};
+
+const tuningDictionary: TuningDictionary = {
+  Standard: ["E2", "A2", "D3", "E2", "G3", "B3"],
+  "Drop D": ["D2", "A2", "D3", "G3", "B3", "E4"],
+  DADGAD: ["D2", "A2", "D3", "G3", "A3", "D4"],
+  "Half step down": ["D#2", "G#2", "C#3", "F#3", "A#3", "D#4"],
+  "Full step down": ["D2", "G2", "C3", "F3", "A3", "D4"],
 };
 
 const peg_positions = [
@@ -69,11 +28,11 @@ const peg_positions = [
 ];
 
 const Tuner = () => {
-  const [notes, setNotes] = useState(tuningDictionary["Standard"].notes);
+  const [notes, setNotes] = useState(tuningDictionary["Standard"]);
   const [tuning, setTuning] = useState("Standard");
   const [pitch, setPitch] = useState(0);
   const [isMicEnabled, setIsMicEnabled] = useState(false);
-  const [focusedButton, setFocusedButton] = useState(null);
+  const [focusedIndex, setFocusedIndex] = useState(-1);
 
   const sampler = useRef(new Tone.Sampler());
   const mic = useRef(new Tone.UserMedia());
@@ -110,6 +69,14 @@ const Tuner = () => {
 
   const tunedCallbackHandler = (note: string) => {
     console.log("Tuned Note detected!");
+  };
+
+  const setFocusedPeg = () => {
+    console.log("foocused");
+  };
+
+  const unsetFocusedPeg = () => {
+    console.log("unfocused");
   };
 
   const toggleMic = () => {
@@ -150,31 +117,48 @@ const Tuner = () => {
             {pitch}
           </TuningGauge>
         </div>
-        {
-          //@ts-ignore
-          notes.map((n, index) => (
-            <div
-              key={tuning + index}
-              style={{
-                position: "absolute",
-                top: peg_positions[index].top,
-                left: peg_positions[index].left,
-                transform: peg_positions[index].transform,
+        {notes.map((n, index) => (
+          <div
+            key={tuning + index}
+            style={{
+              position: "absolute",
+              top: peg_positions[index].top,
+              left: peg_positions[index].left,
+              transform: peg_positions[index].transform,
+              backgroundColor: index === focusedIndex ? "green" : "Red",
+            }}
+          >
+            <TuningButton
+              playNoteCallback={(note: string) => {
+                playNoteCallback(note);
+                setFocusedIndex(index);
+              }}
+              changeNoteCallback={(newNote: string) => {
+                const newTuning = notes.map((newNotes, i) => {
+                  if (i === index) {
+                    return newNote;
+                  } else {
+                    return newNotes;
+                  }
+                });
+                setNotes(newTuning);
+                setTuning("Custom");
+                setFocusedIndex(index);
+              }}
+              lostFocusCallback={() => {
+                setFocusedIndex(-1);
               }}
             >
-              <TuningButton playNoteCallback={playNoteCallback}>
-                {n.note}
-              </TuningButton>
-            </div>
-          ))
-        }
+              {n}
+            </TuningButton>
+          </div>
+        ))}
       </div>
       <select
         name="Tuning"
         id="tuning"
         onChange={(e) => {
-          //@ts-ignore
-          setNotes(tuningDictionary[e.target.value].notes);
+          setNotes(tuningDictionary[e.target.value]);
           setTuning(e.target.value);
         }}
       >
