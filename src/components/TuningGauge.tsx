@@ -14,6 +14,7 @@ const TuningGauge = ({
 }: Props) => {
   const heardNote = useRef("");
   const consecutiveTimesHeard = useRef(0);
+  console.log("wtf");
 
   if (sensitivity >= 0.95) {
     throw new Error("Highest allowable sensitivity is 0.95");
@@ -39,6 +40,7 @@ const TuningGauge = ({
   heardNote.current = note;
 
   if (consecutiveTimesHeard.current === 2) {
+    //console.log("ye");
     consecutiveTimesHeard.current = 0;
     tunedNoteCallback(note);
   }

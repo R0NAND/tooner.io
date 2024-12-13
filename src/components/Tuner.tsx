@@ -46,6 +46,9 @@ const Tuner = () => {
 
   const sampler = useRef(new Tone.Sampler());
   const mic = useRef(new Tone.UserMedia());
+  const confirmationPlayer = useRef(
+    new Tone.Player("src/components/assets/confirmation.mp3").toDestination()
+  );
 
   useEffect(() => {
     Tone.getContext()
@@ -80,6 +83,8 @@ const Tuner = () => {
   const tunedCallbackHandler = (note: string) => {
     const focusedIndex = areFocused.indexOf(true);
     if (focusedIndex !== -1 && note === notes[focusedIndex]) {
+      sampler.current.triggerAttackRelease(note, "1n");
+      //confirmationPlayer.current.autostart = true;
       const newAreTuned = areTuned.map((s, i) => {
         return i === focusedIndex ? true : s;
       });
