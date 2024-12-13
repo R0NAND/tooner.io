@@ -11,7 +11,7 @@ type TuningDictionary = {
 };
 
 const tuningDictionary: TuningDictionary = {
-  Standard: ["E2", "A2", "D3", "E2", "G3", "B3"],
+  Standard: ["E2", "A2", "D3", "G3", "B3", "E4"],
   "Drop D": ["D2", "A2", "D3", "G3", "B3", "E4"],
   DADGAD: ["D2", "A2", "D3", "G3", "A3", "D4"],
   "Half step down": ["D#2", "G#2", "C#3", "F#3", "A#3", "D#4"],
@@ -78,7 +78,6 @@ const Tuner = () => {
   };
 
   const tunedCallbackHandler = (note: string) => {
-    console.log(note);
     const focusedIndex = areFocused.indexOf(true);
     if (focusedIndex !== -1 && note === notes[focusedIndex]) {
       const newAreTuned = areTuned.map((s, i) => {
@@ -86,14 +85,6 @@ const Tuner = () => {
       });
       setAreTuned(newAreTuned);
     }
-  };
-
-  const setFocusedPeg = () => {
-    console.log("foocused");
-  };
-
-  const unsetFocusedPeg = () => {
-    console.log("unfocused");
   };
 
   const toggleMic = () => {
@@ -188,6 +179,10 @@ const Tuner = () => {
         onChange={(e) => {
           setNotes(tuningDictionary[e.target.value]);
           setTuning(e.target.value);
+          const now = Tone.now();
+          tuningDictionary[e.target.value].map((note, i) => {
+            sampler.current.triggerAttackRelease(note, "1n", now + i * 0.1);
+          });
         }}
       >
         {Object.keys(tuningDictionary).map((key) => (
