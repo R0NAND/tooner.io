@@ -127,12 +127,7 @@ const TuningButton = ({
   };
   return (
     <>
-      <div
-        className="tuning-button"
-        onBlur={(e) => {
-          lostFocusCallback();
-        }}
-      >
+      <div className="tuning-button">
         <img className="peg-vector" src={peg} alt="" width="150"></img>
         <button
           className="top-peg-button"

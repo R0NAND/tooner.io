@@ -10,6 +10,50 @@ type TuningDictionary = {
   [key: string]: string[];
 };
 
+class TuningResult {
+  heardNote: string;
+  consecutiveTimesHeard: number;
+  sensitivity: number;
+
+  constructor(s: number) {
+    if (s >= 0.95) {
+      throw new Error("Highest allowable sensitivity is 0.95");
+    }
+    this.heardNote = "";
+    this.consecutiveTimesHeard = 0;
+    this.sensitivity = s;
+  }
+
+  trackFrequency(frequency: number) {
+    let note = frequency === 0 ? "" : Tone.Frequency(frequency).toNote();
+    let target = Tone.Frequency(note).toFrequency();
+    let lower_bound = target / 1.02930223664; // 24th root of 2
+    let upper_bound = target * 1.02930223664; // 24th root of 2
+    let tolerance = 1 - this.sensitivity;
+
+    let fraction = 1;
+    if (frequency < target) {
+      fraction = (target - frequency) / (target - lower_bound);
+    } else {
+      fraction = (frequency - target) / (upper_bound - target);
+    }
+
+    if (fraction <= tolerance && note === this.heardNote) {
+      this.consecutiveTimesHeard += 1;
+    } else {
+      this.consecutiveTimesHeard = 0;
+    }
+    this.heardNote = note;
+
+    if (this.consecutiveTimesHeard === 3) {
+      this.consecutiveTimesHeard = 0;
+      return note;
+    } else {
+      return "";
+    }
+  }
+}
+
 const tuningDictionary: TuningDictionary = {
   Standard: ["E2", "A2", "D3", "G3", "B3", "E4"],
   "Drop D": ["D2", "A2", "D3", "G3", "B3", "E4"],
@@ -40,12 +84,13 @@ const Tuner = () => {
     })
   );
   const [tuning, setTuning] = useState("Standard");
-  const [pitch, setPitch] = useState(0);
+  const [frequency, setFrequency] = useState(0);
   const [isMicEnabled, setIsMicEnabled] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(-1);
 
   const sampler = useRef(new Tone.Sampler());
   const mic = useRef(new Tone.UserMedia());
+  const pitchTracker = useRef(new TuningResult(0.7));
   const confirmationPlayer = useRef(
     new Tone.Player("src/components/assets/confirmation.mp3").toDestination()
   );
@@ -56,10 +101,27 @@ const Tuner = () => {
       .then(() => {
         const analyzer = Tone.getContext().createAudioWorkletNode(
           "PitchAnalysis",
-          { processorOptions: { sampleFrequency: 5 } }
+          { processorOptions: { sampleFrequency: 1 } }
         );
         analyzer.port.onmessage = (e) => {
-          setPitch(Math.round(e.data.frequency));
+          console.log(areFocused.indexOf(true));
+          const freq = 329 + Math.random();
+          setFrequency(freq);
+          const note = pitchTracker.current.trackFrequency(freq);
+          if (note !== "") {
+            const focusedIndex = areFocused.indexOf(true);
+            console.log(areFocused);
+            if (focusedIndex !== -1 && note === notes[focusedIndex]) {
+              const foo = new Tone.Player(
+                "src/components/assets/confirmation.mp3"
+              ).toDestination();
+              foo.autostart = true;
+              const newAreTuned = areTuned.map((s, i) => {
+                return i === focusedIndex ? true : s;
+              });
+              setAreTuned(newAreTuned);
+            }
+          }
         };
         mic.current.connect(analyzer);
       });
@@ -80,23 +142,11 @@ const Tuner = () => {
     sampler.current.triggerAttackRelease(note, "1n");
   };
 
-  const tunedCallbackHandler = (note: string) => {
-    const focusedIndex = areFocused.indexOf(true);
-    if (focusedIndex !== -1 && note === notes[focusedIndex]) {
-      sampler.current.triggerAttackRelease(note, "1n");
-      //confirmationPlayer.current.autostart = true;
-      const newAreTuned = areTuned.map((s, i) => {
-        return i === focusedIndex ? true : s;
-      });
-      setAreTuned(newAreTuned);
-    }
-  };
-
   const toggleMic = () => {
     if (isMicEnabled) {
       mic.current.close();
       setIsMicEnabled(false);
-      setPitch(0);
+      setFrequency(0);
     } else {
       mic.current.open();
       setIsMicEnabled(true);
@@ -123,12 +173,7 @@ const Tuner = () => {
           )}
         </button>
         <div style={{ position: "absolute", top: "50%", left: "45%" }}>
-          <TuningGauge
-            tunedNoteCallback={tunedCallbackHandler}
-            sensitivity={0.7}
-          >
-            {pitch}
-          </TuningGauge>
+          <TuningGauge sensitivity={0.7}>{frequency}</TuningGauge>
         </div>
         {notes.map((n, index) => (
           <div

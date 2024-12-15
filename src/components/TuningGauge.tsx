@@ -3,18 +3,12 @@ import * as Tone from "tone";
 
 interface Props {
   children: number;
-  tunedNoteCallback: (note: string) => void;
   sensitivity: number;
 }
 
-const TuningGauge = ({
-  children,
-  tunedNoteCallback,
-  sensitivity = 0.7,
-}: Props) => {
+const TuningGauge = ({ children, sensitivity = 0.7 }: Props) => {
   const heardNote = useRef("");
   const consecutiveTimesHeard = useRef(0);
-  console.log("wtf");
 
   if (sensitivity >= 0.95) {
     throw new Error("Highest allowable sensitivity is 0.95");
@@ -30,19 +24,6 @@ const TuningGauge = ({
     fraction = (target - children) / (target - lower_bound);
   } else {
     fraction = (children - target) / (upper_bound - target);
-  }
-
-  if (fraction <= tolerance && note === heardNote.current) {
-    consecutiveTimesHeard.current += 1;
-  } else {
-    consecutiveTimesHeard.current = 0;
-  }
-  heardNote.current = note;
-
-  if (consecutiveTimesHeard.current === 2) {
-    //console.log("ye");
-    consecutiveTimesHeard.current = 0;
-    tunedNoteCallback(note);
   }
 
   return (
