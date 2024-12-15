@@ -96,21 +96,24 @@ const Tuner = () => {
   );
 
   useEffect(() => {
+    let dummyAnalyzer: any;
     Tone.getContext()
       .addAudioWorkletModule("src/components/PitchAnalysis.js")
       .then(() => {
         const analyzer = Tone.getContext().createAudioWorkletNode(
           "PitchAnalysis",
-          { processorOptions: { sampleFrequency: 1 } }
+          {
+            processorOptions: { sampleFrequency: 1 },
+          }
         );
         analyzer.port.onmessage = (e) => {
-          console.log(areFocused.indexOf(true));
+          console.log("ayoo");
+          //console.log(areFocused.indexOf(true));
           const freq = 329 + Math.random();
           setFrequency(freq);
           const note = pitchTracker.current.trackFrequency(freq);
           if (note !== "") {
             const focusedIndex = areFocused.indexOf(true);
-            console.log(areFocused);
             if (focusedIndex !== -1 && note === notes[focusedIndex]) {
               const foo = new Tone.Player(
                 "src/components/assets/confirmation.mp3"
@@ -124,6 +127,7 @@ const Tuner = () => {
           }
         };
         mic.current.connect(analyzer);
+        dummyAnalyzer = analyzer;
       });
     sampler.current = new Tone.Sampler({
       urls: {
@@ -136,6 +140,9 @@ const Tuner = () => {
       },
       baseUrl: "src/components/assets/",
     }).toDestination();
+    return () => {
+      mic.current.disconnect(dummyAnalyzer);
+    };
   }, []);
 
   const playNoteCallback = (note: string) => {

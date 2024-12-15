@@ -20,6 +20,7 @@ class PitchAnalysis extends AudioWorkletProcessor {
         }
         this._bufferCount = 0;
         this._timingCount = 0; // Used to tell how much time has elapsed to maintain sampling frequency
+        this._id = Math.random()
     }
 
     _appendToBuffer(value) {
@@ -48,6 +49,7 @@ class PitchAnalysis extends AudioWorkletProcessor {
                 if(pitch == null){
                     //console.log(inputs[0][0]);
                 }
+                console.log(this._id);
                 this.port.postMessage({
                     eventType: 'data',
                     frequency: pitch
