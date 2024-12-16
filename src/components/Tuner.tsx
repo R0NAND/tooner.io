@@ -71,33 +71,6 @@ const peg_positions = [
   { top: "60%", left: "80%", transform: "Scale(50%) ScaleX(-1)" },
 ];
 
-Tone.getContext()
-  .addAudioWorkletModule("src/components/PitchAnalysis.js")
-  .then(() => {
-    const analyzer = Tone.getContext().createAudioWorkletNode("PitchAnalysis", {
-      processorOptions: { sampleFrequency: 1 },
-    });
-    analyzer.port.onmessage = (e) => {
-      const freq = 329 + Math.random();
-      setFrequency(freq);
-      const note = pitchTracker.current.trackFrequency(freq);
-      if (note !== "") {
-        const focusedIndex = areFocused.indexOf(true);
-        if (focusedIndex !== -1 && note === notes[focusedIndex]) {
-          const foo = new Tone.Player(
-            "src/components/assets/confirmation.mp3"
-          ).toDestination();
-          foo.autostart = true;
-          const newAreTuned = areTuned.map((s, i) => {
-            return i === focusedIndex ? true : s;
-          });
-          setAreTuned(newAreTuned);
-        }
-      }
-    };
-    mic.current.connect(analyzer);
-  });
-
 const Tuner = () => {
   const [notes, setNotes] = useState(tuningDictionary["Standard"]);
   const [areFocused, setAreFocused] = useState(
@@ -117,43 +90,48 @@ const Tuner = () => {
 
   const sampler = useRef(new Tone.Sampler());
   const mic = useRef(new Tone.UserMedia());
+  const testRef = useRef(Math.random());
   const pitchTracker = useRef(new TuningResult(0.7));
   const confirmationPlayer = useRef(
     new Tone.Player("src/components/assets/confirmation.mp3").toDestination()
   );
 
+  const controller = new AbortController();
   useEffect(() => {
-    const controller = new AbortController();
-    const setAudioNode = async () => {
-      await Tone.getContext().addAudioWorkletModule(
-        "src/components/PitchAnalysis.js"
-      );
-      const analyzer = Tone.getContext().createAudioWorkletNode(
-        "PitchAnalysis",
-        {
-          processorOptions: { sampleFrequency: 1 },
-        }
-      );
-      analyzer.port.onmessage = (e) => {
-        const freq = 329 + Math.random();
-        setFrequency(freq);
-        const note = pitchTracker.current.trackFrequency(freq);
-        if (note !== "") {
-          const focusedIndex = areFocused.indexOf(true);
-          if (focusedIndex !== -1 && note === notes[focusedIndex]) {
-            const foo = new Tone.Player(
-              "src/components/assets/confirmation.mp3"
-            ).toDestination();
-            foo.autostart = true;
-            const newAreTuned = areTuned.map((s, i) => {
-              return i === focusedIndex ? true : s;
-            });
-            setAreTuned(newAreTuned);
-          }
-        }
-      };
-      mic.current.connect(analyzer);
-    };
+    const myPromise = new Promise(function (myResolve, myReject) {
+      console.log(controller.signal.addEventListener);
+      controller.signal.addEventListener("abort", () => myReject());
+      Tone.getContext()
+        .addAudioWorkletModule("src/components/PitchAnalysis.js")
+        .then(() => {
+          const analyzer = Tone.getContext().createAudioWorkletNode(
+            "PitchAnalysis",
+            {
+              processorOptions: { sampleFrequency: 1 },
+            }
+          );
+          analyzer.port.onmessage = (e) => {
+            const freq = 329 + Math.random();
+            setFrequency(freq);
+            const note = pitchTracker.current.trackFrequency(freq);
+            if (note !== "") {
+              const focusedIndex = areFocused.indexOf(true);
+              if (focusedIndex !== -1 && note === notes[focusedIndex]) {
+                const foo = new Tone.Player(
+                  "src/components/assets/confirmation.mp3"
+                ).toDestination();
+                foo.autostart = true;
+                const newAreTuned = areTuned.map((s, i) => {
+                  return i === focusedIndex ? true : s;
+                });
+                setAreTuned(newAreTuned);
+              }
+            }
+          };
+          mic.current.connect(analyzer);
+        });
+    });
+
     // Tone.getContext()
     //   .addAudioWorkletModule("src/components/PitchAnalysis.js")
     //   .then(() => {
