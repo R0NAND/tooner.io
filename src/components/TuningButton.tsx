@@ -13,7 +13,6 @@ interface Props {
   isTuned: boolean;
   playNoteCallback: (note: string) => void;
   changeNoteCallback: (newNote: string) => void;
-  lostFocusCallback: () => void;
 }
 
 const TuningButton = ({
@@ -21,7 +20,6 @@ const TuningButton = ({
   isTuned,
   playNoteCallback,
   changeNoteCallback,
-  lostFocusCallback,
 }: Props) => {
   const noteRegex = /^([A-G|a-g][#b]?)([0-8])$/;
   if (noteRegex.exec(children) === null) {
