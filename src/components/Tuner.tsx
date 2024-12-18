@@ -72,12 +72,6 @@ const peg_positions = [
 ];
 
 const Tuner = () => {
-  const [notes, setNotes] = useState(tuningDictionary["Standard"]);
-  const [areFocused, setAreFocused] = useState(
-    tuningDictionary["Standard"].map(() => {
-      return false;
-    })
-  );
   const [areTuned, setAreTuned] = useState(
     tuningDictionary["Standard"].map(() => {
       return false;
@@ -136,16 +130,18 @@ const Tuner = () => {
           if (note !== "") {
             if (
               focusedIndex.current !== -1 &&
-              note === notes[focusedIndex.current]
+              note === tuningState[focusedIndex.current].note
             ) {
               const foo = new Tone.Player(
                 "src/components/assets/confirmation.mp3"
               ).toDestination();
               foo.autostart = true;
-              const newAreTuned = areTuned.map((s, i) => {
-                return i === focusedIndex.current ? true : s;
+              const newTuningState = tuningState.map((n, i) => {
+                return i === focusedIndex.current
+                  ? { note: n.note, isTuned: true, isFocused: n.isFocused }
+                  : n;
               });
-              setAreTuned(newAreTuned);
+              setTuningState(newTuningState);
             }
           }
         };
@@ -191,49 +187,51 @@ const Tuner = () => {
         <div style={{ position: "absolute", top: "50%", left: "45%" }}>
           <TuningGauge sensitivity={0.7}>{frequency}</TuningGauge>
         </div>
-        {notes.map((n, index) => (
+        {tuningState.map((note, index) => (
           <div
-            key={tuning + index}
+            key={tuning + index} //TODO: review this
             style={{
               position: "absolute",
               top: peg_positions[index].top,
               left: peg_positions[index].left,
               transform: peg_positions[index].transform,
-              backgroundColor: areFocused[index] ? "green" : "red",
+              backgroundColor: note.isFocused ? "green" : "red",
             }}
           >
             <TuningButton
               playNoteCallback={(note: string) => {
                 playNoteCallback(note);
-                const newFocusList = areFocused.map((state, i) => {
-                  return i === index ? true : false;
+                const newTuningState = tuningState.map((n, i) => {
+                  return i === index
+                    ? { note: n.note, isFocused: true, isTuned: n.isTuned }
+                    : { note: n.note, isFocused: false, isTuned: n.isTuned };
                 });
-                setAreFocused(newFocusList);
+                setTuningState(newTuningState);
                 focusedIndex.current = index;
               }}
               changeNoteCallback={(newNote: string) => {
-                const newTuning = notes.map((newNotes, i) => {
+                const newTuning = tuningState.map((n, i) => {
                   if (i === index) {
-                    return newNote;
+                    return {
+                      note: newNote,
+                      isFocused: true,
+                      isTuned: false,
+                    };
                   } else {
-                    return newNotes;
+                    return {
+                      note: n.note,
+                      isFocused: false,
+                      isTuned: n.isTuned,
+                    };
                   }
                 });
-                const newAreTuned = areTuned.map((s, i) => {
-                  return i === index ? false : s;
-                });
-                setNotes(newTuning);
+                setTuningState(newTuning);
                 setTuning("Custom");
-                const newFocusList = areFocused.map((state, i) => {
-                  return i === index ? true : false;
-                });
                 focusedIndex.current = index;
-                setAreFocused(newFocusList);
-                setAreTuned(newAreTuned);
               }}
-              isTuned={areTuned[index]}
+              isTuned={note.isTuned}
             >
-              {n}
+              {note.note}
             </TuningButton>
           </div>
         ))}
@@ -242,12 +240,21 @@ const Tuner = () => {
         name="Tuning"
         id="tuning"
         onChange={(e) => {
-          setNotes(tuningDictionary[e.target.value]);
-          setTuning(e.target.value);
           const now = Tone.now();
-          tuningDictionary[e.target.value].map((note, i) => {
-            sampler.current.triggerAttackRelease(note, "1n", now + i * 0.1);
+          const newTuningState = tuningState.map((n, i) => {
+            sampler.current.triggerAttackRelease(
+              tuningDictionary[e.target.value][i],
+              "1n",
+              now + i * 0.1
+            );
+            return {
+              note: tuningDictionary[e.target.value][i],
+              isFocused: false,
+              isTuned: false,
+            };
           });
+          setTuning(e.target.value);
+          setTuningState(newTuningState);
         }}
       >
         {Object.keys(tuningDictionary).map((key) => (
