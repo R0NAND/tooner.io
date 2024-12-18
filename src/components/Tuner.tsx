@@ -118,6 +118,9 @@ const Tuner = () => {
   const tuningStateRef = useRef(tuningState);
   const processPitch = (e: MessageEvent) => {
     const freq = e.data.frequency !== null ? e.data.frequency : 0;
+    if (freq === 0) {
+      console.log(e.data.wave);
+    }
     setFrequency(freq);
     const note = pitchTracker.current.trackFrequency(freq);
     if (note !== "") {

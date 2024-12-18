@@ -44,12 +44,10 @@ class PitchAnalysis extends AudioWorkletProcessor {
             this._appendToBuffer(inputs[0][0]);
             if(this._bufferCount >= this._bufferSize){
                 let pitch = this._pitchFinder(this._buffer);
-                if(pitch == null){
-                    //console.log(inputs[0][0]);
-                }
                 this.port.postMessage({
                     eventType: 'data',
-                    frequency: pitch
+                    frequency: pitch,
+                    wave: inputs[0][0].toString()
                 });
                 this._timingCount = this._bufferCount;
                 this._bufferCount = 0;
