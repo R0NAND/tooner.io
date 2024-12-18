@@ -14,6 +14,7 @@ class TuningResult {
   heardNote: string;
   consecutiveTimesHeard: number;
   sensitivity: number;
+  isActive: boolean;
 
   constructor(s: number) {
     if (s >= 0.95) {
@@ -22,34 +23,41 @@ class TuningResult {
     this.heardNote = "";
     this.consecutiveTimesHeard = 0;
     this.sensitivity = s;
+    this.isActive = true;
   }
 
   trackFrequency(frequency: number) {
-    let note = frequency === 0 ? "" : Tone.Frequency(frequency).toNote();
-    let target = Tone.Frequency(note).toFrequency();
-    let lower_bound = target / 1.02930223664; // 24th root of 2
-    let upper_bound = target * 1.02930223664; // 24th root of 2
-    let tolerance = 1 - this.sensitivity;
+    if (this.isActive) {
+      let note = frequency === 0 ? "" : Tone.Frequency(frequency).toNote();
+      let target = Tone.Frequency(note).toFrequency();
+      let lower_bound = target / 1.02930223664; // 24th root of 2
+      let upper_bound = target * 1.02930223664; // 24th root of 2
+      let tolerance = 1 - this.sensitivity;
 
-    let fraction = 1;
-    if (frequency < target) {
-      fraction = (target - frequency) / (target - lower_bound);
-    } else {
-      fraction = (frequency - target) / (upper_bound - target);
-    }
+      let fraction = 1;
+      if (frequency < target) {
+        fraction = (target - frequency) / (target - lower_bound);
+      } else {
+        fraction = (frequency - target) / (upper_bound - target);
+      }
 
-    if (fraction <= tolerance && note === this.heardNote) {
-      this.consecutiveTimesHeard += 1;
-    } else {
-      this.consecutiveTimesHeard = 0;
-    }
-    this.heardNote = note;
+      if (fraction <= tolerance && note === this.heardNote) {
+        this.consecutiveTimesHeard += 1;
+      } else {
+        this.consecutiveTimesHeard = 0;
+      }
+      this.heardNote = note;
 
-    if (this.consecutiveTimesHeard === 3) {
-      this.consecutiveTimesHeard = 0;
-      return note;
-    } else {
-      return "";
+      if (this.consecutiveTimesHeard === 3) {
+        this.isActive = false;
+        setTimeout(() => {
+          this.isActive = true;
+        }, 3000);
+        this.consecutiveTimesHeard = 0;
+        return note;
+      } else {
+        return "";
+      }
     }
   }
 }
@@ -60,6 +68,8 @@ const tuningDictionary: TuningDictionary = {
   DADGAD: ["D2", "A2", "D3", "G3", "A3", "D4"],
   "Half step down": ["D#2", "G#2", "C#3", "F#3", "A#3", "D#4"],
   "Full step down": ["D2", "G2", "C3", "F3", "A3", "D4"],
+  "Drop D half step down": ["C#2", "G#2", "C#3", "F#3", "A#3", "D#4"],
+  "Drop D full step down": ["C2", "G2", "C3", "F3", "A3", "D4"],
 };
 
 const peg_positions = [
@@ -72,19 +82,11 @@ const peg_positions = [
 ];
 
 const Tuner = () => {
-  const [areTuned, setAreTuned] = useState(
-    tuningDictionary["Standard"].map(() => {
-      return false;
-    })
-  );
-
   const [tuningState, setTuningState] = useState(
     tuningDictionary["Standard"].map((n) => {
       return { note: n, isFocused: false, isTuned: false };
     })
   );
-
-  const focusedIndex = useRef(-1);
 
   const [tuning, setTuning] = useState("Standard");
   const [frequency, setFrequency] = useState(0);
@@ -96,8 +98,6 @@ const Tuner = () => {
   const confirmationPlayer = useRef(
     new Tone.Player("src/components/assets/confirmation.mp3").toDestination()
   );
-
-  const controller = new AbortController();
 
   useEffect(() => {
     sampler.current = new Tone.Sampler({
@@ -113,6 +113,32 @@ const Tuner = () => {
     }).toDestination();
   }, [sampler]);
 
+  //TODO: kinda sucks to have to do this due to scope closure on state reference... there should be a better way
+  const focusedIndex = useRef(-1);
+  const tuningStateRef = useRef(tuningState);
+  const processPitch = (e: MessageEvent) => {
+    const freq = e.data.frequency !== null ? e.data.frequency : 0;
+    setFrequency(freq);
+    const note = pitchTracker.current.trackFrequency(freq);
+    if (note !== "") {
+      if (
+        focusedIndex.current !== -1 &&
+        note === tuningStateRef.current[focusedIndex.current].note
+      ) {
+        const confSound = new Tone.Player(
+          "src/components/assets/confirmation.mp3"
+        ).toDestination();
+        confSound.autostart = true;
+        const newTuningState = tuningStateRef.current.map((n, i) => {
+          return i === focusedIndex.current
+            ? { note: n.note, isTuned: true, isFocused: n.isFocused }
+            : n;
+        });
+        setTuningState(newTuningState);
+      }
+    }
+  };
+
   useEffect(() => {
     Tone.getContext()
       .addAudioWorkletModule("src/components/PitchAnalysis.js")
@@ -123,28 +149,7 @@ const Tuner = () => {
             processorOptions: { sampleFrequency: 5 },
           }
         );
-        analyzer.port.onmessage = (e) => {
-          const freq = 329 + Math.random();
-          setFrequency(freq);
-          const note = pitchTracker.current.trackFrequency(freq);
-          if (note !== "") {
-            if (
-              focusedIndex.current !== -1 &&
-              note === tuningState[focusedIndex.current].note
-            ) {
-              const foo = new Tone.Player(
-                "src/components/assets/confirmation.mp3"
-              ).toDestination();
-              foo.autostart = true;
-              const newTuningState = tuningState.map((n, i) => {
-                return i === focusedIndex.current
-                  ? { note: n.note, isTuned: true, isFocused: n.isFocused }
-                  : n;
-              });
-              setTuningState(newTuningState);
-            }
-          }
-        };
+        analyzer.port.onmessage = processPitch;
         Tone.disconnect(mic.current); //TODO: Find better way than this to fix issue where audioworklet resolves promise later asynchronously
         mic.current.connect(analyzer);
       });
@@ -208,9 +213,10 @@ const Tuner = () => {
                 });
                 setTuningState(newTuningState);
                 focusedIndex.current = index;
+                tuningStateRef.current = newTuningState;
               }}
               changeNoteCallback={(newNote: string) => {
-                const newTuning = tuningState.map((n, i) => {
+                const newTuningState = tuningState.map((n, i) => {
                   if (i === index) {
                     return {
                       note: newNote,
@@ -225,9 +231,10 @@ const Tuner = () => {
                     };
                   }
                 });
-                setTuningState(newTuning);
+                setTuningState(newTuningState);
                 setTuning("Custom");
                 focusedIndex.current = index;
+                tuningStateRef.current = newTuningState;
               }}
               isTuned={note.isTuned}
             >
@@ -255,6 +262,8 @@ const Tuner = () => {
           });
           setTuning(e.target.value);
           setTuningState(newTuningState);
+          tuningStateRef.current = newTuningState;
+          focusedIndex.current = -1;
         }}
       >
         {Object.keys(tuningDictionary).map((key) => (
