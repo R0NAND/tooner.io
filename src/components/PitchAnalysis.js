@@ -1,4 +1,4 @@
-import * as Pitchfinder from "pitchfinder";
+import * as PitchDetector from "pitchy";
 
 class PitchAnalysis extends AudioWorkletProcessor {
     constructor(options) {
@@ -9,11 +9,17 @@ class PitchAnalysis extends AudioWorkletProcessor {
         }else{
             this._sampleFrequency = 5; //defaults to 5Hz
         }
+
+        if(options.processorOptions['confidence']){
+            this._confidence = options.processorOptions['confidence'];
+        }else{
+            this._confidence = 0.9; //defaults to only returning frequencies with a confidence over or equal to 0.9
+        }
         
         this._bufferSize = 2048;
         this._buffer = new Float32Array(this._bufferSize);
         this._isProcessingBuffer = true;
-        this._pitchFinder = Pitchfinder.DynamicWavelet({sampleRate: sampleRate});
+        this._pitchFinder = PitchDetector.PitchDetector.forFloat32Array(this._bufferSize);
         if(sampleRate / this._sampleFrequency < this._bufferSize){
             throw new Error('Sample Frequency of ${this._sampleFrequency} HZ is too high!'); //TODO fix this string
         }
@@ -43,11 +49,11 @@ class PitchAnalysis extends AudioWorkletProcessor {
         if(this._isProcessingBuffer){ 
             this._appendToBuffer(inputs[0][0]);
             if(this._bufferCount >= this._bufferSize){
-                let pitch = this._pitchFinder(this._buffer);
+                let result = this._pitchFinder.findPitch(this._buffer, sampleRate);
+                let pitch = result[0];
                 this.port.postMessage({
                     eventType: 'data',
-                    frequency: pitch,
-                    wave: inputs[0][0].toString()
+                    frequency: result[1] >= this._confidence ? pitch : null,
                 });
                 this._timingCount = this._bufferCount;
                 this._bufferCount = 0;

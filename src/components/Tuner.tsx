@@ -118,9 +118,6 @@ const Tuner = () => {
   const tuningStateRef = useRef(tuningState);
   const processPitch = (e: MessageEvent) => {
     const freq = e.data.frequency !== null ? e.data.frequency : 0;
-    if (freq === 0) {
-      console.log(e.data.wave);
-    }
     setFrequency(freq);
     const note = pitchTracker.current.trackFrequency(freq);
     if (note !== "") {
@@ -149,7 +146,7 @@ const Tuner = () => {
         const analyzer = Tone.getContext().createAudioWorkletNode(
           "PitchAnalysis",
           {
-            processorOptions: { sampleFrequency: 5 },
+            processorOptions: { sampleFrequency: 3, confidence: 0.95 },
           }
         );
         analyzer.port.onmessage = processPitch;
@@ -168,6 +165,7 @@ const Tuner = () => {
       setIsMicEnabled(false);
       setFrequency(0);
     } else {
+      Tone.start();
       mic.current.open();
       setIsMicEnabled(true);
     }
