@@ -146,7 +146,7 @@ const Tuner = () => {
         const analyzer = Tone.getContext().createAudioWorkletNode(
           "PitchAnalysis",
           {
-            processorOptions: { sampleFrequency: 3, confidence: 0.95 },
+            processorOptions: { sampleFrequency: 3, confidence: 0.9 },
           }
         );
         analyzer.port.onmessage = processPitch;
