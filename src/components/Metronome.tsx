@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as Tone from "tone";
 
 // interface Props {
@@ -13,12 +13,21 @@ type TimeSignatureDictionary = {
 };
 
 const timeSignatureDictionary: TimeSignatureDictionary = {
-  "4/4": ["high", "low", "low", "low"],
-  "3/4": ["high", "low", "low"],
-  "2/4": ["high", "low"],
-  "5/4": ["high", "low", "low", "low", "low"],
-  "7/4": ["high", "low", "low", "low", "low", "low"],
+  "4/4": ["hi", "lo", "lo", "lo"],
+  "3/4": ["hi", "lo", "lo"],
+  "2/4": ["hi", "lo"],
+  "5/4": ["hi", "lo", "lo", "lo", "lo"],
+  "7/4": ["hi", "lo", "lo", "lo", "lo", "lo"],
 };
+
+const loop = new Tone.Loop();
+const player = new Tone.Players({
+  urls: {
+    hi: "Metronome-hi.wav",
+    lo: "Metronome-lo.wav",
+  },
+  baseUrl: "src/components/assets/",
+}).toDestination();
 
 const Metronome = () => {
   const [bpm, setBpm] = useState(100);
@@ -27,13 +36,34 @@ const Metronome = () => {
   const [beat, setBeat] = useState(-1);
   const isTapInitiated = useRef(false);
   const prevTapTime = useRef(Date.now());
-  const interval = useRef(setInterval(() => {}, 1000));
+
+  useEffect(() => {
+    Tone.getTransport().bpm.value = bpm;
+  }, [bpm]);
+
+  useEffect(() => {
+    if (isPlaying) {
+      setBeat(sequence.length - 1);
+      beatRef.current = sequence.length - 1;
+    } else {
+      setBeat(-1);
+      beatRef.current = -1;
+    }
+    loop.callback = (time) => {
+      player
+        .player(sequence[(beatRef.current + 1) % sequence.length])
+        .start(time, 0);
+      beatRef.current = (beatRef.current + 1) % sequence.length;
+      setBeat(beatRef.current);
+    };
+    loop.interval = "4n";
+  }, [sequence]);
 
   const onTapClick = () => {
     if (isTapInitiated.current) {
       const clickTime = Date.now();
-      prevTapTime.current = clickTime;
       setBpm(Math.round((60 / (clickTime - prevTapTime.current)) * 1000));
+      prevTapTime.current = clickTime;
     } else {
       isTapInitiated.current = true;
     }
@@ -44,7 +74,6 @@ const Metronome = () => {
   };
 
   const beatRef = useRef(beat);
-  const synth = useRef(new Tone.Synth().toDestination());
   const onPlayClick = () => {
     if (isPlaying) {
       Tone.getTransport().stop();
@@ -52,18 +81,7 @@ const Metronome = () => {
       beatRef.current = -1;
       setIsPlaying(false);
     } else {
-      Tone.getTransport().bpm.value = bpm;
-      setBeat(sequence.length - 1);
-      beatRef.current = sequence.length - 1;
-      const loop = new Tone.Loop((time) => {
-        if (sequence[(beatRef.current + 1) % sequence.length] === "high") {
-          synth.current.triggerAttackRelease("C5", "8n");
-        } else {
-          synth.current.triggerAttackRelease("C4", "8n");
-        }
-        beatRef.current = (beatRef.current + 1) % sequence.length;
-        setBeat(beatRef.current);
-      }, "4n").start(0);
+      loop.start(0);
       Tone.getTransport().start();
       setIsPlaying(true);
     }
