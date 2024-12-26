@@ -103,7 +103,7 @@ const Metronome = () => {
                 r="25"
                 cx="25"
                 cy="25"
-                fill={i === beat ? "red" : "white"}
+                fill={i === beat ? "green" : "red"}
               />
             </svg>
           );
