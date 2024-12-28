@@ -11,18 +11,98 @@ h3{
 }
 
 .video-query-panel{
-  height: 500px;
-  width: 10px; /* 0 width - change this with JavaScript */
-  position: absolute; /* Stay in place */
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 15px;
+  align-items: center;
+  align-content: flex-start;
+
+
+  height: 100%;
+  width: 0px; /* 0 width - change this with JavaScript */
+  overflow-x: hidden;
   z-index: 1; /* Stay on top */
-  overflow-x: hidden; /* Disable horizontal scroll */
   transition: 0.5s; /* 0.5 second transition effect to slide in the sidebar */
+  border-radius: 0px 10px 10px 0px;
   -webkit-backdrop-filter: blur(10px) saturate(180%);
     backdrop-filter: blur(10px) saturate(180%);
-    background-color: rgba(255,255,255,.5);
+    background-color: rgba(0,0,0,.25);
+}
+
+.search-panel{
+  display: grid;
+  grid-template-columns: 50px auto;
+  height: 40px;
 }
 
 .video-query-panel:hover{
-  width: 400px;
+  width: auto;
 }
 
+.queried-video-card{
+  border-radius: 10px;
+  margin: 5px;
+  -webkit-backdrop-filter: blur(10px) saturate(180%);
+    backdrop-filter: blur(10px) saturate(180%);
+    background-color: rgba(255,255,255,.25);
+}
+
+.queried-videos{
+  display: flex;
+  width: 800px;
+  overflow-x: scroll;
+  height: 300px;
+}
+
+.video-search-button{
+  border-radius: 10px 0px 0px 10px;
+  height: 100%;
+}
+
+button{
+  -webkit-backdrop-filter: blur(10px) saturate(180%);
+    backdrop-filter: blur(10px) saturate(180%);
+    background-color: rgba(255,255,255,.25);
+}
+
+input{
+  -webkit-backdrop-filter: blur(10px) saturate(180%);
+    backdrop-filter: blur(10px) saturate(180%);
+    background-color: rgba(255,255,255,.25);
+  border-radius: 5px;
+}
+
+label{
+  font-weight: bold;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 20px;
+  padding-right: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey; 
+  border-radius: 10px;
+  -webkit-backdrop-filter: blur(10px) saturate(180%);
+    backdrop-filter: blur(10px) saturate(180%);
+    background-color: rgba(255,255,255,.25);
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  -webkit-backdrop-filter: blur(10px) saturate(180%);
+    backdrop-filter: blur(10px) saturate(180%);
+    background-color: rgba(255,255,255,.25);
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  -webkit-backdrop-filter: blur(10px) saturate(180%);
+    backdrop-filter: blur(10px) saturate(180%);
+    background-color: rgba(255,255,255,.25);
+}

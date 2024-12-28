@@ -5,6 +5,7 @@ import * as Tone from "tone";
 import TuningGauge from "./TuningGauge";
 import micOn from "./assets/mic-on.svg";
 import micOff from "./assets/mic-off.svg";
+import "./Tuner.css";
 
 type TuningDictionary = {
   [key: string]: string[];
