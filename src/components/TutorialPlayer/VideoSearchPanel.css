@@ -18,9 +18,7 @@ h3{
   align-items: center;
   align-content: flex-start;
 
-
   height: 100%;
-  width: 0px; /* 0 width - change this with JavaScript */
   overflow-x: hidden;
   z-index: 1; /* Stay on top */
   transition: 0.5s; /* 0.5 second transition effect to slide in the sidebar */
@@ -32,12 +30,8 @@ h3{
 
 .search-panel{
   display: grid;
-  grid-template-columns: 50px auto;
-  height: 40px;
-}
-
-.video-query-panel:hover{
-  width: auto;
+  grid-template-columns: 50px 0px;
+  overflow-x: hidden;
 }
 
 .queried-video-card{
@@ -50,7 +44,6 @@ h3{
 
 .queried-videos{
   display: flex;
-  width: 800px;
   overflow-x: scroll;
   height: 300px;
 }

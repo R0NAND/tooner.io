@@ -1,0 +1,23 @@
+.playlist-row{
+
+}
+
+.playlist-table td, th{
+  text-align: left;
+}
+
+.playlist-row > td{
+  padding: 10px;
+}
+
+.playlist-row:hover{
+  background: grey;
+}
+
+.playlist-table{
+  border-collapse: collapse;
+}
+
+.playlist-row-play:hover + .playlist-row{
+  background: red;
+}
