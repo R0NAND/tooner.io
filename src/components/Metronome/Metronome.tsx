@@ -89,7 +89,6 @@ const Metronome = () => {
 
   return (
     <>
-      <h1>Metronome</h1>
       <div>
         {sequence.map((e, i) => {
           return (

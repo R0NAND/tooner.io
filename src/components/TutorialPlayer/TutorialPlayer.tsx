@@ -10,6 +10,29 @@ const TutorialPlayer = () => {
   const [tutorials, setTutorials] = useState<VideoData[]>([]);
   const [isPlaying, setIsPlaying] = useState(false);
 
+  const setLocalStorage = (vids: VideoData[]) => {
+    localStorage.setItem("videos", JSON.stringify(vids));
+  };
+
+  useEffect(() => {
+    if (document.cookie !== null) {
+      try {
+        const storedVideos = localStorage.getItem("videos");
+        if (storedVideos !== null) {
+          try {
+            setTutorials(JSON.parse(storedVideos));
+          } catch {
+            throw new Error(
+              "Failed to convert localStorage to tutorials playlist."
+            );
+          }
+        }
+      } catch {
+        throw new Error("Failed to fetch videos from user's cookies");
+      }
+    }
+  }, []);
+
   return (
     <>
       <div
@@ -20,27 +43,25 @@ const TutorialPlayer = () => {
           border: "2px solid red",
         }}
       >
-        <div
-          style={{
-            zIndex: -999,
-            position: "absolute",
-            height: "100%",
-            width: "100%",
-          }}
-        >
-          <ReactPlayer
-            id="youtube-player"
-            height="100%"
-            width="100%"
-            playing={isPlaying}
-            controls={true}
-            url={`https://www.youtube.com/watch?v=${videoId}`}
-          />
-        </div>
-        <div style={{ margin: 15 }}>
+        <ReactPlayer
+          style={{ position: "absolute" }}
+          id="youtube-player"
+          height="100%"
+          width="100%"
+          playing={isPlaying}
+          controls={true}
+          url={`https://www.youtube.com/watch?v=${videoId}`}
+        />
+        <div style={{ margin: 15, position: "absolute" }}>
           <VideoSearchPanel
             addVideoCallback={(vid: VideoData) => {
-              setTutorials([...tutorials, vid]);
+              const newTutorials = [...tutorials, vid];
+              setTutorials(newTutorials);
+              setLocalStorage(newTutorials);
+            }}
+            playVideoCallback={(vid: VideoData) => {
+              setVideoId(vid.id.videoId);
+              setIsPlaying(true);
             }}
           ></VideoSearchPanel>
         </div>
@@ -51,6 +72,11 @@ const TutorialPlayer = () => {
           playVideoCallback={(vid: VideoData) => {
             setVideoId(vid.id.videoId);
             setIsPlaying(true);
+          }}
+          deleteVideoCallback={(vid: VideoData) => {
+            const newTutorials = tutorials.filter((v) => v !== vid);
+            setTutorials(newTutorials);
+            setLocalStorage(newTutorials);
           }}
         ></VideoPlaylist>
       </div>

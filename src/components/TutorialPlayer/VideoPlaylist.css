@@ -18,6 +18,14 @@
   border-collapse: collapse;
 }
 
-.playlist-row-play:hover + .playlist-row{
-  background: red;
+.playlist-row div{
+  visibility: hidden;
+}
+
+.playlist-row div:hover{
+  cursor: pointer;
+}
+
+.playlist-row:hover div{
+  visibility: visible;
 }

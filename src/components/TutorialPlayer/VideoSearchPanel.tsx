@@ -2,17 +2,20 @@ import React, { useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./VideoSearchPanel.css";
 import {
+  faAdd,
   faArrowRotateForward,
   faClose,
+  faPlay,
   faSearch,
 } from "@fortawesome/free-solid-svg-icons";
 import type { VideoData } from "./VideoData";
 
 interface Props {
   addVideoCallback: (vid: VideoData) => void;
+  playVideoCallback: (vid: VideoData) => void;
 }
 
-const VideoSearchPanel = ({ addVideoCallback }: Props) => {
+const VideoSearchPanel = ({ addVideoCallback, playVideoCallback }: Props) => {
   const [queriedTutorials, setQueriedTutorials] = useState<VideoData[]>([]);
   const [isSearchBarOpen, setIsSearchBarOpen] = useState(false);
 
@@ -23,14 +26,8 @@ const VideoSearchPanel = ({ addVideoCallback }: Props) => {
   /* Set the width of the sidebar to 250px and the left margin of the page content to 250px */
   const openNav = () => {
     if (isSearchBarOpen) {
-      //@ts-ignore
-      document.getElementById("searchPanel").style.gridTemplateColumns =
-        "50px 0px";
       setIsSearchBarOpen(false);
     } else {
-      //@ts-ignore
-      document.getElementById("searchPanel").style.gridTemplateColumns =
-        "70px auto";
       setIsSearchBarOpen(true);
     }
   };
@@ -46,17 +43,21 @@ const VideoSearchPanel = ({ addVideoCallback }: Props) => {
         return res.json();
       })
       .then((data) => {
-        console.log(data.items);
         setQueriedTutorials(data.items);
       });
   };
   return (
-    <div className="search-panel" id="searchPanel">
+    <div
+      className={
+        "search-panel" + (isSearchBarOpen ? " expanded-search-panel" : "")
+      }
+      id="searchPanel"
+    >
       <button className="video-search-button" onClick={openNav}>
         <FontAwesomeIcon icon={isSearchBarOpen ? faClose : faSearch} />
       </button>
       <div className="video-query-panel" id="videoQuerySidebar">
-        <div>
+        <div style={{ display: "flex", flexDirection: "column" }}>
           <label>Song</label>
           <input
             ref={songRef}
@@ -67,7 +68,7 @@ const VideoSearchPanel = ({ addVideoCallback }: Props) => {
             }}
           ></input>
         </div>
-        <div>
+        <div style={{ display: "flex", flexDirection: "column" }}>
           <label>Artist</label>
           <input
             ref={artistRef}
@@ -78,7 +79,7 @@ const VideoSearchPanel = ({ addVideoCallback }: Props) => {
             }}
           ></input>
         </div>
-        <div>
+        <div style={{ display: "flex", flexDirection: "column" }}>
           <label>Channel</label>
           <input
             ref={channelRef}
@@ -94,7 +95,12 @@ const VideoSearchPanel = ({ addVideoCallback }: Props) => {
         </button>
       </div>
       <div></div>
-      <div className="queried-videos">
+      <div
+        className={
+          "queried-videos" +
+          (queriedTutorials.length ? "" : " collapsed-queried-videos")
+        }
+      >
         {queriedTutorials?.map((video, i) => {
           return (
             <div
@@ -108,6 +114,19 @@ const VideoSearchPanel = ({ addVideoCallback }: Props) => {
               </div>
               <button
                 onClick={() => {
+                  playVideoCallback(video);
+                }}
+                style={{
+                  margin: "auto",
+                  height: 50,
+                  width: 50,
+                  borderRadius: "25%",
+                }}
+              >
+                <FontAwesomeIcon icon={faPlay} />
+              </button>
+              <button
+                onClick={() => {
                   addVideoCallback(video);
                 }}
                 style={{
@@ -117,7 +136,7 @@ const VideoSearchPanel = ({ addVideoCallback }: Props) => {
                   borderRadius: "25%",
                 }}
               >
-                +
+                <FontAwesomeIcon icon={faAdd} />
               </button>
             </div>
           );

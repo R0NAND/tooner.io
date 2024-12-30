@@ -2,36 +2,51 @@ import React from "react";
 import type { VideoData } from "./VideoData";
 import "./VideoPlaylist.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlay } from "@fortawesome/free-solid-svg-icons";
+import { faPlay, faTrash, faX } from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
   videos: VideoData[];
   playVideoCallback: (vid: VideoData) => void;
+  deleteVideoCallback: (vid: VideoData) => void;
 }
 
-const VideoPlaylist = ({ videos, playVideoCallback }: Props) => {
+const VideoPlaylist = ({
+  videos,
+  playVideoCallback,
+  deleteVideoCallback,
+}: Props) => {
   return (
     <table className="playlist-table">
-      <tr>
-        <th>#</th>
-        <th></th>
-        <th>Title</th>
-        <th>Channel</th>
-      </tr>
-      {videos.map((vids, i) => {
-        return (
-          <tr className="playlist-row">
-            <div onClick={() => playVideoCallback(vids)}>
-              <FontAwesomeIcon icon={faPlay} />
-            </div>
-            <td>
-              <img height="50px" src={vids.snippet.thumbnails.default.url} />
-            </td>
-            <td>{vids.snippet.title}</td>
-            <td>{vids.snippet.channelTitle}</td>
-          </tr>
-        );
-      })}
+      <tbody>
+        <tr>
+          <th></th>
+          <th></th>
+          <th>Title</th>
+          <th>Channel</th>
+          <th></th>
+        </tr>
+        {videos.map((vid, i) => {
+          return (
+            <tr className="playlist-row" key={vid.id.videoId}>
+              <td>
+                <div onClick={() => playVideoCallback(vid)}>
+                  <FontAwesomeIcon icon={faPlay} />
+                </div>
+              </td>
+              <td>
+                <img height="50px" src={vid.snippet.thumbnails.default.url} />
+              </td>
+              <td>{vid.snippet.title}</td>
+              <td>{vid.snippet.channelTitle}</td>
+              <td>
+                <div onClick={() => deleteVideoCallback(vid)}>
+                  <FontAwesomeIcon icon={faX} />
+                </div>
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
     </table>
   );
 };
