@@ -175,8 +175,8 @@ const Tuner = () => {
   };
   return (
     <>
-      <div style={{ position: "relative" }}>
-        <img className="guitar-head" src={head} alt="" width="800"></img>
+      <div style={{ position: "relative", margin: "auto", width: "800px" }}>
+        <img className="guitar-head" src={head} alt="" width="100%"></img>
         <button
           onClick={() => toggleMic()}
           style={{

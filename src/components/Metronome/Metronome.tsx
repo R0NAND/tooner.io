@@ -1,3 +1,5 @@
+import { faDrum, faPlay, faStop } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef, useState } from "react";
 import * as Tone from "tone";
 
@@ -136,8 +138,16 @@ const Metronome = () => {
           setBpm(Number(e.target.value));
         }}
       ></input>
-      <button onClick={onPlayClick}>{isPlaying ? "stop" : "play"}</button>
-      <button onClick={onTapClick}>tap</button>
+      <button onClick={onPlayClick}>
+        {isPlaying ? (
+          <FontAwesomeIcon icon={faStop} />
+        ) : (
+          <FontAwesomeIcon icon={faPlay} />
+        )}
+      </button>
+      <button onClick={onTapClick}>
+        <FontAwesomeIcon icon={faDrum} />
+      </button>
     </>
   );
 };

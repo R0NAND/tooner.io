@@ -1,0 +1,49 @@
+.navbar{
+  background-color: #362904;
+  color: antiquewhite;
+}
+
+.navbar > ul{
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-self: flex-end;
+  align-items: center;
+}
+
+.navbar > ul > a{
+  font-size: 1.61rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.navbar > ul > li > a{
+  color: inherit;
+  text-decoration: none;
+}
+
+.navbar-ul > li{
+  display: flex;
+  list-style: none;
+}
+
+.navbar-ul li:hover{
+  background-color: #ae882d;
+}
+
+.navbar-ul li{
+  padding: 0.25rem;
+  height: 100%;
+}
+
+.navbar-ul > li > *{
+  text-decoration: none;
+}
+.navbar-group{
+  display: flex;
+  align-items: center;
+}
+
+.navbar > div > ul{
+  display: flex;
+}
