@@ -6,6 +6,11 @@
   text-align: left;
 }
 
+
+.playlist-table thead, tbody{
+  display: block;
+}
+
 .playlist-row > td{
   padding: 10px;
 }
@@ -16,6 +21,11 @@
 
 .playlist-table{
   border-collapse: collapse;
+}
+
+.playlist-table tbody{
+  overflow-y: scroll;
+  height: 700px;
 }
 
 .playlist-row div{

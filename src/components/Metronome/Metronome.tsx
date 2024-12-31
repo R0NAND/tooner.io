@@ -26,7 +26,7 @@ const player = new Tone.Players({
     hi: "Metronome-hi.wav",
     lo: "Metronome-lo.wav",
   },
-  baseUrl: "src/components/assets/",
+  baseUrl: "src/components/Metronome/assets/",
 }).toDestination();
 
 const Metronome = () => {

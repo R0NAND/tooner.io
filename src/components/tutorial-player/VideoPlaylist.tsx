@@ -18,13 +18,6 @@ const VideoPlaylist = ({
   return (
     <table className="playlist-table">
       <tbody>
-        <tr>
-          <th></th>
-          <th></th>
-          <th>Title</th>
-          <th>Channel</th>
-          <th></th>
-        </tr>
         {videos.map((vid, i) => {
           return (
             <tr className="playlist-row" key={vid.id.videoId}>

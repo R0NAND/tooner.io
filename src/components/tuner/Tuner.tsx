@@ -97,7 +97,9 @@ const Tuner = () => {
   const mic = useRef(new Tone.UserMedia());
   const pitchTracker = useRef(new TuningResult(0.7));
   const confirmationPlayer = useRef(
-    new Tone.Player("src/components/assets/confirmation.mp3").toDestination()
+    new Tone.Player(
+      "src/components/tuner/assets/confirmation.mp3"
+    ).toDestination()
   );
 
   useEffect(() => {
@@ -110,7 +112,7 @@ const Tuner = () => {
         B3: "acoustic-guitar-b3.wav",
         E4: "acoustic-guitar-e4.wav",
       },
-      baseUrl: "src/components/assets/",
+      baseUrl: "src/components/tuner/assets/",
     }).toDestination();
   }, [sampler]);
 
@@ -127,7 +129,7 @@ const Tuner = () => {
         note === tuningStateRef.current[focusedIndex.current].note
       ) {
         const confSound = new Tone.Player(
-          "src/components/assets/confirmation.mp3"
+          "src/components/tuner/assets/confirmation.mp3"
         ).toDestination();
         confSound.autostart = true;
         const newTuningState = tuningStateRef.current.map((n, i) => {
@@ -142,7 +144,7 @@ const Tuner = () => {
 
   useEffect(() => {
     Tone.getContext()
-      .addAudioWorkletModule("src/components/PitchAnalysis.js")
+      .addAudioWorkletModule("src/components/tuner/PitchAnalysis.js")
       .then(() => {
         const analyzer = Tone.getContext().createAudioWorkletNode(
           "PitchAnalysis",
