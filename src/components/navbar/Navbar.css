@@ -1,6 +1,6 @@
 .navbar{
-  background-color: #362904;
-  color: antiquewhite;
+  background-color: #ae882d;
+  color: #362904;
 }
 
 .navbar > ul{
@@ -28,7 +28,7 @@
 }
 
 .navbar-ul li:hover{
-  background-color: #ae882d;
+  background-color: #d4a853;
 }
 
 .navbar-ul li{

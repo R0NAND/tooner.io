@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router";
 import "./Navbar.css";
-import Metronome from "./metronome/Metronome";
+import Metronome from "../metronome/Metronome";
 
 const Navbar = () => {
   return (
@@ -13,6 +13,9 @@ const Navbar = () => {
         </li>
         <li>
           <Link to={"/tutorials"}>Tutorials</Link>
+        </li>
+        <li>
+          <Link to={"/tabs"}>Tabs</Link>
         </li>
         <li>
           <Link to={"/about"}>About</Link>

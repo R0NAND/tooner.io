@@ -2,6 +2,7 @@ import { faDrum, faPlay, faStop } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef, useState } from "react";
 import * as Tone from "tone";
+import "./Metronome.css";
 
 // interface Props {
 //   children: string;
@@ -11,18 +12,18 @@ import * as Tone from "tone";
 // }
 
 type TimeSignatureDictionary = {
-  [key: string]: string[];
+  [key: string]: number[];
 };
 
 const timeSignatureDictionary: TimeSignatureDictionary = {
-  "4/4": ["hi", "lo", "lo", "lo"],
-  "3/4": ["hi", "lo", "lo"],
-  "2/4": ["hi", "lo"],
-  "5/4": ["hi", "lo", "lo", "lo", "lo"],
-  "7/4": ["hi", "lo", "lo", "lo", "lo", "lo"],
+  "4/4": Array.from([0, 1, 2, 3]),
+  "3/4": Array.from([0, 1, 2]),
+  "2/4": Array.from([0, 1]),
+  "5/4": Array.from([0, 1, 2, 3, 4]),
+  "6/4": Array.from([0, 1, 2, 3, 4, 5]),
+  "7/4": Array.from([0, 1, 2, 3, 4, 6, 6]),
 };
 
-const loop = new Tone.Loop();
 const player = new Tone.Players({
   urls: {
     hi: "Metronome-hi.wav",
@@ -36,6 +37,7 @@ const Metronome = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [sequence, setSequence] = useState(timeSignatureDictionary["4/4"]);
   const [beat, setBeat] = useState(-1);
+  const sequencer = useRef<Tone.Sequence | null>(null);
   const isTapInitiated = useRef(false);
   const prevTapTime = useRef(Date.now());
 
@@ -43,23 +45,12 @@ const Metronome = () => {
     Tone.getTransport().bpm.value = bpm;
   }, [bpm]);
 
-  useEffect(() => {
-    if (isPlaying) {
-      setBeat(sequence.length - 1);
-      beatRef.current = sequence.length - 1;
-    } else {
-      setBeat(-1);
-      beatRef.current = -1;
-    }
-    loop.callback = (time) => {
-      player
-        .player(sequence[(beatRef.current + 1) % sequence.length])
-        .start(time, 0);
-      beatRef.current = (beatRef.current + 1) % sequence.length;
-      setBeat(beatRef.current);
-    };
-    loop.interval = "4n";
-  }, [sequence]);
+  // useEffect(() => {
+  //   sequencer.current = new Tone.Sequence((time, beat) => {
+  //     player.player(beat === 0 ? "hi" : "lo").start(time);
+  //     setBeat(beat);
+  //   }, sequence).start(0);
+  // }, sequence);
 
   const onTapClick = () => {
     if (isTapInitiated.current) {
@@ -75,15 +66,17 @@ const Metronome = () => {
     setSequence(timeSignatureDictionary[e.target.value]);
   };
 
-  const beatRef = useRef(beat);
   const onPlayClick = () => {
     if (isPlaying) {
       Tone.getTransport().stop();
+      sequencer.current?.dispose();
       setBeat(-1);
-      beatRef.current = -1;
       setIsPlaying(false);
     } else {
-      loop.start(0);
+      sequencer.current = new Tone.Sequence((time, beat) => {
+        player.player(beat === 0 ? "hi" : "lo").start(time);
+        setBeat(beat);
+      }, sequence).start(0);
       Tone.getTransport().start();
       setIsPlaying(true);
     }
@@ -94,19 +87,16 @@ const Metronome = () => {
       <div>
         {sequence.map((e, i) => {
           return (
-            <svg
+            <button
               key={i}
-              height="50"
-              width="50"
-              xmlns="http://www.w3.org/2000/svg"
+              style={{
+                height: i === beat ? 50 : 40,
+                width: i === beat ? 50 : 40,
+                backgroundColor: i === beat ? "#555555" : "#111111",
+              }}
             >
-              <circle
-                r="25"
-                cx="25"
-                cy="25"
-                fill={i === beat ? "green" : "red"}
-              />
-            </svg>
+              {/* {beat} */}
+            </button>
           );
         })}
       </div>
