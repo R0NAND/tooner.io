@@ -9,11 +9,13 @@ import Navbar from "./components/navbar/Navbar";
 import AboutPage from "./pages/AboutPage";
 import TabsPage from "./pages/TabsPage";
 import ToolsPanel from "./components/tools-panel/ToolsPanel";
+import TestComponent from "./components/TestComponent";
 
 function App() {
   const [appState, setAppState] = useState("tuner");
   return (
     <>
+      {/* <TestComponent></TestComponent> */}
       <Navbar></Navbar>
       <ToolsPanel></ToolsPanel>
       <Routes>
