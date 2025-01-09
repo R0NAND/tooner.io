@@ -17,7 +17,6 @@ function App() {
     <>
       {/* <TestComponent></TestComponent> */}
       <Navbar></Navbar>
-      <ToolsPanel></ToolsPanel>
       <Routes>
         <Route path="/tuner" element={<TunerPage></TunerPage>}></Route>
         <Route
@@ -27,6 +26,7 @@ function App() {
         <Route path="/tabs" element={<TabsPage></TabsPage>}></Route>
         <Route path="/about" element={<AboutPage></AboutPage>}></Route>
       </Routes>
+      <ToolsPanel></ToolsPanel>
     </>
   );
 }

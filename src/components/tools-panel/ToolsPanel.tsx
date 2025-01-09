@@ -7,8 +7,8 @@ const ToolsPanel = () => {
   return (
     <>
       <div className="tools-panel">
-        <Metronome></Metronome>
         <PracticeTimer></PracticeTimer>
+        <Metronome></Metronome>
       </div>
     </>
   );

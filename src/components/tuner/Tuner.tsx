@@ -204,7 +204,7 @@ const Tuner = () => {
               top: peg_positions[index].top,
               left: peg_positions[index].left,
               transform: peg_positions[index].transform,
-              backgroundColor: note.isFocused ? "green" : "red",
+              // backgroundColor: note.isFocused ? "green" : "red",
             }}
           >
             <TuningButton

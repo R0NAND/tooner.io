@@ -37,3 +37,7 @@
   height: 50px;
   width: 50px;
 }
+
+img{
+  filter: drop-shadow(6px 10px 4px rgb(200 200 200 / 0.1));
+}
