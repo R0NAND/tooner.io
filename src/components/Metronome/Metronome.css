@@ -1,11 +1,6 @@
-.metronome-note-off{
-  fill: transparent;
-  transition: none;
-}
-
-.metronome-note-on{
-  fill: white;
-  transition: fill 0.2s;
+.metronome{
+  display:flex;
+  align-items: center;
 }
 
 @keyframes metronome-dormant-animation {
@@ -15,41 +10,12 @@
   100% {height: 53px; width: 53px;}
 }
 
-@keyframes metronome-big-hit-animation{
-  0%   {height: 53px; width: 53px;}
-  10%  {height: 43px; width: 43px;}
-  100%   {height: 53px; width: 53px;}
-}
-
-@keyframes metronome-smol-hit-animation{
-  0%   {height: 53px; width: 53px;}
-  10%  {height: 50px; width: 50px;}
-  100%   {height: 53px; width: 53px;}
-}
-
-.metronome-big-hit{
-  animation-name: metronome-big-hit-animation;
-  animation-duration: 0.15s;
-}
-
-.metronome-smol-hit{
-  animation-name: metronome-smol-hit-animation;
-  animation-duration: 0.15s;
-}
-
-.metronome-play-button-dormant{
-  animation-name: metronome-dormant-animation;
-  animation-duration: 1.5s;
-  animation-iteration-count: infinite;
-}
 
 .metronome-play-button{
-  height: 53px;
-  width: 53px;
   border-radius: 50%;
   background-color: var(--secondary-color);
   color: var(--main-background-color);
-  transition: background-color 0.25s; 
+  transition: background-color 0.25s;
 }
 
 .metronome-play-button:hover{
@@ -61,12 +27,39 @@
   height: 50px;
   width: 50px;
   border-radius: 50%;
-  background-color: var(--secondary-color);
-  color: var(--main-background-color);
-  transition: background-color 0.25s; 
+  background-color: transparent;
+  color: var(--secondary-color);
+  transition: color 0.25s; 
 }
 
 .metronome-tap-button:hover{
-  background-color: var(--main-color);
-  color: var(--main-background-color)
+  color: var(--main-color);
+}
+
+.metronome-note{
+  fill: var(--secondary-color);
+}
+
+.metronome-note-active{
+  fill: var(--main-color);
+}
+
+.metronome-note-flex{
+  display: flex;
+  justify-content: space-between;
+}
+
+.metronome-bpm-slider{
+  appearance: none;
+  background-color: var(--secondary-color);
+  color: var(--main-color);
+  height: 10px;
+}
+
+.metronome-bpm-slider::-webkit-slider-thumb{
+  appearance: none;
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: var(--main-background-color); /* Green background */
+  cursor: pointer; /* Cursor on hover */
 }

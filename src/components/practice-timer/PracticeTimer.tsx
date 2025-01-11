@@ -59,7 +59,7 @@ const PracticeTimer = () => {
   };
 
   return (
-    <>
+    <div>
       {hasStarted ? (
         <h1>
           {practiceHours}h:{practiceMinutes.toString().padStart(2, "0")}m:
@@ -67,7 +67,7 @@ const PracticeTimer = () => {
         </h1>
       ) : (
         <>
-          <label>How many minutes would you like to practice today?</label>
+          <label>Practice Minutes</label>
           <input
             defaultValue={defaultPracticeMinutes}
             onChange={(e) => {
@@ -90,7 +90,7 @@ const PracticeTimer = () => {
           <FontAwesomeIcon icon={faCancel}></FontAwesomeIcon>
         </button>
       )}
-    </>
+    </div>
   );
 };
 

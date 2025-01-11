@@ -9,6 +9,7 @@ const ToolsPanel = () => {
       <div className="tools-panel">
         <PracticeTimer></PracticeTimer>
         <Metronome></Metronome>
+        <div></div>
       </div>
     </>
   );
