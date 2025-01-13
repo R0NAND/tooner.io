@@ -1,0 +1,21 @@
+.bpm-slider:hover .bpm-slider-thumb{
+  fill: var(--main-color);
+}
+
+.bpm-slider-track-left{
+  height: 10;
+  border-radius: 2.5;
+  background-color: var(--secondary-color);
+}
+
+.bpm-slider-track-right{
+  height: 10;
+  border-radius: 2.5;
+  border: none;
+  background-color: var(--lighter-background-color);
+}
+
+.bpm-slider-thumb{
+  fill: var(--secondary-color);
+  transform: translate(-50%, 0%);
+}

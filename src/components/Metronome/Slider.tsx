@@ -1,62 +1,89 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import MetronomeVector from "./assets/MetronomeVector";
+import "./Slider.css";
 
 interface Props {
   width: number;
   min: number;
   max: number;
   value: number;
-  onChangeCallback: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (percentage: number) => void;
 }
 
-const Slider = ({ width, min, max, value, onChangeCallback }: Props) => {
-  const [isDragging, setIsDragging] = useState(false);
-  const [thumbLeft, setThumbLeft] = useState(0);
-  const [mouseX, setMouseX] = useState(0);
-  const [sliderValue, setSliderValue] = useState(0);
-  const clickRef = useRef(0);
+const Slider = ({ width, min, max, value, onChange }: Props) => {
+  useEffect(() => {
+    if (value < min || value > max) {
+      throw new Error("value not within range");
+    }
+  }, []);
 
-  const onMouseDown = (e: React.MouseEvent) => {
-    setIsDragging(true);
-    clickRef.current = e.clientX;
-    console.log(clickRef.current);
-    onmouseup = (e) => {
-      setIsDragging(false);
-      setThumbLeft(thumbLeft + (e.clientX - clickRef.current));
-    };
-    onmousemove = (e) => {
+  const [thumbLeft, setThumbLeft] = useState(
+    width * ((value - min) / (max - min))
+  );
+
+  const clickRef = useRef(0);
+  const thumbLeftRef = useRef(0);
+  const onMouseDown = (downEvent: React.MouseEvent) => {
+    downEvent.preventDefault();
+    clickRef.current = downEvent.clientX;
+    thumbLeftRef.current = thumbLeft;
+    const mouseMoveHandler = (e: MouseEvent) => {
       const pos = Math.max(
         0,
-        Math.min(width, thumbLeft + (e.clientX - clickRef.current))
+        Math.min(width, thumbLeftRef.current + (e.clientX - clickRef.current))
       );
-      const fraction = pos / width;
-      setSliderValue(Math.round(min + fraction * (max - min)));
-      setMouseX(e.clientX);
+      setThumbLeft(pos);
+      const returnValue = min + (max - min) * (pos / width);
+      onChange(returnValue);
     };
+    addEventListener("mousemove", mouseMoveHandler);
+    addEventListener(
+      "mouseup",
+      (upEvent: MouseEvent) => {
+        removeEventListener("mousemove", mouseMoveHandler);
+      },
+      { once: true }
+    );
   };
 
   return (
     <div
+      className="bpm-slider"
       style={{
-        backgroundColor: "red",
         width: width,
-        height: 20,
         position: "relative",
       }}
     >
-      <label
+      <div style={{ display: "flex", position: "absolute" }}>
+        <div
+          className="bpm-slider-track-left"
+          style={{
+            borderRadius: 5,
+            height: 10,
+            width: thumbLeft,
+          }}
+        ></div>
+        <div
+          className="bpm-slider-track-right"
+          style={{
+            borderRadius: 5,
+            width: width - thumbLeft,
+          }}
+        ></div>
+      </div>
+      <svg
+        className="bpm-slider-thumb"
         style={{
           position: "absolute",
-          left: isDragging
-            ? Math.max(
-                0,
-                Math.min(width, thumbLeft + (mouseX - clickRef.current))
-              )
-            : thumbLeft,
+          left: thumbLeft,
         }}
         onMouseDown={onMouseDown}
+        height="30"
+        width="60"
+        xmlns="http://www.w3.org/2000/svg"
       >
-        {sliderValue} bpm
-      </label>
+        <ellipse cx="30" cy="15" rx="30" ry="15" />
+      </svg>
     </div>
   );
 };

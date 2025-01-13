@@ -140,7 +140,7 @@ const Metronome = () => {
             <FontAwesomeIcon fontSize={30} icon={faAdd}></FontAwesomeIcon>
           </button>
         </div>
-        <div>
+        <div style={{ display: "flex" }}>
           <button
             onClick={() => {
               setBpm(Math.max(minBpm, bpm - 1));
@@ -150,11 +150,11 @@ const Metronome = () => {
           </button>
           <Slider
             width={200}
-            value={bpm}
             min={minBpm}
             max={maxBpm}
-            onChangeCallback={(e) => {
-              // setBpm(Number(e.target.value));
+            value={bpm}
+            onChange={(bpm: number) => {
+              setBpm(Math.round(bpm));
             }}
           ></Slider>
           <button

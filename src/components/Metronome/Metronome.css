@@ -49,17 +49,7 @@
   justify-content: space-between;
 }
 
-.metronome-bpm-slider{
-  appearance: none;
-  background-color: var(--secondary-color);
-  color: var(--main-color);
-  height: 10px;
-}
-
-.metronome-bpm-slider::-webkit-slider-thumb{
-  appearance: none;
-  width: 25px; /* Set a specific slider handle width */
-  height: 25px; /* Slider handle height */
-  background: var(--main-background-color); /* Green background */
-  cursor: pointer; /* Cursor on hover */
+.metronome-slider-thumb{
+  fill: var(--main-color);
+  translate: -50% -30%;
 }
