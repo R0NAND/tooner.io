@@ -149,7 +149,7 @@ const Metronome = () => {
             <FontAwesomeIcon icon={faFastBackward}></FontAwesomeIcon>
           </button>
           <Slider
-            width={200}
+            width={350}
             min={minBpm}
             max={maxBpm}
             value={bpm}
