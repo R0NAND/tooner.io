@@ -1,20 +1,30 @@
 .navbar{
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
   background-color: #000000;
   color: #ffffff;
+  width: 100%;
+  border-bottom: 0.125em solid var(--primary-hue);
+  height: 4em;
+}
+
+.navbar:hover{
+  cursor: pointer;
 }
 
 .navbar > ul{
   padding: 0;
   margin: 0;
   display: flex;
-  align-self: flex-end;
   align-items: center;
+  justify-content: space-around;
 }
 
 .navbar > ul > a{
   font-size: 1.61rem;
   color: inherit;
-  text-decoration: none;
+  padding: 0.75em 1ch
 }
 
 .navbar > ul > li > a{
@@ -22,9 +32,12 @@
   text-decoration: none;
 }
 
-.navbar-ul > li{
-  display: flex;
+.navbar-ul > li{  
   list-style: none;
+  width: 16ch;
+  padding: 0em, 4ch;
+  border: 2px solid var(--primary-hue);
+  border-radius: 0.5em;
 }
 
 .navbar-ul li:hover{

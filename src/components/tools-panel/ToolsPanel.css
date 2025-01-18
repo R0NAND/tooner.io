@@ -5,4 +5,5 @@
   background-color: black;
   display: flex;
   justify-content: space-between;
+  border-top: 0.125em solid var(--primary-hue);
 }

@@ -1,0 +1,26 @@
+.practice-timer-svg > *{
+  fill: var(--secondary-color);
+}
+
+.practice-timer-main-button{
+  background-color: var(--main-background-color);
+  color: var(--secondary-color);
+  border-radius: 50%;
+  transition: color 0.25s;
+}
+
+.practice-timer-main-button:hover{
+  color: var(--primary-color)
+}
+
+@keyframes alarm-spasm-animation {
+  0% {transform: rotate(0deg);}
+  25% {transform: rotate(10deg);}
+  50% {transform: rotate(0deg);}
+  75% {transform: rotate(-10deg);}
+  100% {transform: rotate(0deg);}
+}
+
+.alarm-spasming{
+  animation: alarm-spasm-animation 0.2s 10;
+}

@@ -1,15 +1,20 @@
-.bpm-slider:hover{
+.big-d:hover{
   cursor: pointer;
 }
 
-.bpm-slider:hover .bpm-slider-thumb{
-  fill: var(--main-color);
+.big-d:hover .bpm-slider-track-left{
+  background-color: var(--primary-hue)
+}
+
+.big-d:hover .bpm-slider-track-right{
+  background-color: var(--secondary-color)
 }
 
 .bpm-slider-track-left{
   height: 10;
   border-radius: 2.5;
   background-color: var(--secondary-color);
+  transition: background-color 0.25s;
 }
 
 .bpm-slider-track-right{
@@ -17,8 +22,42 @@
   border-radius: 2.5;
   border: none;
   background-color: var(--lighter-background-color);
+  transition: background-color 0.25s;
 }
 
 .bpm-slider-thumb{
-  fill: var(--secondary-color);
+  background-color: var(--main-color);
+}
+
+.bpm-slider-thumb:hover{
+  cursor: grab;
+}
+
+.bpm-slider-thumb:hover ~ .big-d .bpm-slider-track-right{
+  background-color: var(--secondary-color)
+}
+
+.big-d:has(~ .bpm-slider-thumb:hover) .bpm-slider-track-right{
+  background-color: var(--secondary-color);
+}
+
+.big-d:has(~ .bpm-slider-thumb:hover) .bpm-slider-track-left{
+  background-color: var(--primary-hue);
+}
+
+.bpm-slider-thumb:hover ~ .big-d .bpm-slider-track-left{
+  background-color: var(--primary-hue)
+}
+
+.bpm-slider-input{
+  font-weight: bold;
+  width: 3ch;
+}
+
+.bpm-slider-bpm-label:hover{
+  cursor: inherit;
+}
+
+.bpm-slider-input:hover{
+  cursor: pointer;
 }

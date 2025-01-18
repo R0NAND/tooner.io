@@ -4,46 +4,24 @@
   --lighter-background-color: #2a2a2a;
   --main-color: #ffffff;
   --secondary-color: #b3b3b3;
-  --button-font-size: 2em;
+  --primary-hue: #23a8f2;
+  --button-font-size: 1em;
+  font-size: clamp(16px, 1.25vw, 25px);
   background-color: var(--main-background-color);
   color: var(--main-color);
 
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  /* Chrome, Safari, Edge, Opera */
-  input::-webkit-outer-spin-button,
-  input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-  }
-
-  /* Firefox */
-  input[type=number] {
-    -moz-appearance: textfield;
-  }
+  color-scheme: light dark; 
 }
 
 body {
   margin: 0;
+  padding: 0;
   place-items: center;
+  font-family: "Merriweather", sans-serif;
 }
 
-button {
-  font-size: var(--button-font-size);
-  background-color: transparent;
-  border-color: transparent;
-  cursor: pointer;
-  color: var(--secondary-color);
-  transition: color 0.25s;
-}
-button:hover {
-  color: var(--main-color);
+button{
+  padding: 0;
+  border: none;
+  background: none;
 }

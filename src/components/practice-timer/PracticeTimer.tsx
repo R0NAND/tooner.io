@@ -1,6 +1,13 @@
-import { faCancel, faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCancel,
+  faPause,
+  faPlay,
+  faRefresh,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef, useState } from "react";
+import * as Tone from "tone";
+import "./PracticeTimer.css";
 
 const PracticeTimer = () => {
   const defaultPracticeMinutes = 30;
@@ -25,6 +32,14 @@ const PracticeTimer = () => {
       timer.current = setInterval(() => {
         const time = Date.now();
         if (time >= endTime.current) {
+          var player = new Tone.Player(
+            "src/components/practice-timer/assets/alarm-ringing.mp3"
+          ).toDestination();
+          player.autostart = true;
+          alarmSvgRef.current?.classList.add("alarm-spasming");
+          alarmSvgRef.current?.addEventListener("animationend", () => {
+            alarmSvgRef.current?.classList.remove("alarm-spasming");
+          });
           setPracticeSeconds(0);
           setPracticeMinutes(0);
           setHasStarted(false);
@@ -58,9 +73,79 @@ const PracticeTimer = () => {
     setPracticeMinutes(defaultPracticeMinutes);
   };
 
+  const alarmSvgRef = useRef<SVGSVGElement>(null);
   return (
-    <div>
-      {hasStarted ? (
+    <div style={{ border: "2px solid red" }}>
+      <svg
+        ref={alarmSvgRef}
+        className="practice-timer-svg"
+        height="100"
+        width="100"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle r="50" cx="50" cy="50" />
+        <foreignObject x="0" y="25" width="100" height="150">
+          {hasStarted ? (
+            <label style={{ backgroundColor: "black" }}>
+              {practiceHours}:{practiceMinutes.toString().padStart(2, "0")}:
+              {practiceSeconds.toString().padStart(2, "0")}
+            </label>
+          ) : (
+            <>
+              <input
+                style={{
+                  borderRadius: "1ch",
+                  textAlign: "center",
+                  width: "8ch",
+                  fontWeight: "bold",
+                  fontSize: "1em",
+                }}
+                defaultValue={defaultPracticeMinutes}
+                onChange={(e) => {
+                  setPracticeMinutes(Number(e.target.value));
+                }}
+                type="text"
+                maxLength={3}
+                onKeyDown={(event) => {
+                  var chr = event.key;
+
+                  if (
+                    event.ctrlKey ||
+                    event.altKey ||
+                    typeof event.key !== "string" ||
+                    event.key.length !== 1
+                  ) {
+                    return;
+                  }
+                  if ("0123456789".indexOf(chr) < 0) {
+                    event.preventDefault();
+                    return true;
+                  } else {
+                    return false;
+                  }
+                }}
+              ></input>
+            </>
+          )}
+          <button
+            className="practice-timer-main-button"
+            onClick={() => {
+              onClick();
+            }}
+            title={isTiming ? "Pause practice" : "Start practice"}
+          >
+            <FontAwesomeIcon
+              icon={isTiming ? faPause : faPlay}
+            ></FontAwesomeIcon>
+          </button>
+          {hasStarted && (
+            <button onClick={cancelPractice} title="Cancel Practice">
+              <FontAwesomeIcon icon={faRefresh}></FontAwesomeIcon>
+            </button>
+          )}
+        </foreignObject>
+      </svg>
+      {/* {hasStarted ? (
         <h1>
           {practiceHours}h:{practiceMinutes.toString().padStart(2, "0")}m:
           {practiceSeconds.toString().padStart(2, "0")}s
@@ -89,7 +174,7 @@ const PracticeTimer = () => {
         <button onClick={cancelPractice} title="Cancel Practice">
           <FontAwesomeIcon icon={faCancel}></FontAwesomeIcon>
         </button>
-      )}
+      )} */}
     </div>
   );
 };
