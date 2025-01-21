@@ -1,9 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import MetronomeVector from "./assets/MetronomeVector";
 import "./Slider.css";
 
 interface Props {
-  width: number;
+  width: number | string;
   min: number;
   max: number;
   value: number;
@@ -17,38 +23,52 @@ const Slider = ({ width, min, max, value, onChange }: Props) => {
     }
   }, [min, max, value]);
 
+  const [thumbLeft, setThumbLeft] = useState(0);
+  const [trackWidth, setTrackWidth] = useState(0);
+  const [thumbWidth, setThumbWidth] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const thumbRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const setDimensions = () => {
+      if (trackRef.current !== null && thumbRef.current !== null) {
+        setTrackWidth(trackRef.current.getBoundingClientRect().width);
+        setThumbWidth(thumbRef.current.getBoundingClientRect().width);
+        setThumbLeft(
+          (trackRef.current.getBoundingClientRect().width -
+            thumbRef.current.getBoundingClientRect().width) *
+            ((value - min) / (max - min))
+        );
+      }
+    };
+    window.addEventListener("resize", setDimensions);
+    setDimensions();
+    return () => window.removeEventListener("resize", setDimensions);
+  });
+
   const getTrackPosition = () => {
     if (trackRef.current != null) {
       return trackRef.current.getBoundingClientRect().x;
     } else return 0;
   };
 
-  let thumbwidth = 0;
-  if (thumbRef.current != null) {
-    thumbwidth = thumbRef.current.clientWidth;
-  }
-  const [thumbLeft, setThumbLeft] = useState(
-    (width - thumbwidth) * ((value - min) / (max - min))
-  );
   useEffect(() => {
     if (inputRef.current != null) {
       inputRef.current.value = value.toString();
     }
-    setThumbLeft((width - thumbwidth) * ((value - min) / (max - min)));
+    setThumbLeft((trackWidth - thumbWidth) * ((value - min) / (max - min)));
   }, [value]);
 
   const onMouseDown = (downEvent: React.MouseEvent<HTMLDivElement>) => {
     const clickPosition =
-      downEvent.clientX - getTrackPosition() - 0.5 * thumbwidth;
+      downEvent.clientX - getTrackPosition() - 0.5 * thumbWidth;
     const newThumbLeft = Math.max(
       0,
-      Math.min(width - thumbwidth, clickPosition)
+      Math.min(trackWidth - thumbWidth, clickPosition)
     );
     const clickedValue =
-      min + (max - min) * (newThumbLeft / (width - thumbwidth));
+      min + (max - min) * (newThumbLeft / (trackWidth - thumbWidth));
     onChange(clickedValue);
     setThumbLeft(newThumbLeft);
     downEvent.preventDefault();
@@ -57,12 +77,12 @@ const Slider = ({ width, min, max, value, onChange }: Props) => {
       const dragPosition = Math.max(
         0,
         Math.min(
-          width - thumbwidth,
+          trackWidth - thumbWidth,
           newThumbLeft + (e.clientX - downEvent.clientX)
         )
       );
       const draggedValue =
-        min + (max - min) * (dragPosition / (width - thumbwidth));
+        min + (max - min) * (dragPosition / (trackWidth - thumbWidth));
       setThumbLeft(dragPosition);
       onChange(draggedValue);
     };
@@ -79,42 +99,36 @@ const Slider = ({ width, min, max, value, onChange }: Props) => {
 
   return (
     <div
-      className="bpm-slider"
+      ref={trackRef}
+      className="big-d"
+      onMouseDown={onMouseDown}
       style={{
-        display: "flex",
-        alignItems: "center",
         width: width,
+        height: "1.5em",
+        border: "none",
+        display: "flex",
         position: "relative",
+        alignItems: "center",
       }}
     >
       <div
-        ref={trackRef}
-        className="big-d"
-        onMouseDown={onMouseDown}
+        className="bpm-slider-track-left"
         style={{
-          // border: "none",
-          display: "flex",
-          position: "absolute",
+          height: "0.5em",
+          border: "none",
+          borderRadius: 5,
+          width: thumbLeft + 0.5 * thumbWidth,
         }}
-      >
-        <div
-          className="bpm-slider-track-left"
-          style={{
-            border: "none",
-            borderRadius: 5,
-            height: 10,
-            width: thumbLeft + 0.5 * thumbwidth,
-          }}
-        ></div>
-        <div
-          className="bpm-slider-track-right"
-          style={{
-            border: "none",
-            borderRadius: 5,
-            width: width - 0.5 * thumbwidth - thumbLeft,
-          }}
-        ></div>
-      </div>
+      ></div>
+      <div
+        className="bpm-slider-track-right"
+        style={{
+          height: "0.5em",
+          border: "none",
+          borderRadius: 5,
+          width: trackWidth - 0.5 * thumbWidth - thumbLeft,
+        }}
+      ></div>
       <div
         className="bpm-slider-thumb"
         onMouseDown={onMouseDown}
@@ -123,7 +137,7 @@ const Slider = ({ width, min, max, value, onChange }: Props) => {
           display: "flex",
           justifyContent: "center",
           alignContent: "center",
-          height: 25,
+          height: "1.5em",
           padding: "0.5ch 2ch 0.5ch 2ch",
           borderRadius: "3ch",
           position: "absolute",

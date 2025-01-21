@@ -6,7 +6,7 @@
   --secondary-color: #b3b3b3;
   --primary-hue: #23a8f2;
   --button-font-size: 1em;
-  font-size: clamp(16px, 1.25vw, 25px);
+  font-size: clamp(16px, 1.25vw, 32px);
   background-color: var(--main-background-color);
   color: var(--main-color);
 
