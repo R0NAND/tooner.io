@@ -1,7 +1,6 @@
-.tools-panel{
+.tools-panel {
   width: 100%;
-  position: fixed;
-  bottom: 0;
+  height: var(--tools-panel-height);
   background-color: black;
   display: flex;
   justify-content: space-between;

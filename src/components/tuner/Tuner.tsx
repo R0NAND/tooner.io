@@ -174,80 +174,86 @@ const Tuner = () => {
     }
   };
   return (
-    <>
-      <div style={{ position: "relative", margin: "auto", width: "800px" }}>
-        <img className="guitar-head" src={head} alt="" width="100%"></img>
-        <button
-          onClick={() => toggleMic()}
+    <div
+      className="tuner"
+      style={{ position: "relative", margin: "auto", width: "800px" }}
+    >
+      <img className="guitar-head" src={head} alt="" width="100%"></img>
+      <button
+        onClick={() => toggleMic()}
+        style={{
+          position: "absolute",
+          borderRadius: "50%",
+          top: "30%",
+          left: "45%",
+          background: isMicEnabled ? "red" : "green",
+        }}
+      >
+        {isMicEnabled ? (
+          <img className="mic-icon" src={micOff} alt="" width="150"></img>
+        ) : (
+          <img className="mic-icon" src={micOn} alt="" width="150"></img>
+        )}
+      </button>
+      <div style={{ position: "absolute", top: "50%", left: "45%" }}>
+        <TuningGauge sensitivity={0.7}>{frequency}</TuningGauge>
+      </div>
+      {tuningState.map((note, index) => (
+        <div
+          key={tuning + index} //TODO: review this
           style={{
             position: "absolute",
-            borderRadius: "50%",
-            top: "30%",
-            left: "45%",
-            background: isMicEnabled ? "red" : "green",
+            top: peg_positions[index].top,
+            left: peg_positions[index].left,
+            transform: peg_positions[index].transform,
+            // backgroundColor: note.isFocused ? "green" : "red",
           }}
         >
-          {isMicEnabled ? (
-            <img className="mic-icon" src={micOff} alt="" width="150"></img>
-          ) : (
-            <img className="mic-icon" src={micOn} alt="" width="150"></img>
-          )}
-        </button>
-        <div style={{ position: "absolute", top: "50%", left: "45%" }}>
-          <TuningGauge sensitivity={0.7}>{frequency}</TuningGauge>
-        </div>
-        {tuningState.map((note, index) => (
-          <div
-            key={tuning + index} //TODO: review this
-            style={{
-              position: "absolute",
-              top: peg_positions[index].top,
-              left: peg_positions[index].left,
-              transform: peg_positions[index].transform,
-              // backgroundColor: note.isFocused ? "green" : "red",
+          <TuningButton
+            playNoteCallback={(note: string) => {
+              playNoteCallback(note);
+              const newTuningState = tuningState.map((n, i) => {
+                return i === index
+                  ? { note: n.note, isFocused: true, isTuned: n.isTuned }
+                  : { note: n.note, isFocused: false, isTuned: n.isTuned };
+              });
+              setTuningState(newTuningState);
+              focusedIndex.current = index;
+              tuningStateRef.current = newTuningState;
             }}
+            changeNoteCallback={(newNote: string) => {
+              const newTuningState = tuningState.map((n, i) => {
+                if (i === index) {
+                  return {
+                    note: newNote,
+                    isFocused: true,
+                    isTuned: false,
+                  };
+                } else {
+                  return {
+                    note: n.note,
+                    isFocused: false,
+                    isTuned: n.isTuned,
+                  };
+                }
+              });
+              setTuningState(newTuningState);
+              setTuning("Custom");
+              focusedIndex.current = index;
+              tuningStateRef.current = newTuningState;
+            }}
+            isTuned={note.isTuned}
           >
-            <TuningButton
-              playNoteCallback={(note: string) => {
-                playNoteCallback(note);
-                const newTuningState = tuningState.map((n, i) => {
-                  return i === index
-                    ? { note: n.note, isFocused: true, isTuned: n.isTuned }
-                    : { note: n.note, isFocused: false, isTuned: n.isTuned };
-                });
-                setTuningState(newTuningState);
-                focusedIndex.current = index;
-                tuningStateRef.current = newTuningState;
-              }}
-              changeNoteCallback={(newNote: string) => {
-                const newTuningState = tuningState.map((n, i) => {
-                  if (i === index) {
-                    return {
-                      note: newNote,
-                      isFocused: true,
-                      isTuned: false,
-                    };
-                  } else {
-                    return {
-                      note: n.note,
-                      isFocused: false,
-                      isTuned: n.isTuned,
-                    };
-                  }
-                });
-                setTuningState(newTuningState);
-                setTuning("Custom");
-                focusedIndex.current = index;
-                tuningStateRef.current = newTuningState;
-              }}
-              isTuned={note.isTuned}
-            >
-              {note.note}
-            </TuningButton>
-          </div>
-        ))}
-      </div>
-      <select
+            {note.note}
+          </TuningButton>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+{
+  /* <select
         name="Tuning"
         id="tuning"
         onChange={(e) => {
@@ -275,9 +281,7 @@ const Tuner = () => {
             {key}
           </option>
         ))}
-      </select>
-    </>
-  );
-};
+      </select> */
+}
 
 export default Tuner;

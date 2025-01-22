@@ -5,12 +5,14 @@
   --main-color: #ffffff;
   --secondary-color: #b3b3b3;
   --primary-hue: #23a8f2;
+  --navbar-height: 4em;
+  --tools-panel-height: 4em;
   --button-font-size: 1em;
   font-size: clamp(16px, 1.25vw, 32px);
   background-color: var(--main-background-color);
   color: var(--main-color);
 
-  color-scheme: light dark; 
+  color-scheme: light dark;
 }
 
 body {
@@ -20,7 +22,7 @@ body {
   font-family: "Merriweather", sans-serif;
 }
 
-button{
+button {
   padding: 0;
   border: none;
   background: none;

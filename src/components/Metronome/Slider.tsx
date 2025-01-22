@@ -194,12 +194,12 @@ const Slider = ({ width, min, max, value, onChange }: Props) => {
               }
             }}
           ></input>
-          <label
+          <span
             className="bpm-slider-bpm-label"
             style={{ color: "black", fontWeight: "bold", fontSize: "0.5em" }}
           >
             Bpm
-          </label>
+          </span>
         </div>
       </div>
     </div>

@@ -4,7 +4,27 @@
   box-sizing: border-box;
 }
 
-#root *{
+#root * {
   /* border: 2px solid white; */
 }
 
+.app-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-aspect-ratio: 1/1) {
+  .app-container > .navbar {
+    order: 2;
+  }
+
+  .app-container > .tools-panel {
+    order: 3;
+  }
+}
+
+.tuner {
+  width: 100%;
+  height: calc(100vh - var(--navbar-height) - var(--tools-panel-height));
+}

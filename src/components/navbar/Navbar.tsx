@@ -10,19 +10,16 @@ import {
   faPersonChalkboard,
   faQuestionCircle,
 } from "@fortawesome/free-solid-svg-icons";
+import { faMusic } from "@fortawesome/free-solid-svg-icons/faMusic";
 
 const Navbar = () => {
   return (
     <nav className="navbar">
       <ul className="navbar-ul">
         <a>Tohn.io</a>
-        <li
-          style={{
-            border: "2px solid var(--primary-hue)",
-            borderRadius: "0.5em",
-          }}
-        >
-          Test Item
+        <li style={{}}>
+          <FontAwesomeIcon icon={faMusic}></FontAwesomeIcon>
+          <span> Test Item</span>
         </li>
         <li>
           <Link to={"/tuner"}>
@@ -58,23 +55,25 @@ const Navbar = () => {
                 </g>
               </g>
             </svg>{" "}
-            Tuner
+            <span>Tuner</span>
           </Link>
         </li>
         <li>
           <Link to={"/tutorials"}>
             <FontAwesomeIcon icon={faPersonChalkboard}></FontAwesomeIcon>{" "}
-            Tutorials
+            <span>Tutorials</span>
           </Link>
         </li>
         <li>
           <Link to={"/tabs"}>
-            <FontAwesomeIcon icon={faBookOpen}></FontAwesomeIcon> Tabs
+            <FontAwesomeIcon icon={faBookOpen}></FontAwesomeIcon>{" "}
+            <span>Tabs</span>
           </Link>
         </li>
         <li>
           <Link to={"/about"}>
-            <FontAwesomeIcon icon={faQuestionCircle}></FontAwesomeIcon> About
+            <FontAwesomeIcon icon={faQuestionCircle}></FontAwesomeIcon>{" "}
+            <span>About</span>
           </Link>
         </li>
       </ul>

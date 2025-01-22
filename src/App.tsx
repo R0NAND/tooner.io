@@ -14,7 +14,7 @@ import TestComponent from "./components/TestComponent";
 function App() {
   const [appState, setAppState] = useState("tuner");
   return (
-    <>
+    <div className="app-container">
       {/* <TestComponent></TestComponent> */}
       <Navbar></Navbar>
       <Routes>
@@ -27,7 +27,7 @@ function App() {
         <Route path="/about" element={<AboutPage></AboutPage>}></Route>
       </Routes>
       <ToolsPanel></ToolsPanel>
-    </>
+    </div>
   );
 }
 
