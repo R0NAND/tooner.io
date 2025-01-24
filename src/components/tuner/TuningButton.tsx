@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import * as Tone from "tone";
-import peg from "./assets/peg.svg";
+import "./TuningButton.css";
 
 let notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 let frequencies = [
@@ -10,6 +9,8 @@ let frequencies = [
 
 interface Props {
   children: string;
+  x: number;
+  y: number;
   isTuned: boolean;
   playNoteCallback: (note: string) => void;
   changeNoteCallback: (newNote: string) => void;
@@ -17,6 +18,8 @@ interface Props {
 
 const TuningButton = ({
   children,
+  x,
+  y,
   isTuned,
   playNoteCallback,
   changeNoteCallback,
@@ -27,6 +30,8 @@ const TuningButton = ({
       'TuningButton child must be a string specifying a musical note followed by an integer between 0 and 8. e.g: "C#4", "E2", "F#8", etc.'
     );
   }
+
+  const gRef = useRef<SVGGElement>(null);
 
   const incrementNote = () => {
     let regexResult = noteRegex.exec(children);
@@ -83,49 +88,81 @@ const TuningButton = ({
   };
 
   const rotatePeg = (e: React.MouseEvent) => {
-    //@ts-ignore
-    e.target.parentElement.style.animation = "rotateImage 1s";
-    //@ts-ignore
-    e.target.parentElement.children[1].style.animation = "fadeOut 0.25s";
-    //@ts-ignore
-    e.target.parentElement.children[2].style.animation = "fadeOut 0.25s";
-    //@ts-ignore
-    e.target.parentElement.children[3].style.animation = "fadeOut 0.25s";
-    setTimeout(() => {
-      //@ts-ignore
-      e.target.parentElement.children[1].style.opacity = "0";
-      //@ts-ignore
-      e.target.parentElement.children[2].style.opacity = "0";
-      //@ts-ignore
-      e.target.parentElement.children[3].style.opacity = "0";
-      //@ts-ignore
-      e.target.parentElement.children[1].style.animation = "";
-      //@ts-ignore
-      e.target.parentElement.children[2].style.animation = "";
-      //@ts-ignore
-      e.target.parentElement.children[3].style.animation = "";
-    }, 250);
-    setTimeout(() => {
-      //@ts-ignore
-      e.target.parentElement.style.animation = "";
-      //@ts-ignore
-      e.target.parentElement.children[1].style.animation = "fadeIn 0.25s";
-      //@ts-ignore
-      e.target.parentElement.children[2].style.animation = "fadeIn 0.25s";
-      //@ts-ignore
-      e.target.parentElement.children[3].style.animation = "fadeIn 0.25s";
-      //@ts-ignore
-      e.target.parentElement.children[1].style.opacity = "1";
-      //@ts-ignore
-      e.target.parentElement.children[2].style.opacity = "1";
-      //@ts-ignore
-      e.target.parentElement.children[3].style.opacity = "1";
-      //@ts-ignore
-    }, 1000);
+    if (gRef.current !== null) {
+      gRef.current.style.animation = "rotateImage 1s";
+    }
   };
   return (
-    <>
-      <div className="tuning-button">
+    <g
+      className="tuning-peg-svg"
+      ref={gRef}
+      style={{
+        transformOrigin: `${x + 5}px ${y + 7.5}px`,
+      }}
+    >
+      <path
+        className="tuning-peg-path"
+        style={{ transform: `translate(${-17.198 + x} ${-40.746 + y})` }}
+        d="m22.676 40.931c-1.2075-0.01828-2.4774 0.12683-3.1755 0.69892-2.8261 2.3159-2.8262 10.93 0 13.246 1.5957 1.3076 6.1772 0.38201 6.1772 0.38201l2.3564-7.0049-2.3564-7.0049s-1.4492-0.2934-3.0017-0.31691z"
+      />
+      <rect x={x} y={y} width="11.030" height="15.015"></rect>
+      <text
+        className="tuning-peg-adjuster"
+        fontSize="3px"
+        fontWeight="bold"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        x={x + 5}
+        y={y + 2}
+        onClick={(e) => {
+          incrementNote();
+          rotatePeg(e);
+        }}
+      >
+        +
+      </text>
+      <text
+        className="tuning-peg-note"
+        fontSize="3px"
+        fontWeight="bold"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        x={x + 5}
+        y={y + 7.5}
+      >
+        {children}
+      </text>
+      <circle
+        className="tuning-peg-button"
+        cx={x + 5}
+        cy={y + 7.5}
+        r="3"
+        onClick={() => {
+          playNoteCallback(children);
+        }}
+        stroke={isTuned ? "green" : "red"}
+        fill="transparent"
+      ></circle>
+      <text
+        className="tuning-peg-adjuster"
+        fontSize="3px"
+        fontWeight="bold"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        x={x + 5}
+        y={y + 13}
+        onClick={(e) => {
+          decrementNote();
+          rotatePeg(e);
+        }}
+      >
+        -
+      </text>
+    </g>
+  );
+};
+{
+  /* <div className="tuning-button">
         <img className="peg-vector" src={peg} alt="" width="150"></img>
         <button
           className="top-peg-button"
@@ -160,9 +197,7 @@ const TuningButton = ({
         >
           -
         </button>
-      </div>
-    </>
-  );
-};
+      </div> */
+}
 
 export default TuningButton;

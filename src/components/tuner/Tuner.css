@@ -1,12 +1,12 @@
-.tuning-button{
-  position: relative
+.tuning-button {
+  position: relative;
 }
 
-.peg-vector{
+.peg-vector {
   z-index: 999;
 }
 
-.top-peg-button{
+.top-peg-button {
   position: absolute;
   left: 50%;
   top: 15%;
@@ -14,7 +14,7 @@
   z-index: 0;
 }
 
-.middle-peg-button{
+.middle-peg-button {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -25,7 +25,7 @@
   z-index: 0;
 }
 
-.bottom-peg-button{
+.bottom-peg-button {
   position: absolute;
   left: 50%;
   top: 85%;
@@ -33,11 +33,40 @@
   z-index: 0;
 }
 
-.mic-icon{
+.mic-icon {
   height: 50px;
   width: 50px;
 }
 
-img{
+img {
   filter: drop-shadow(6px 10px 4px rgb(200 200 200 / 0.1));
+}
+
+.headstock {
+  fill: var(--background-color);
+  fill-opacity: 1;
+  stroke: var(--main-color);
+  stroke-width: 0.347793;
+  stroke-dasharray: none;
+  stroke-opacity: 1;
+}
+
+.tuning-peg-svg {
+  fill: var(--secondary-color);
+}
+
+.tuning-peg-note {
+  fill: black;
+}
+
+.tuning-peg-button:hover {
+  cursor: pointer;
+}
+
+.tuning-peg-adjuster {
+  fill: black;
+}
+
+.tuning-peg-adjuster:hover {
+  cursor: pointer;
 }

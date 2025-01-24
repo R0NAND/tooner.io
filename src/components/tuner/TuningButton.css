@@ -1,0 +1,14 @@
+@keyframes rotateImage {
+  from {
+    transform: rotateX(0deg);
+  }
+  to {
+    transform: rotateX(180deg);
+  }
+}
+
+.tuning-peg-path {
+  fill: #000000;
+  stroke-width: 0.36684;
+  stroke: #ffffff;
+}

@@ -74,12 +74,12 @@ const tuningDictionary: TuningDictionary = {
 };
 
 const peg_positions = [
-  { top: "60%", left: "0%", transform: "Scale(50%)" },
-  { top: "35%", left: "0%", transform: "Scale(50%)" },
-  { top: "10%", left: "0%", transform: "Scale(50%)" },
-  { top: "10%", left: "80%", transform: "Scale(50%) ScaleX(-1)" },
-  { top: "35%", left: "80%", transform: "Scale(50%) ScaleX(-1)" },
-  { top: "60%", left: "80%", transform: "Scale(50%) ScaleX(-1)" },
+  { y: 64.496, x: 7.003 },
+  { y: 39.945, x: 7.003 },
+  { y: 15.394, x: 7.003 },
+  { y: 15.394, x: 61.967 },
+  { y: 39.945, x: 61.967 },
+  { y: 64.496, x: 61.967 },
 ];
 
 const Tuner = () => {
@@ -174,42 +174,21 @@ const Tuner = () => {
     }
   };
   return (
-    <div
-      className="tuner"
-      style={{ position: "relative", margin: "auto", width: "800px" }}
-    >
-      <img className="guitar-head" src={head} alt="" width="100%"></img>
-      <button
-        onClick={() => toggleMic()}
-        style={{
-          position: "absolute",
-          borderRadius: "50%",
-          top: "30%",
-          left: "45%",
-          background: isMicEnabled ? "red" : "green",
-        }}
+    <div className="tuner">
+      <svg
+        width="100%"
+        height="auto"
+        className="headstock"
+        viewBox="0 0 80 100"
       >
-        {isMicEnabled ? (
-          <img className="mic-icon" src={micOff} alt="" width="150"></img>
-        ) : (
-          <img className="mic-icon" src={micOn} alt="" width="150"></img>
-        )}
-      </button>
-      <div style={{ position: "absolute", top: "50%", left: "45%" }}>
-        <TuningGauge sensitivity={0.7}>{frequency}</TuningGauge>
-      </div>
-      {tuningState.map((note, index) => (
-        <div
-          key={tuning + index} //TODO: review this
-          style={{
-            position: "absolute",
-            top: peg_positions[index].top,
-            left: peg_positions[index].left,
-            transform: peg_positions[index].transform,
-            // backgroundColor: note.isFocused ? "green" : "red",
-          }}
-        >
+        <g>
+          <path d="m 32.397846,1.189153 c -4.738905,4.8812164 -9.591365,7.7704085 -14.557967,8.6669579 4.529708,28.2641671 4.047955,50.1251031 2.86005,71.0834331 7.044778,8.657123 5.020004,11.925133 7.278644,17.890054 H 40 52.021428 C 54.280069,92.864681 52.255295,89.596669 59.300072,80.939544 58.112167,59.981214 57.630413,38.120278 62.160121,9.8561109 57.193518,8.9595615 52.341062,6.0703673 47.602155,1.189153 c -5.272067,1.2942631 -9.927973,1.2954338 -15.204309,0 z" />
+        </g>
+        {tuningState.map((note, index) => (
           <TuningButton
+            key={tuning + index}
+            x={peg_positions[index].x}
+            y={peg_positions[index].y}
             playNoteCallback={(note: string) => {
               playNoteCallback(note);
               const newTuningState = tuningState.map((n, i) => {
@@ -246,9 +225,89 @@ const Tuner = () => {
           >
             {note.note}
           </TuningButton>
-        </div>
-      ))}
+        ))}
+      </svg>
     </div>
+    // <div
+    //   className="tuner"
+    //   style={{
+    //     position: "relative",
+    //     margin: "auto",
+    //     height: "800px",
+    //     width: "800px",
+    //   }}
+    // >
+    //   <img className="guitar-head" src={head} alt="" width="100%"></img>
+    //   <button
+    //     onClick={() => toggleMic()}
+    //     style={{
+    //       position: "absolute",
+    //       borderRadius: "50%",
+    //       top: "30%",
+    //       left: "45%",
+    //       background: isMicEnabled ? "red" : "green",
+    //     }}
+    //   >
+    //     {isMicEnabled ? (
+    //       <img className="mic-icon" src={micOff} alt="" width="150"></img>
+    //     ) : (
+    //       <img className="mic-icon" src={micOn} alt="" width="150"></img>
+    //     )}
+    //   </button>
+    //   <div style={{ position: "absolute", top: "50%", left: "45%" }}>
+    //     <TuningGauge sensitivity={0.7}>{frequency}</TuningGauge>
+    //   </div>
+    //   {tuningState.map((note, index) => (
+    //     <div
+    //       key={tuning + index} //TODO: review this
+    //       style={{
+    //         position: "absolute",
+    //         top: peg_positions[index].top,
+    //         left: peg_positions[index].left,
+    //         transform: peg_positions[index].transform,
+    //         // backgroundColor: note.isFocused ? "green" : "red",
+    //       }}
+    //     >
+    //       <TuningButton
+    //         playNoteCallback={(note: string) => {
+    //           playNoteCallback(note);
+    //           const newTuningState = tuningState.map((n, i) => {
+    //             return i === index
+    //               ? { note: n.note, isFocused: true, isTuned: n.isTuned }
+    //               : { note: n.note, isFocused: false, isTuned: n.isTuned };
+    //           });
+    //           setTuningState(newTuningState);
+    //           focusedIndex.current = index;
+    //           tuningStateRef.current = newTuningState;
+    //         }}
+    //         changeNoteCallback={(newNote: string) => {
+    //           const newTuningState = tuningState.map((n, i) => {
+    //             if (i === index) {
+    //               return {
+    //                 note: newNote,
+    //                 isFocused: true,
+    //                 isTuned: false,
+    //               };
+    //             } else {
+    //               return {
+    //                 note: n.note,
+    //                 isFocused: false,
+    //                 isTuned: n.isTuned,
+    //               };
+    //             }
+    //           });
+    //           setTuningState(newTuningState);
+    //           setTuning("Custom");
+    //           focusedIndex.current = index;
+    //           tuningStateRef.current = newTuningState;
+    //         }}
+    //         isTuned={note.isTuned}
+    //       >
+    //         {note.note}
+    //       </TuningButton>
+    //     </div>
+    //   ))}
+    // </div>
   );
 };
 
