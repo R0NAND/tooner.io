@@ -9,6 +9,7 @@ import {
   faBookOpen,
   faPersonChalkboard,
   faQuestionCircle,
+  faSliders,
 } from "@fortawesome/free-solid-svg-icons";
 import { faMusic } from "@fortawesome/free-solid-svg-icons/faMusic";
 
@@ -17,10 +18,6 @@ const Navbar = () => {
     <nav className="navbar">
       <ul className="navbar-ul">
         <a>Tohn.io</a>
-        <li style={{}}>
-          <FontAwesomeIcon icon={faMusic}></FontAwesomeIcon>
-          <span> Test Item</span>
-        </li>
         <li>
           <Link to={"/tuner"}>
             <svg className="tuning-fork-svg" viewBox="0 0 47 47">
@@ -69,6 +66,10 @@ const Navbar = () => {
             <FontAwesomeIcon icon={faBookOpen}></FontAwesomeIcon>{" "}
             <span>Tabs</span>
           </Link>
+        </li>
+        <li style={{}}>
+          <FontAwesomeIcon icon={faSliders}></FontAwesomeIcon>
+          <span> Effects</span>
         </li>
         <li>
           <Link to={"/about"}>

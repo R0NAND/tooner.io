@@ -11,6 +11,7 @@ interface Props {
   children: string;
   x: number;
   y: number;
+  isMirrored: boolean;
   isTuned: boolean;
   playNoteCallback: (note: string) => void;
   changeNoteCallback: (newNote: string) => void;
@@ -20,6 +21,7 @@ const TuningButton = ({
   children,
   x,
   y,
+  isMirrored,
   isTuned,
   playNoteCallback,
   changeNoteCallback,
@@ -97,22 +99,24 @@ const TuningButton = ({
       className="tuning-peg-svg"
       ref={gRef}
       style={{
-        transformOrigin: `${x + 5}px ${y + 7.5}px`,
+        transformOrigin: `${x + 5.3265}px ${y + 7.323}px`,
       }}
     >
       <path
         className="tuning-peg-path"
-        style={{ transform: `translate(${-17.198 + x} ${-40.746 + y})` }}
-        d="m22.676 40.931c-1.2075-0.01828-2.4774 0.12683-3.1755 0.69892-2.8261 2.3159-2.8262 10.93 0 13.246 1.5957 1.3076 6.1772 0.38201 6.1772 0.38201l2.3564-7.0049-2.3564-7.0049s-1.4492-0.2934-3.0017-0.31691z"
+        style={{
+          transformOrigin: `${x + 5.3265}px ${y + 7.323}px`,
+        }}
+        transform={`${isMirrored ? "scale(-1 1) " : ""}translate(${x} ${y})`}
+        d="m5.2951 0.001491c-1.2075-0.01828-2.4774 0.12683-3.1755 0.69892-2.8261 2.3159-2.8262 10.93 0 13.246 1.5957 1.3076 6.1772 0.38201 6.1772 0.38201l2.3564-7.0049-2.3564-7.0049s-1.4492-0.2934-3.0017-0.31691z"
       />
-      <rect x={x} y={y} width="11.030" height="15.015"></rect>
       <text
         className="tuning-peg-adjuster"
-        fontSize="3px"
+        fontSize="4px"
         fontWeight="bold"
         textAnchor="middle"
         dominantBaseline="middle"
-        x={x + 5}
+        x={x + 5.3265}
         y={y + 2}
         onClick={(e) => {
           incrementNote();
@@ -121,20 +125,9 @@ const TuningButton = ({
       >
         +
       </text>
-      <text
-        className="tuning-peg-note"
-        fontSize="3px"
-        fontWeight="bold"
-        textAnchor="middle"
-        dominantBaseline="middle"
-        x={x + 5}
-        y={y + 7.5}
-      >
-        {children}
-      </text>
       <circle
         className="tuning-peg-button"
-        cx={x + 5}
+        cx={x + 5.3265}
         cy={y + 7.5}
         r="3"
         onClick={() => {
@@ -144,8 +137,19 @@ const TuningButton = ({
         fill="transparent"
       ></circle>
       <text
+        className="tuning-peg-note"
+        fontSize="2px"
+        fontWeight="bold"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        x={x + 5.3265}
+        y={y + 7.5}
+      >
+        {children}
+      </text>
+      <text
         className="tuning-peg-adjuster"
-        fontSize="3px"
+        fontSize="4px"
         fontWeight="bold"
         textAnchor="middle"
         dominantBaseline="middle"

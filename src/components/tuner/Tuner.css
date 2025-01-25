@@ -38,10 +38,6 @@
   width: 50px;
 }
 
-img {
-  filter: drop-shadow(6px 10px 4px rgb(200 200 200 / 0.1));
-}
-
 .headstock {
   fill: var(--background-color);
   fill-opacity: 1;
@@ -56,17 +52,27 @@ img {
 }
 
 .tuning-peg-note {
-  fill: black;
+  stroke: none;
+  pointer-events: none;
+  fill: var(--main-background-color);
+}
+
+.tuning-peg-button {
+  fill: var(--secondary-color);
 }
 
 .tuning-peg-button:hover {
   cursor: pointer;
+  fill: var(--main-color);
 }
 
 .tuning-peg-adjuster {
-  fill: black;
+  stroke: none;
+  fill: var(--secondary-color);
+  transition: fill 0.25s;
 }
 
 .tuning-peg-adjuster:hover {
   cursor: pointer;
+  fill: var(--main-color);
 }

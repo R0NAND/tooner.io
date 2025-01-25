@@ -63,33 +63,37 @@ class TuningResult {
   }
 }
 
-const tuningDictionary: TuningDictionary = {
-  Standard: ["E2", "A2", "D3", "G3", "B3", "E4"],
-  "Drop D": ["D2", "A2", "D3", "G3", "B3", "E4"],
-  DADGAD: ["D2", "A2", "D3", "G3", "A3", "D4"],
-  "Half step down": ["D#2", "G#2", "C#3", "F#3", "A#3", "D#4"],
-  "Full step down": ["D2", "G2", "C3", "F3", "A3", "D4"],
-  "Drop D half step down": ["C#2", "G#2", "C#3", "F#3", "A#3", "D#4"],
-  "Drop D full step down": ["C2", "G2", "C3", "F3", "A3", "D4"],
-};
-
 const peg_positions = [
-  { y: 64.496, x: 7.003 },
-  { y: 39.945, x: 7.003 },
-  { y: 15.394, x: 7.003 },
-  { y: 15.394, x: 61.967 },
-  { y: 39.945, x: 61.967 },
-  { y: 64.496, x: 61.967 },
+  { y: 64.496, x: 7.003, isMirrored: false },
+  { y: 39.945, x: 7.003, isMirrored: false },
+  { y: 15.394, x: 7.003, isMirrored: false },
+  { y: 15.394, x: 61.967, isMirrored: true },
+  { y: 39.945, x: 61.967, isMirrored: true },
+  { y: 64.496, x: 61.967, isMirrored: true },
 ];
 
-const Tuner = () => {
+interface Props {
+  tuning: string[];
+}
+
+const Tuner = ({ tuning }: Props) => {
   const [tuningState, setTuningState] = useState(
-    tuningDictionary["Standard"].map((n) => {
+    tuning.map((n) => {
       return { note: n, isFocused: false, isTuned: false };
     })
   );
+  useEffect(() => {
+    const now = Tone.now();
+    setTuningState(
+      tuning.map((n, i) => {
+        sampler.current.triggerAttackRelease(n, "1n", now + i * 0.1);
+        return { note: n, isFocused: false, isTuned: false };
+      })
+    );
+    //tuningStateRef.current = newTuningState;
+    focusedIndex.current = -1;
+  }, [tuning]);
 
-  const [tuning, setTuning] = useState("Standard");
   const [frequency, setFrequency] = useState(0);
   const [isMicEnabled, setIsMicEnabled] = useState(false);
 
@@ -186,9 +190,10 @@ const Tuner = () => {
         </g>
         {tuningState.map((note, index) => (
           <TuningButton
-            key={tuning + index}
+            key={index}
             x={peg_positions[index].x}
             y={peg_positions[index].y}
+            isMirrored={peg_positions[index].isMirrored}
             playNoteCallback={(note: string) => {
               playNoteCallback(note);
               const newTuningState = tuningState.map((n, i) => {
@@ -217,7 +222,6 @@ const Tuner = () => {
                 }
               });
               setTuningState(newTuningState);
-              setTuning("Custom");
               focusedIndex.current = index;
               tuningStateRef.current = newTuningState;
             }}
@@ -310,37 +314,5 @@ const Tuner = () => {
     // </div>
   );
 };
-
-{
-  /* <select
-        name="Tuning"
-        id="tuning"
-        onChange={(e) => {
-          const now = Tone.now();
-          const newTuningState = tuningState.map((n, i) => {
-            sampler.current.triggerAttackRelease(
-              tuningDictionary[e.target.value][i],
-              "1n",
-              now + i * 0.1
-            );
-            return {
-              note: tuningDictionary[e.target.value][i],
-              isFocused: false,
-              isTuned: false,
-            };
-          });
-          setTuning(e.target.value);
-          setTuningState(newTuningState);
-          tuningStateRef.current = newTuningState;
-          focusedIndex.current = -1;
-        }}
-      >
-        {Object.keys(tuningDictionary).map((key) => (
-          <option value={key} key={key}>
-            {key}
-          </option>
-        ))}
-      </select> */
-}
 
 export default Tuner;

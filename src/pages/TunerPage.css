@@ -1,0 +1,19 @@
+.tuner-page {
+  display: flex;
+  flex-direction: row;
+}
+
+@media (max-aspect-ratio: 1/1) {
+  .tuner-page {
+    display: column;
+  }
+}
+
+.tuning-table-row {
+  cursor: pointer;
+  text-align: left;
+}
+
+.tuning-table-row:hover {
+  background: var(--lighter-background-color);
+}
