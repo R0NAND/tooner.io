@@ -3,9 +3,11 @@ import head from "./assets/guitar-head.svg";
 import TuningButton from "./TuningButton";
 import * as Tone from "tone";
 import TuningGauge from "./TuningGauge";
-import micOn from "./assets/mic-on.svg";
-import micOff from "./assets/mic-off.svg";
+import MicOn from "./assets/mic-on.svg?react";
+import MicOff from "./assets/mic-off.svg?react";
 import "./Tuner.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMicrophone } from "@fortawesome/free-solid-svg-icons";
 
 type TuningDictionary = {
   [key: string]: string[];
@@ -77,37 +79,8 @@ interface Props {
 }
 
 const Tuner = ({ tuning }: Props) => {
-  const [tuningState, setTuningState] = useState(
-    tuning.map((n) => {
-      return { note: n, isFocused: false, isTuned: false };
-    })
-  );
-  useEffect(() => {
-    const now = Tone.now();
-    setTuningState(
-      tuning.map((n, i) => {
-        sampler.current.triggerAttackRelease(n, "1n", now + i * 0.1);
-        return { note: n, isFocused: false, isTuned: false };
-      })
-    );
-    //tuningStateRef.current = newTuningState;
-    focusedIndex.current = -1;
-  }, [tuning]);
-
-  const [frequency, setFrequency] = useState(0);
-  const [isMicEnabled, setIsMicEnabled] = useState(false);
-
-  const sampler = useRef(new Tone.Sampler());
-  const mic = useRef(new Tone.UserMedia());
-  const pitchTracker = useRef(new TuningResult(0.7));
-  const confirmationPlayer = useRef(
-    new Tone.Player(
-      "src/components/tuner/assets/confirmation.mp3"
-    ).toDestination()
-  );
-
-  useEffect(() => {
-    sampler.current = new Tone.Sampler({
+  const guitarSampler = useRef(
+    new Tone.Sampler({
       urls: {
         E2: "acoustic-guitar-e2.wav",
         A2: "acoustic-guitar-a2.wav",
@@ -117,8 +90,39 @@ const Tuner = ({ tuning }: Props) => {
         E4: "acoustic-guitar-e4.wav",
       },
       baseUrl: "src/components/tuner/assets/",
-    }).toDestination();
-  }, [sampler]);
+    }).toDestination()
+  );
+  const confirmationPlayer = useRef(
+    new Tone.Player(
+      "src/components/tuner/assets/confirmation.mp3"
+    ).toDestination()
+  );
+
+  const [tuningState, setTuningState] = useState(
+    tuning.map((n) => {
+      return { note: n, isFocused: false, isTuned: false };
+    })
+  );
+
+  useEffect(() => {
+    const now = Tone.now();
+    console.log(guitarSampler.current);
+    const newTuningState = tuning.map((n, i) => {
+      if (guitarSampler.current.loaded) {
+        guitarSampler.current.triggerAttackRelease(n, "1n", now + i * 0.1);
+      }
+      return { note: n, isFocused: false, isTuned: false };
+    });
+    setTuningState(newTuningState);
+    tuningStateRef.current = newTuningState;
+    focusedIndex.current = -1;
+  }, [tuning]);
+
+  const [frequency, setFrequency] = useState(0);
+  const [isMicEnabled, setIsMicEnabled] = useState(false);
+
+  const mic = useRef(new Tone.UserMedia());
+  const pitchTracker = useRef(new TuningResult(0.7));
 
   //TODO: kinda sucks to have to do this due to scope closure on state reference... there should be a better way
   const focusedIndex = useRef(-1);
@@ -163,7 +167,7 @@ const Tuner = ({ tuning }: Props) => {
   }, []);
 
   const playNoteCallback = (note: string) => {
-    sampler.current.triggerAttackRelease(note, "1n");
+    guitarSampler.current.triggerAttackRelease(note, "1n");
   };
 
   const toggleMic = () => {
@@ -180,6 +184,7 @@ const Tuner = ({ tuning }: Props) => {
   return (
     <div className="tuner">
       <svg
+        version="1.1"
         width="100%"
         height="auto"
         className="headstock"
@@ -187,13 +192,37 @@ const Tuner = ({ tuning }: Props) => {
       >
         <g>
           <path d="m 32.397846,1.189153 c -4.738905,4.8812164 -9.591365,7.7704085 -14.557967,8.6669579 4.529708,28.2641671 4.047955,50.1251031 2.86005,71.0834331 7.044778,8.657123 5.020004,11.925133 7.278644,17.890054 H 40 52.021428 C 54.280069,92.864681 52.255295,89.596669 59.300072,80.939544 58.112167,59.981214 57.630413,38.120278 62.160121,9.8561109 57.193518,8.9595615 52.341062,6.0703673 47.602155,1.189153 c -5.272067,1.2942631 -9.927973,1.2954338 -15.204309,0 z" />
+          <circle
+            className="mic-button"
+            cx={40}
+            cy={25}
+            r={6}
+            onClick={() => {
+              toggleMic();
+            }}
+          ></circle>
+          {isMicEnabled ? (
+            <MicOff
+              x={35}
+              y={20}
+              height="10"
+              preserveAspectRatio="xMinYMin"
+              className="mic-button-icon"
+            ></MicOff>
+          ) : (
+            <MicOn
+              x={35}
+              y={20}
+              height="10"
+              preserveAspectRatio="xMinYMin"
+              className="mic-button-icon"
+            ></MicOn>
+          )}
         </g>
         {tuningState.map((note, index) => (
           <TuningButton
             key={index}
-            x={peg_positions[index].x}
-            y={peg_positions[index].y}
-            isMirrored={peg_positions[index].isMirrored}
+            i={index}
             playNoteCallback={(note: string) => {
               playNoteCallback(note);
               const newTuningState = tuningState.map((n, i) => {
@@ -231,87 +260,26 @@ const Tuner = ({ tuning }: Props) => {
           </TuningButton>
         ))}
       </svg>
+      <button
+        onClick={() => toggleMic()}
+        style={{
+          position: "absolute",
+          borderRadius: "50%",
+          top: "30%",
+          left: "45%",
+          background: isMicEnabled ? "red" : "green",
+        }}
+      >
+        {/* {isMicEnabled ? (
+          <img className="mic-icon" src={micOff} alt="" width="150"></img>
+        ) : (
+          <img className="mic-icon" src={micOn} alt="" width="150"></img>
+        )} */}
+      </button>
+      <div style={{ position: "absolute", top: "50%", left: "45%" }}>
+        <TuningGauge sensitivity={0.7}>{frequency}</TuningGauge>
+      </div>
     </div>
-    // <div
-    //   className="tuner"
-    //   style={{
-    //     position: "relative",
-    //     margin: "auto",
-    //     height: "800px",
-    //     width: "800px",
-    //   }}
-    // >
-    //   <img className="guitar-head" src={head} alt="" width="100%"></img>
-    //   <button
-    //     onClick={() => toggleMic()}
-    //     style={{
-    //       position: "absolute",
-    //       borderRadius: "50%",
-    //       top: "30%",
-    //       left: "45%",
-    //       background: isMicEnabled ? "red" : "green",
-    //     }}
-    //   >
-    //     {isMicEnabled ? (
-    //       <img className="mic-icon" src={micOff} alt="" width="150"></img>
-    //     ) : (
-    //       <img className="mic-icon" src={micOn} alt="" width="150"></img>
-    //     )}
-    //   </button>
-    //   <div style={{ position: "absolute", top: "50%", left: "45%" }}>
-    //     <TuningGauge sensitivity={0.7}>{frequency}</TuningGauge>
-    //   </div>
-    //   {tuningState.map((note, index) => (
-    //     <div
-    //       key={tuning + index} //TODO: review this
-    //       style={{
-    //         position: "absolute",
-    //         top: peg_positions[index].top,
-    //         left: peg_positions[index].left,
-    //         transform: peg_positions[index].transform,
-    //         // backgroundColor: note.isFocused ? "green" : "red",
-    //       }}
-    //     >
-    //       <TuningButton
-    //         playNoteCallback={(note: string) => {
-    //           playNoteCallback(note);
-    //           const newTuningState = tuningState.map((n, i) => {
-    //             return i === index
-    //               ? { note: n.note, isFocused: true, isTuned: n.isTuned }
-    //               : { note: n.note, isFocused: false, isTuned: n.isTuned };
-    //           });
-    //           setTuningState(newTuningState);
-    //           focusedIndex.current = index;
-    //           tuningStateRef.current = newTuningState;
-    //         }}
-    //         changeNoteCallback={(newNote: string) => {
-    //           const newTuningState = tuningState.map((n, i) => {
-    //             if (i === index) {
-    //               return {
-    //                 note: newNote,
-    //                 isFocused: true,
-    //                 isTuned: false,
-    //               };
-    //             } else {
-    //               return {
-    //                 note: n.note,
-    //                 isFocused: false,
-    //                 isTuned: n.isTuned,
-    //               };
-    //             }
-    //           });
-    //           setTuningState(newTuningState);
-    //           setTuning("Custom");
-    //           focusedIndex.current = index;
-    //           tuningStateRef.current = newTuningState;
-    //         }}
-    //         isTuned={note.isTuned}
-    //       >
-    //         {note.note}
-    //       </TuningButton>
-    //     </div>
-    //   ))}
-    // </div>
   );
 };
 

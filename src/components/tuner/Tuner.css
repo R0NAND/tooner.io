@@ -76,3 +76,18 @@
   cursor: pointer;
   fill: var(--main-color);
 }
+
+.mic-button {
+  fill: var(--secondary-color);
+  stroke: none;
+  transition: fill 0.25s;
+}
+
+.mic-button:hover {
+  fill: var(--main-color);
+  cursor: pointer;
+}
+
+.mic-button-icon {
+  pointer-events: none;
+}

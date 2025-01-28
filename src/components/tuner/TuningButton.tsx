@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./TuningButton.css";
+import GuitarPeg from "./assets/guitar-peg.svg?react";
+import transforms from "./tuner-svg-transforms.json";
 
 let notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 let frequencies = [
@@ -9,9 +11,7 @@ let frequencies = [
 
 interface Props {
   children: string;
-  x: number;
-  y: number;
-  isMirrored: boolean;
+  i: number;
   isTuned: boolean;
   playNoteCallback: (note: string) => void;
   changeNoteCallback: (newNote: string) => void;
@@ -19,9 +19,7 @@ interface Props {
 
 const TuningButton = ({
   children,
-  x,
-  y,
-  isMirrored,
+  i,
   isTuned,
   playNoteCallback,
   changeNoteCallback,
@@ -94,30 +92,41 @@ const TuningButton = ({
       gRef.current.style.animation = "rotateImage 1s";
     }
   };
+
   return (
     <g
       className="tuning-peg-svg"
       ref={gRef}
       style={{
-        transformOrigin: `${x + 5.3265}px ${y + 7.323}px`,
+        transformOrigin: `${transforms.guitar.pegs[i].x + 5.3265}px ${
+          transforms.guitar.pegs[i].y + 7.323
+        }px`,
       }}
     >
-      <path
-        className="tuning-peg-path"
+      <g
+        transform={transforms.guitar.pegs[i].transform}
         style={{
-          transformOrigin: `${x + 5.3265}px ${y + 7.323}px`,
+          transformOrigin: `${transforms.guitar.pegs[i].x + 5.3265}px ${
+            transforms.guitar.pegs[i].y + 7.323
+          }px`,
         }}
-        transform={`${isMirrored ? "scale(-1 1) " : ""}translate(${x} ${y})`}
-        d="m5.2951 0.001491c-1.2075-0.01828-2.4774 0.12683-3.1755 0.69892-2.8261 2.3159-2.8262 10.93 0 13.246 1.5957 1.3076 6.1772 0.38201 6.1772 0.38201l2.3564-7.0049-2.3564-7.0049s-1.4492-0.2934-3.0017-0.31691z"
-      />
+      >
+        <GuitarPeg
+          height={transforms.guitar.pegs[i].height}
+          x={transforms.guitar.pegs[i].x}
+          y={transforms.guitar.pegs[i].y}
+          preserveAspectRatio="xMinYMin"
+          className="tuning-peg-path"
+        ></GuitarPeg>
+      </g>
       <text
         className="tuning-peg-adjuster"
         fontSize="4px"
         fontWeight="bold"
         textAnchor="middle"
         dominantBaseline="middle"
-        x={x + 5.3265}
-        y={y + 2}
+        x={transforms.guitar.pegs[i].x + 5.3265}
+        y={transforms.guitar.pegs[i].y + 2}
         onClick={(e) => {
           incrementNote();
           rotatePeg(e);
@@ -127,8 +136,8 @@ const TuningButton = ({
       </text>
       <circle
         className="tuning-peg-button"
-        cx={x + 5.3265}
-        cy={y + 7.5}
+        cx={transforms.guitar.pegs[i].x + 5.3265}
+        cy={transforms.guitar.pegs[i].y + 7.5}
         r="3"
         onClick={() => {
           playNoteCallback(children);
@@ -142,8 +151,8 @@ const TuningButton = ({
         fontWeight="bold"
         textAnchor="middle"
         dominantBaseline="middle"
-        x={x + 5.3265}
-        y={y + 7.5}
+        x={transforms.guitar.pegs[i].x + 5.3265}
+        y={transforms.guitar.pegs[i].y + 7.5}
       >
         {children}
       </text>
@@ -153,8 +162,8 @@ const TuningButton = ({
         fontWeight="bold"
         textAnchor="middle"
         dominantBaseline="middle"
-        x={x + 5}
-        y={y + 13}
+        x={transforms.guitar.pegs[i].x + 5}
+        y={transforms.guitar.pegs[i].y + 13}
         onClick={(e) => {
           decrementNote();
           rotatePeg(e);

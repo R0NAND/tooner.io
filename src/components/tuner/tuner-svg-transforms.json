@@ -1,0 +1,55 @@
+{
+  "guitar": {
+    "pegs": [
+      {
+        "height": 14.646,
+        "x": 7.187,
+        "y": 64.68,
+        "transformX": 5.3265,
+        "transformY": 7.323,
+        "transform": ""
+      },
+      {
+        "height": 14.646,
+        "x": 7.187,
+        "y": 40.129,
+        "transformX": 5.3265,
+        "transformY": 7.323,
+        "transform": ""
+      },
+      {
+        "height": 14.646,
+        "x": 7.187,
+        "y": 15.578,
+        "transformX": 5.3265,
+        "transformY": 7.323,
+        "transform": ""
+      },
+      {
+        "height": 14.646,
+        "x": 62.16,
+        "y": 15.578,
+        "transformX": 5.3265,
+        "transformY": 7.323,
+        "transform": "scale(-1 1)"
+      },
+      {
+        "height": 14.646,
+        "x": 62.16,
+        "y": 40.129,
+        "transformX": 5.3265,
+        "transformY": 7.323,
+        "transform": "scale(-1 1)"
+      },
+      {
+        "height": 14.646,
+        "x": 62.16,
+        "y": 64.68,
+        "transformX": 5.3265,
+        "transformY": 7.323,
+        "transform": "scale(-1 1)"
+      }
+    ],
+    "pegElements": { "centerLine": 0, "upY": 0, "playY": 0, "downY": 0 }
+  }
+}
