@@ -1,43 +1,3 @@
-.tuning-button {
-  position: relative;
-}
-
-.peg-vector {
-  z-index: 999;
-}
-
-.top-peg-button {
-  position: absolute;
-  left: 50%;
-  top: 15%;
-  transform: translate(-50%, -50%);
-  z-index: 0;
-}
-
-.middle-peg-button {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  height: 75px;
-  width: 75px;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 0;
-}
-
-.bottom-peg-button {
-  position: absolute;
-  left: 50%;
-  top: 85%;
-  transform: translate(-50%, -50%);
-  z-index: 0;
-}
-
-.mic-icon {
-  height: 50px;
-  width: 50px;
-}
-
 .headstock {
   fill: var(--background-color);
   fill-opacity: 1;
@@ -45,36 +5,6 @@
   stroke-width: 0.347793;
   stroke-dasharray: none;
   stroke-opacity: 1;
-}
-
-.tuning-peg-svg {
-  fill: var(--secondary-color);
-}
-
-.tuning-peg-note {
-  stroke: none;
-  pointer-events: none;
-  fill: var(--main-background-color);
-}
-
-.tuning-peg-button {
-  fill: var(--secondary-color);
-}
-
-.tuning-peg-button:hover {
-  cursor: pointer;
-  fill: var(--main-color);
-}
-
-.tuning-peg-adjuster {
-  stroke: none;
-  fill: var(--secondary-color);
-  transition: fill 0.25s;
-}
-
-.tuning-peg-adjuster:hover {
-  cursor: pointer;
-  fill: var(--main-color);
 }
 
 .mic-button {

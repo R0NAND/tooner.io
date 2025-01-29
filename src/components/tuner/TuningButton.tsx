@@ -12,6 +12,7 @@ let frequencies = [
 interface Props {
   children: string;
   i: number;
+  isFocused: boolean;
   isTuned: boolean;
   playNoteCallback: (note: string) => void;
   changeNoteCallback: (newNote: string) => void;
@@ -20,6 +21,7 @@ interface Props {
 const TuningButton = ({
   children,
   i,
+  isFocused,
   isTuned,
   playNoteCallback,
   changeNoteCallback,
@@ -95,19 +97,23 @@ const TuningButton = ({
 
   return (
     <g
-      className="tuning-peg-svg"
+      className="tuning-peg-group"
       ref={gRef}
       style={{
-        transformOrigin: `${transforms.guitar.pegs[i].x + 5.3265}px ${
-          transforms.guitar.pegs[i].y + 7.323
+        transformOrigin: `${
+          transforms.guitar.pegs[i].x + transforms.guitar.pegs[i].transformX
+        }px ${
+          transforms.guitar.pegs[i].y + transforms.guitar.pegs[i].transformY
         }px`,
       }}
     >
       <g
         transform={transforms.guitar.pegs[i].transform}
         style={{
-          transformOrigin: `${transforms.guitar.pegs[i].x + 5.3265}px ${
-            transforms.guitar.pegs[i].y + 7.323
+          transformOrigin: `${
+            transforms.guitar.pegs[i].x + transforms.guitar.pegs[i].transformX
+          }px ${
+            transforms.guitar.pegs[i].y + transforms.guitar.pegs[i].transformY
           }px`,
         }}
       >
@@ -116,7 +122,10 @@ const TuningButton = ({
           x={transforms.guitar.pegs[i].x}
           y={transforms.guitar.pegs[i].y}
           preserveAspectRatio="xMinYMin"
-          className="tuning-peg-path"
+          className={`tuning-peg-svg${isFocused ? " focused-peg" : ""}`}
+          onClick={() => {
+            playNoteCallback(children);
+          }}
         ></GuitarPeg>
       </g>
       <text
@@ -125,8 +134,10 @@ const TuningButton = ({
         fontWeight="bold"
         textAnchor="middle"
         dominantBaseline="middle"
-        x={transforms.guitar.pegs[i].x + 5.3265}
-        y={transforms.guitar.pegs[i].y + 2}
+        x={
+          transforms.guitar.pegs[i].x + transforms.guitar.pegElements.centerLine
+        }
+        y={transforms.guitar.pegs[i].y + transforms.guitar.pegElements.upY}
         onClick={(e) => {
           incrementNote();
           rotatePeg(e);
@@ -134,25 +145,16 @@ const TuningButton = ({
       >
         +
       </text>
-      <circle
-        className="tuning-peg-button"
-        cx={transforms.guitar.pegs[i].x + 5.3265}
-        cy={transforms.guitar.pegs[i].y + 7.5}
-        r="3"
-        onClick={() => {
-          playNoteCallback(children);
-        }}
-        stroke={isTuned ? "green" : "red"}
-        fill="transparent"
-      ></circle>
       <text
         className="tuning-peg-note"
         fontSize="2px"
         fontWeight="bold"
         textAnchor="middle"
         dominantBaseline="middle"
-        x={transforms.guitar.pegs[i].x + 5.3265}
-        y={transforms.guitar.pegs[i].y + 7.5}
+        x={
+          transforms.guitar.pegs[i].x + transforms.guitar.pegElements.centerLine
+        }
+        y={transforms.guitar.pegs[i].y + transforms.guitar.pegElements.playY}
       >
         {children}
       </text>
@@ -162,8 +164,10 @@ const TuningButton = ({
         fontWeight="bold"
         textAnchor="middle"
         dominantBaseline="middle"
-        x={transforms.guitar.pegs[i].x + 5}
-        y={transforms.guitar.pegs[i].y + 13}
+        x={
+          transforms.guitar.pegs[i].x + transforms.guitar.pegElements.centerLine
+        }
+        y={transforms.guitar.pegs[i].y + transforms.guitar.pegElements.downY}
         onClick={(e) => {
           decrementNote();
           rotatePeg(e);
@@ -174,43 +178,5 @@ const TuningButton = ({
     </g>
   );
 };
-{
-  /* <div className="tuning-button">
-        <img className="peg-vector" src={peg} alt="" width="150"></img>
-        <button
-          className="top-peg-button"
-          style={{ display: "block" }}
-          onClick={(e) => {
-            incrementNote();
-            rotatePeg(e);
-          }}
-        >
-          +
-        </button>
-        <button
-          className="middle-peg-button"
-          style={{
-            display: "block",
-            borderColor: isTuned ? "green" : "red",
-            borderWidth: "5px",
-          }}
-          onClick={() => {
-            playNoteCallback(children);
-          }}
-        >
-          {children}
-        </button>
-        <button
-          className="bottom-peg-button"
-          style={{ display: "block" }}
-          onClick={(e) => {
-            decrementNote();
-            rotatePeg(e);
-          }}
-        >
-          -
-        </button>
-      </div> */
-}
 
 export default TuningButton;

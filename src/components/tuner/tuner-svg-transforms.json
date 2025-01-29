@@ -1,5 +1,10 @@
 {
   "guitar": {
+    "mic": {
+      "x": 40,
+      "y": 25,
+      "r": 6
+    },
     "pegs": [
       {
         "height": 14.646,
@@ -50,6 +55,11 @@
         "transform": "scale(-1 1)"
       }
     ],
-    "pegElements": { "centerLine": 0, "upY": 0, "playY": 0, "downY": 0 }
+    "pegElements": {
+      "centerLine": 5.3265,
+      "downY": 12.4845,
+      "playY": 7.323,
+      "upY": 2.1615
+    }
   }
 }

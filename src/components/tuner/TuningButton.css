@@ -7,8 +7,40 @@
   }
 }
 
-.tuning-peg-path {
-  fill: #000000;
+.tuning-peg-svg {
+  fill: var(--main-background-color);
   stroke-width: 0.36684;
-  stroke: #ffffff;
+  stroke: var(--secondary-color);
+}
+
+.tuning-peg-svg:hover {
+  stroke: var(--main-color);
+  cursor: pointer;
+}
+
+.tuning-peg-note {
+  stroke: none;
+  pointer-events: none;
+  fill: var(--secondary-color);
+}
+
+.tuning-peg-adjuster {
+  stroke: none;
+  fill: var(--secondary-color);
+  transition: fill 0.25s;
+}
+
+.tuning-peg-adjuster:hover {
+  cursor: pointer;
+  fill: var(--main-color);
+}
+
+.focused-peg {
+  stroke: var(--primary-hue);
+  filter: drop-shadow(0px 0px 2px var(--primary-hue));
+}
+
+.focused-peg:hover {
+  stroke: var(--primary-hue);
+  filter: drop-shadow(0px 0px 2px var(--primary-hue));
 }

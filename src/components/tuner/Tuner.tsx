@@ -1,17 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
-import head from "./assets/guitar-head.svg";
 import TuningButton from "./TuningButton";
 import * as Tone from "tone";
 import TuningGauge from "./TuningGauge";
 import MicOn from "./assets/mic-on.svg?react";
 import MicOff from "./assets/mic-off.svg?react";
+import transformsJson from "./tuner-svg-transforms.json";
 import "./Tuner.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMicrophone } from "@fortawesome/free-solid-svg-icons";
 
-type TuningDictionary = {
-  [key: string]: string[];
-};
+export enum InstrumentEnum {
+  guitar,
+  bass,
+  ukulele,
+  eigthString,
+}
 
 class TuningResult {
   heardNote: string;
@@ -65,20 +66,12 @@ class TuningResult {
   }
 }
 
-const peg_positions = [
-  { y: 64.496, x: 7.003, isMirrored: false },
-  { y: 39.945, x: 7.003, isMirrored: false },
-  { y: 15.394, x: 7.003, isMirrored: false },
-  { y: 15.394, x: 61.967, isMirrored: true },
-  { y: 39.945, x: 61.967, isMirrored: true },
-  { y: 64.496, x: 61.967, isMirrored: true },
-];
-
 interface Props {
+  instrument: InstrumentEnum;
   tuning: string[];
 }
 
-const Tuner = ({ tuning }: Props) => {
+const Tuner = ({ instrument, tuning }: Props) => {
   const guitarSampler = useRef(
     new Tone.Sampler({
       urls: {
@@ -117,6 +110,8 @@ const Tuner = ({ tuning }: Props) => {
     tuningStateRef.current = newTuningState;
     focusedIndex.current = -1;
   }, [tuning]);
+
+  const transforms = transformsJson["guitar"];
 
   const [frequency, setFrequency] = useState(0);
   const [isMicEnabled, setIsMicEnabled] = useState(false);
@@ -181,6 +176,7 @@ const Tuner = ({ tuning }: Props) => {
       setIsMicEnabled(true);
     }
   };
+
   return (
     <div className="tuner">
       <svg
@@ -194,26 +190,26 @@ const Tuner = ({ tuning }: Props) => {
           <path d="m 32.397846,1.189153 c -4.738905,4.8812164 -9.591365,7.7704085 -14.557967,8.6669579 4.529708,28.2641671 4.047955,50.1251031 2.86005,71.0834331 7.044778,8.657123 5.020004,11.925133 7.278644,17.890054 H 40 52.021428 C 54.280069,92.864681 52.255295,89.596669 59.300072,80.939544 58.112167,59.981214 57.630413,38.120278 62.160121,9.8561109 57.193518,8.9595615 52.341062,6.0703673 47.602155,1.189153 c -5.272067,1.2942631 -9.927973,1.2954338 -15.204309,0 z" />
           <circle
             className="mic-button"
-            cx={40}
-            cy={25}
-            r={6}
+            cx={transforms.mic.x}
+            cy={transforms.mic.y}
+            r={transforms.mic.r}
             onClick={() => {
               toggleMic();
             }}
           ></circle>
           {isMicEnabled ? (
             <MicOff
-              x={35}
-              y={20}
-              height="10"
+              x={transforms.mic.x - transforms.mic.r * 0.75}
+              y={transforms.mic.y - transforms.mic.r * 0.75}
+              height={transforms.mic.r * 2 * 0.75}
               preserveAspectRatio="xMinYMin"
               className="mic-button-icon"
             ></MicOff>
           ) : (
             <MicOn
-              x={35}
-              y={20}
-              height="10"
+              x={transforms.mic.x - transforms.mic.r * 0.75}
+              y={transforms.mic.y - transforms.mic.r * 0.75}
+              height={transforms.mic.r * 2 * 0.75}
               preserveAspectRatio="xMinYMin"
               className="mic-button-icon"
             ></MicOn>
@@ -223,6 +219,7 @@ const Tuner = ({ tuning }: Props) => {
           <TuningButton
             key={index}
             i={index}
+            isFocused={note.isFocused}
             playNoteCallback={(note: string) => {
               playNoteCallback(note);
               const newTuningState = tuningState.map((n, i) => {
@@ -259,26 +256,10 @@ const Tuner = ({ tuning }: Props) => {
             {note.note}
           </TuningButton>
         ))}
+        <TuningGauge x={40} y={60} width={20} sensitivity={0.7}>
+          {frequency}
+        </TuningGauge>
       </svg>
-      <button
-        onClick={() => toggleMic()}
-        style={{
-          position: "absolute",
-          borderRadius: "50%",
-          top: "30%",
-          left: "45%",
-          background: isMicEnabled ? "red" : "green",
-        }}
-      >
-        {/* {isMicEnabled ? (
-          <img className="mic-icon" src={micOff} alt="" width="150"></img>
-        ) : (
-          <img className="mic-icon" src={micOn} alt="" width="150"></img>
-        )} */}
-      </button>
-      <div style={{ position: "absolute", top: "50%", left: "45%" }}>
-        <TuningGauge sensitivity={0.7}>{frequency}</TuningGauge>
-      </div>
     </div>
   );
 };

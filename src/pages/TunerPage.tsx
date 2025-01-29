@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Tuner from "../components/tuner/Tuner";
+import { InstrumentEnum } from "../components/tuner/Tuner";
 import "./TunerPage.css";
 import tunings from "../resources/tunings.json";
 
@@ -25,7 +26,7 @@ const TunerPage = () => {
           })}
         </tbody>
       </table>
-      <Tuner tuning={tuning}></Tuner>
+      <Tuner instrument={InstrumentEnum.guitar} tuning={tuning}></Tuner>
     </div>
   );
 };
