@@ -1,0 +1,41 @@
+.tuning-ring {
+  stroke-width: 2;
+  fill: transparent;
+  stroke: var(--secondary-color);
+}
+
+.tuning-target {
+  stroke-width: 2px;
+  stroke: var(--primary-color);
+  filter: drop-shadow(0px 0px 3px var(--primary-color));
+  fill: black;
+}
+
+.tuning-target-green {
+  stroke: var(--confirm-color);
+  filter: drop-shadow(0px 0px 4px var(--confirm-color));
+}
+
+.tuning-target-red {
+  stroke: var(--deny-color);
+  fill: black;
+  filter: drop-shadow(0px 0px 10px var(--deny-color));
+}
+
+.tuning-ring-green {
+  stroke: var(--confirm-color);
+}
+
+.tuning-ring-red {
+  stroke: var(--deny-color);
+}
+
+.tuning-note-green {
+  fill: var(--confirm-color);
+  filter: drop-shadow(0px 0px 4px var(--confirm-color));
+}
+
+.tuning-note-red {
+  fill: var(--deny-color);
+  filter: drop-shadow(0px 0px 4px var(--deny-color));
+}

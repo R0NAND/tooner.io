@@ -99,7 +99,6 @@ const Tuner = ({ instrument, tuning }: Props) => {
 
   useEffect(() => {
     const now = Tone.now();
-    console.log(guitarSampler.current);
     const newTuningState = tuning.map((n, i) => {
       if (guitarSampler.current.loaded) {
         guitarSampler.current.triggerAttackRelease(n, "1n", now + i * 0.1);
@@ -256,7 +255,7 @@ const Tuner = ({ instrument, tuning }: Props) => {
             {note.note}
           </TuningButton>
         ))}
-        <TuningGauge x={40} y={60} width={20} sensitivity={0.7}>
+        <TuningGauge x={40} y={60} width={20} cents={5}>
           {frequency}
         </TuningGauge>
       </svg>
