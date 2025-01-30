@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as Tone from "tone";
+import interpolate from "color-interpolate";
 import "./TuningGauge.css";
 
 interface Props {
@@ -11,10 +12,18 @@ interface Props {
 }
 
 const TuningGauge = ({ children, x, y, width, cents = 5 }: Props) => {
-  console.log(children);
   const [isTuned, setIsTuned] = useState(false);
   const [note, setNote] = useState("");
   const [radianError, setRadianError] = useState(0);
+  const [color, setColor] = useState("rgb(1, 1, 1)");
+  //Below is not the best practice, but I don't plan on using this component anywhere else for the time being
+  const deny_color = getComputedStyle(document.body).getPropertyValue(
+    "--deny-color"
+  );
+  const confirm_color = getComputedStyle(document.body).getPropertyValue(
+    "--confirm-color"
+  );
+  const colorMap = interpolate([confirm_color, deny_color]);
 
   const twelthRadian = (2 * Math.PI) / 12;
   const midiNoteZeroFreq = Tone.Frequency(0, "midi").toFrequency();
@@ -29,16 +38,17 @@ const TuningGauge = ({ children, x, y, width, cents = 5 }: Props) => {
       const newRadianError =
         twelthRadian * (continuousMidiNote - targetMidiNote);
       const targetFrequency = Tone.Frequency(newNote).toFrequency();
-      const isTuned =
-        children <= targetFrequency * Math.pow(cent, cents) &&
-        children >= targetFrequency * Math.pow(cent, -cents);
+      const centsOff = 1200 * Math.log2(children / targetFrequency);
+      const isTuned = Math.abs(centsOff) <= 5;
       setNote(newNote);
       setRadianError(newRadianError);
       setIsTuned(isTuned);
+      setColor(isTuned ? colorMap(0) : colorMap(Math.abs(centsOff) / 50));
     } else {
       setNote("");
       setRadianError(0);
       setIsTuned(false);
+      setColor("rgb(1, 1, 1)");
     }
   }, [children]);
 
@@ -55,81 +65,101 @@ const TuningGauge = ({ children, x, y, width, cents = 5 }: Props) => {
         height={width}
         width={width}
       >
-        <circle
-          className={`tuning-ring${
-            isTuned ? " tuning-ring-green" : " tuning-ring-red"
-          }`}
-          r={tuningCircleRadius}
-          cx={tuningCircleX}
-          cy={tuningCircleY}
-        ></circle>
-        <circle
-          className={`tuning-target${
-            isTuned ? " tuning-target-green" : " tuning-target-red"
-          }`}
-          r="15"
-          cx="50"
-          cy="50"
-        />
-        {note !== "" && (
-          <>
-            <circle
-              className={`${isTuned ? "tuning-note-green" : "tuning-note-red"}`}
-              r="12"
-              cx={tuningCircleX + tuningCircleRadius * Math.sin(radianError)}
-              cy={tuningCircleY - tuningCircleRadius * Math.cos(radianError)}
-              fill="white"
-              stroke="none"
-            ></circle>
-            <text
-              fontSize="10px"
-              fontWeight="bold"
-              textAnchor="middle"
-              dominantBaseline="middle"
-              fill="black"
-              stroke="none"
-              x={tuningCircleX + tuningCircleRadius * Math.sin(radianError)}
-              y={tuningCircleY - tuningCircleRadius * Math.cos(radianError)}
-            >
-              {note}
-            </text>
-            <circle
-              r="10"
-              cx={
-                tuningCircleX +
-                tuningCircleRadius *
-                  Math.sin(
-                    radianError +
-                      (radianError > 0 ? -twelthRadian : -twelthRadian)
-                  )
-              }
-              cy={
-                tuningCircleY -
-                tuningCircleRadius * Math.cos(radianError - twelthRadian)
-              }
-              fill="white"
-              stroke="none"
-            ></circle>
-            <text
-              fontSize="10px"
-              fontWeight="bold"
-              textAnchor="middle"
-              dominantBaseline="middle"
-              stroke="none"
-              fill="black"
-              x={
-                tuningCircleX +
-                tuningCircleRadius * Math.sin(radianError - twelthRadian)
-              }
-              y={
-                tuningCircleY -
-                tuningCircleRadius * Math.cos(radianError - twelthRadian)
-              }
-            >
-              {Tone.Frequency(note).transpose(1).toNote()}
-            </text>
-          </>
-        )}
+        <g>
+          <circle
+            r={tuningCircleRadius}
+            cx={tuningCircleX}
+            cy={tuningCircleY}
+            strokeWidth="2px"
+            fill="transparent"
+            stroke={color}
+          ></circle>
+          <circle
+            stroke={color}
+            fill="black"
+            strokeWidth="2px"
+            r="15"
+            cx="50"
+            cy="50"
+            filter={`drop-shadow(0px 0px 4px ${color})`}
+          />
+          {note !== "" && (
+            <>
+              <circle
+                fill={color}
+                r="12"
+                cx={tuningCircleX + tuningCircleRadius * Math.sin(radianError)}
+                cy={tuningCircleY - tuningCircleRadius * Math.cos(radianError)}
+                stroke="none"
+                filter={`drop-shadow(0px 0px 4px ${color})`}
+              ></circle>
+              <text
+                fontSize="10px"
+                fontWeight="bold"
+                textAnchor="middle"
+                dominantBaseline="middle"
+                fill="black"
+                stroke="none"
+                x={tuningCircleX + tuningCircleRadius * Math.sin(radianError)}
+                y={tuningCircleY - tuningCircleRadius * Math.cos(radianError)}
+                filter={`drop-shadow(0px 0px 4px black)`}
+              >
+                {note}
+              </text>
+              <circle
+                fill={color}
+                filter={`drop-shadow(0px 0px 1px ${color})`}
+                r="12"
+                cx={
+                  tuningCircleX +
+                  tuningCircleRadius *
+                    Math.sin(
+                      radianError +
+                        (radianError > 0 ? -twelthRadian : twelthRadian)
+                    )
+                }
+                cy={
+                  tuningCircleY -
+                  tuningCircleRadius *
+                    Math.cos(
+                      radianError +
+                        (radianError > 0 ? -twelthRadian : twelthRadian)
+                    )
+                }
+                stroke="none"
+              ></circle>
+              <text
+                fontSize="10px"
+                fontWeight="bold"
+                textAnchor="middle"
+                dominantBaseline="middle"
+                stroke="none"
+                fill="black"
+                x={
+                  tuningCircleX +
+                  tuningCircleRadius *
+                    Math.sin(
+                      radianError +
+                        (radianError > 0 ? -twelthRadian : twelthRadian)
+                    )
+                }
+                y={
+                  tuningCircleY -
+                  tuningCircleRadius *
+                    Math.cos(
+                      radianError +
+                        (radianError > 0 ? -twelthRadian : twelthRadian)
+                    )
+                }
+                filter={`drop-shadow(0px 0px 1px black)`}
+              >
+                {Tone.Frequency(note)
+                  .transpose(radianError > 0 ? 1 : -1)
+                  .toNote()}
+              </text>
+            </>
+          )}
+        </g>
       </svg>
     </>
   );

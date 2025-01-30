@@ -122,7 +122,9 @@ const TuningButton = ({
           x={transforms.guitar.pegs[i].x}
           y={transforms.guitar.pegs[i].y}
           preserveAspectRatio="xMinYMin"
-          className={`tuning-peg-svg${isFocused ? " focused-peg" : ""}`}
+          className={`tuning-peg-svg${isFocused ? " focused-peg" : ""} ${
+            isTuned ? " tuned-peg" : ""
+          }`}
           onClick={() => {
             playNoteCallback(children);
           }}

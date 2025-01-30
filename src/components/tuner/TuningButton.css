@@ -44,3 +44,13 @@
   stroke: var(--primary-hue);
   filter: drop-shadow(0px 0px 2px var(--primary-hue));
 }
+
+.tuned-peg {
+  stroke: var(--confirm-color);
+  filter: drop-shadow(0px 0px 2px var(--confirm-color));
+}
+
+.tuned-peg:hover {
+  stroke: var(--confirm-color);
+  filter: drop-shadow(0px 0px 2px var(--confirm-color));
+}

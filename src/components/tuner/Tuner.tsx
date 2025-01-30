@@ -62,6 +62,8 @@ class TuningResult {
       } else {
         return "";
       }
+    } else {
+      return "";
     }
   }
 }
@@ -126,20 +128,24 @@ const Tuner = ({ instrument, tuning }: Props) => {
     setFrequency(freq);
     const note = pitchTracker.current.trackFrequency(freq);
     if (note !== "") {
-      if (
-        focusedIndex.current !== -1 &&
-        note === tuningStateRef.current[focusedIndex.current].note
-      ) {
+      if (tuning.filter((n) => n === note)) {
         const confSound = new Tone.Player(
           "src/components/tuner/assets/confirmation.mp3"
         ).toDestination();
         confSound.autostart = true;
-        const newTuningState = tuningStateRef.current.map((n, i) => {
-          return i === focusedIndex.current
-            ? { note: n.note, isTuned: true, isFocused: n.isFocused }
-            : n;
-        });
-        setTuningState(newTuningState);
+        const noteIndex = tuningStateRef.current.findIndex(
+          (n) => n.note === note && n.isTuned === false
+        );
+        if (noteIndex !== -1) {
+          const newTuningState = tuningStateRef.current.map((n, i) => {
+            return i === noteIndex
+              ? { note: n.note, isTuned: true, isFocused: n.isFocused }
+              : n;
+          });
+          console.log(newTuningState);
+          tuningStateRef.current = newTuningState;
+          setTuningState(newTuningState);
+        }
       }
     }
   };

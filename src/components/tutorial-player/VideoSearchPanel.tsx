@@ -37,7 +37,7 @@ const VideoSearchPanel = ({ addVideoCallback, playVideoCallback }: Props) => {
     const artist = artistRef.current?.value.replace(" ", "+");
     const channel = channelRef.current?.value.replace(" ", "+");
 
-    const request = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=5&q=${song}+${artist}+${channel}+Guitar+Tutorial&type=video&key=ITSASECRET`;
+    const request = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=5&q=${song}+${artist}+${channel}+Guitar+Tutorial&type=video&key=itsasecret`;
     fetch(request)
       .then((res) => {
         return res.json();
