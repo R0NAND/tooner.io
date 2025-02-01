@@ -166,7 +166,43 @@ const Tuner = ({ instrument, tuning }: Props) => {
       });
   }, []);
 
-  const playNoteCallback = (note: string) => {
+  const transposeNoteCallback = (
+    noteIndex: number,
+    transposeAmount: number
+  ) => {
+    const newNote = Tone.Frequency(tuningState[noteIndex].note)
+      .transpose(transposeAmount)
+      .toNote();
+    const newTuningState = tuningState.map((n, i) => {
+      if (i === noteIndex) {
+        return {
+          note: newNote,
+          isFocused: true,
+          isTuned: false,
+        };
+      } else {
+        return {
+          note: n.note,
+          isFocused: false,
+          isTuned: n.isTuned,
+        };
+      }
+    });
+    setTuningState(newTuningState);
+    focusedIndex.current = noteIndex;
+    tuningStateRef.current = newTuningState;
+    guitarSampler.current.triggerAttackRelease(newNote, "1n");
+  };
+
+  const playNoteCallback = (noteIndex: number, note: string) => {
+    const newTuningState = tuningState.map((n, i) => {
+      return i === noteIndex
+        ? { note: n.note, isFocused: true, isTuned: n.isTuned }
+        : { note: n.note, isFocused: false, isTuned: n.isTuned };
+    });
+    setTuningState(newTuningState);
+    focusedIndex.current = noteIndex;
+    tuningStateRef.current = newTuningState;
     guitarSampler.current.triggerAttackRelease(note, "1n");
   };
 
@@ -225,38 +261,13 @@ const Tuner = ({ instrument, tuning }: Props) => {
             key={index}
             i={index}
             isFocused={note.isFocused}
-            playNoteCallback={(note: string) => {
-              playNoteCallback(note);
-              const newTuningState = tuningState.map((n, i) => {
-                return i === index
-                  ? { note: n.note, isFocused: true, isTuned: n.isTuned }
-                  : { note: n.note, isFocused: false, isTuned: n.isTuned };
-              });
-              setTuningState(newTuningState);
-              focusedIndex.current = index;
-              tuningStateRef.current = newTuningState;
-            }}
-            changeNoteCallback={(newNote: string) => {
-              const newTuningState = tuningState.map((n, i) => {
-                if (i === index) {
-                  return {
-                    note: newNote,
-                    isFocused: true,
-                    isTuned: false,
-                  };
-                } else {
-                  return {
-                    note: n.note,
-                    isFocused: false,
-                    isTuned: n.isTuned,
-                  };
-                }
-              });
-              setTuningState(newTuningState);
-              focusedIndex.current = index;
-              tuningStateRef.current = newTuningState;
-            }}
             isTuned={note.isTuned}
+            playNoteCallback={(note: string) => {
+              playNoteCallback(index, note);
+            }}
+            transposeNoteCallback={(transposeAmount: number) => {
+              transposeNoteCallback(index, transposeAmount);
+            }}
           >
             {note.note}
           </TuningButton>

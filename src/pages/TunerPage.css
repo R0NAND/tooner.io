@@ -10,10 +10,20 @@
 }
 
 .tuning-table-row {
-  cursor: pointer;
   text-align: left;
+  border: 1px solid red;
 }
 
 .tuning-table-row:hover {
   background: var(--lighter-background-color);
+}
+
+.tuning-table {
+  background-color: var(--stronger-background-color);
+  padding: 0.5em;
+}
+
+.tuning-table-button {
+  font-size: 1em;
+  z-index: 1;
 }
