@@ -7,6 +7,12 @@
   stroke-opacity: 1;
 }
 
+.bass-head {
+  stroke-width: 1;
+  stroke: var(--secondary-color);
+  stroke-opacity: 1;
+}
+
 .mic-button {
   fill: var(--secondary-color);
   stroke: none;

@@ -1,4 +1,4 @@
-.metronome{
+.metronome {
   margin: 0.5em;
   display: grid;
   grid-template-columns: auto auto;
@@ -9,60 +9,58 @@
 }
 
 @keyframes metronome-dormant-animation {
-  0%   {height: 53px; width: 53px;}
-  50%  {height: 48px; width: 48px;}
-  75% {height: 53px; width: 53px;}
-  100% {height: 53px; width: 53px;}
+  0% {
+    height: 53px;
+    width: 53px;
+  }
+  50% {
+    height: 48px;
+    width: 48px;
+  }
+  75% {
+    height: 53px;
+    width: 53px;
+  }
+  100% {
+    height: 53px;
+    width: 53px;
+  }
 }
 
-.metronome-base-button {
-  font-size: var(--button-font-size);
-  background-color: transparent;
-  border: "2px solid red";
-  color: var(--secondary-color);
-  transition: color 0.25s;
-}
-
-.metronome-base-button:hover {
-  color: var(--main-color);
-  cursor: pointer;
-}
-
-
-.metronome-play-button{
+.metronome-play-button {
   border-radius: 50%;
   color: var(--secondary-color);
   background-color: var(--main-background-color);
   transition: background-color 0.25s;
 }
 
-.metronome-play-button:hover{
+.metronome-play-button:hover {
   color: var(--main-color);
-  background-color: var(--main-background-color)
+  background-color: var(--main-background-color);
 }
 
-.metronome-tap-button{
+.metronome-tap-button {
   border-radius: 50%;
   background-color: transparent;
   color: var(--secondary-color);
-  transition: color 0.25s; 
+  transition: color 0.25s;
 }
 
-.metronome-tap-button:hover{
+.metronome-tap-button:hover {
   color: var(--main-color);
 }
 
-.metronome-note{
+.metronome-note {
   fill: var(--secondary-color);
-  height: var(--button-font-size)
+  height: var(--button-font-size);
 }
 
-.metronome-note-active{
+.metronome-note-active {
   fill: var(--main-color);
-  height: var(--button-font-size)
+  height: var(--button-font-size);
 }
 
-.metronome-note-flex{
+.metronome-note-flex {
   display: flex;
   justify-content: space-between;
 }

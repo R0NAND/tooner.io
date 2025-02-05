@@ -1,29 +1,38 @@
 .tuner-page {
   display: flex;
   flex-direction: row;
+  height: 100%;
 }
 
 @media (max-aspect-ratio: 1/1) {
   .tuner-page {
-    display: column;
+    flex-direction: column;
+  }
+
+  .tuning-menu {
+    height: 30%;
+    overflow-y: scroll;
+    margin: auto;
+  }
+
+  .tuner {
+    height: 70%;
   }
 }
 
-.tuning-table-row {
-  text-align: left;
-  border: 1px solid red;
+.tuning-menu-item {
+  padding: 0.125em 0.5em 0.125em 0.5em;
+  display: flex;
+  gap: 0.125em;
 }
 
-.tuning-table-row:hover {
+.tuning-menu-item:hover {
   background: var(--lighter-background-color);
 }
 
-.tuning-table {
+.tuning-menu {
   background-color: var(--stronger-background-color);
-  padding: 0.5em;
 }
 
-.tuning-table-button {
-  font-size: 1em;
-  z-index: 1;
+.instrument-select-button {
 }

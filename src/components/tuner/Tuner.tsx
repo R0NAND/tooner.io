@@ -4,7 +4,11 @@ import * as Tone from "tone";
 import TuningGauge from "./TuningGauge";
 import MicOn from "./assets/mic-on.svg?react";
 import MicOff from "./assets/mic-off.svg?react";
-import transformsJson from "./tuner-svg-transforms.json";
+import GuitarHeadstock from "./assets/guitar-headstock.svg?react";
+import UkuleleHeadstock from "./assets/ukulele-headstock.svg?react";
+import BassHeadstock from "./assets/bass-headstock.svg?react";
+import GuitarPeg from "./assets/guitar-peg.svg?react";
+import transformsJson from "./transforms/guitar.json";
 import "./Tuner.css";
 
 export enum InstrumentEnum {
@@ -71,9 +75,10 @@ class TuningResult {
 interface Props {
   instrument: InstrumentEnum;
   tuning: string[];
+  onNoteChange: (index: number, newNote: string) => void;
 }
 
-const Tuner = ({ instrument, tuning }: Props) => {
+const Tuner = ({ instrument, tuning, onNoteChange }: Props) => {
   const guitarSampler = useRef(
     new Tone.Sampler({
       urls: {
@@ -112,7 +117,7 @@ const Tuner = ({ instrument, tuning }: Props) => {
     focusedIndex.current = -1;
   }, [tuning]);
 
-  const transforms = transformsJson["guitar"];
+  const transforms = transformsJson;
 
   const [frequency, setFrequency] = useState(0);
   const [isMicEnabled, setIsMicEnabled] = useState(false);
@@ -166,34 +171,6 @@ const Tuner = ({ instrument, tuning }: Props) => {
       });
   }, []);
 
-  const transposeNoteCallback = (
-    noteIndex: number,
-    transposeAmount: number
-  ) => {
-    const newNote = Tone.Frequency(tuningState[noteIndex].note)
-      .transpose(transposeAmount)
-      .toNote();
-    const newTuningState = tuningState.map((n, i) => {
-      if (i === noteIndex) {
-        return {
-          note: newNote,
-          isFocused: true,
-          isTuned: false,
-        };
-      } else {
-        return {
-          note: n.note,
-          isFocused: false,
-          isTuned: n.isTuned,
-        };
-      }
-    });
-    setTuningState(newTuningState);
-    focusedIndex.current = noteIndex;
-    tuningStateRef.current = newTuningState;
-    guitarSampler.current.triggerAttackRelease(newNote, "1n");
-  };
-
   const playNoteCallback = (noteIndex: number, note: string) => {
     const newTuningState = tuningState.map((n, i) => {
       return i === noteIndex
@@ -218,6 +195,23 @@ const Tuner = ({ instrument, tuning }: Props) => {
     }
   };
 
+  const renderHeadstock = () => {
+    switch (instrument) {
+      case InstrumentEnum.guitar:
+        return <GuitarHeadstock className="bass-head"></GuitarHeadstock>;
+        break;
+      case InstrumentEnum.bass:
+        return <BassHeadstock className="bass-head"></BassHeadstock>;
+        break;
+      case InstrumentEnum.ukulele:
+        return <UkuleleHeadstock className="bass-head"></UkuleleHeadstock>;
+        break;
+      case InstrumentEnum.eigthString:
+        return <GuitarHeadstock className="bass-head"></GuitarHeadstock>;
+        break;
+    }
+  };
+
   return (
     <div className="tuner">
       <svg
@@ -228,7 +222,7 @@ const Tuner = ({ instrument, tuning }: Props) => {
         viewBox="0 0 80 100"
       >
         <g>
-          <path d="m 32.397846,1.189153 c -4.738905,4.8812164 -9.591365,7.7704085 -14.557967,8.6669579 4.529708,28.2641671 4.047955,50.1251031 2.86005,71.0834331 7.044778,8.657123 5.020004,11.925133 7.278644,17.890054 H 40 52.021428 C 54.280069,92.864681 52.255295,89.596669 59.300072,80.939544 58.112167,59.981214 57.630413,38.120278 62.160121,9.8561109 57.193518,8.9595615 52.341062,6.0703673 47.602155,1.189153 c -5.272067,1.2942631 -9.927973,1.2954338 -15.204309,0 z" />
+          {renderHeadstock()}
           <circle
             className="mic-button"
             cx={transforms.mic.x}
@@ -260,14 +254,13 @@ const Tuner = ({ instrument, tuning }: Props) => {
           <TuningButton
             key={index}
             i={index}
+            instrument={instrument}
             isFocused={note.isFocused}
             isTuned={note.isTuned}
             playNoteCallback={(note: string) => {
               playNoteCallback(index, note);
             }}
-            transposeNoteCallback={(transposeAmount: number) => {
-              transposeNoteCallback(index, transposeAmount);
-            }}
+            onNoteChange={onNoteChange}
           >
             {note.note}
           </TuningButton>

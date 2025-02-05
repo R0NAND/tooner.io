@@ -20,14 +20,32 @@
 body {
   margin: 0;
   padding: 0;
-  place-items: center;
   font-family: "Merriweather", sans-serif;
+}
+
+html {
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 button {
   padding: 0;
   border: none;
   background: none;
+  font-size: var(--button-font-size);
+  background-color: transparent;
+  border: "2px solid red";
+  color: var(--secondary-color);
+  transition: color 0.25s;
+}
+
+button:hover {
+  color: var(--main-color);
+  cursor: pointer;
 }
 
 svg text {

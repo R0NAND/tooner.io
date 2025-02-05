@@ -1,27 +1,31 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as Tone from "tone";
 import GuitarPeg from "./assets/guitar-peg.svg?react";
-import transforms from "./tuner-svg-transforms.json";
+import guitarTransforms from "./transforms/guitar.json";
+import ukuleleTransforms from "./transforms/ukulele.json";
+import bassTransforms from "./transforms/bass.json";
+import eightStringTransforms from "./transforms/eight-string.json";
 import "./TuningButton.css";
-
-let notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+import { InstrumentEnum } from "./Tuner";
 
 interface Props {
   children: string;
+  instrument: InstrumentEnum;
   i: number;
   isFocused: boolean;
   isTuned: boolean;
   playNoteCallback: (note: string) => void;
-  transposeNoteCallback: (transposeAmount: number) => void;
+  onNoteChange: (index: number, newNote: string) => void;
 }
 
 const TuningButton = ({
   children,
+  instrument,
   i,
   isFocused,
   isTuned,
   playNoteCallback,
-  transposeNoteCallback,
+  onNoteChange,
 }: Props) => {
   const noteRegex = /^([A-G|a-g][#b]?)([0-8])$/;
   if (noteRegex.exec(children) === null) {
@@ -29,6 +33,25 @@ const TuningButton = ({
       'TuningButton child must be a string specifying a musical note followed by an integer between 0 and 8. e.g: "C#4", "E2", "F#8", etc.'
     );
   }
+
+  const [transforms, setTransforms] =
+    useState<typeof guitarTransforms>(guitarTransforms);
+  useEffect(() => {
+    switch (instrument) {
+      case InstrumentEnum.guitar:
+        setTransforms(guitarTransforms);
+        break;
+      case InstrumentEnum.ukulele:
+        setTransforms(ukuleleTransforms);
+        break;
+      case InstrumentEnum.bass:
+        setTransforms(bassTransforms);
+        break;
+      case InstrumentEnum.eigthString:
+        setTransforms(eightStringTransforms);
+        break;
+    }
+  }, [instrument]);
 
   const componentRef = useRef<SVGGElement>(null);
   const textRef = useRef<SVGGElement>(null);
@@ -50,7 +73,7 @@ const TuningButton = ({
   };
   useEffect(() => {
     rotatePeg();
-  }, [children]);
+  }, [children, instrument]);
 
   return (
     <g
@@ -58,26 +81,22 @@ const TuningButton = ({
       ref={componentRef}
       style={{
         transformOrigin: `${
-          transforms.guitar.pegs[i].x + transforms.guitar.pegs[i].transformX
-        }px ${
-          transforms.guitar.pegs[i].y + transforms.guitar.pegs[i].transformY
-        }px`,
+          transforms.pegs[i].x + transforms.pegs[i].transformX
+        }px ${transforms.pegs[i].y + transforms.pegs[i].transformY}px`,
       }}
     >
       <g
-        transform={transforms.guitar.pegs[i].transform}
+        transform={transforms.pegs[i].transform}
         style={{
           transformOrigin: `${
-            transforms.guitar.pegs[i].x + transforms.guitar.pegs[i].transformX
-          }px ${
-            transforms.guitar.pegs[i].y + transforms.guitar.pegs[i].transformY
-          }px`,
+            transforms.pegs[i].x + transforms.pegs[i].transformX
+          }px ${transforms.pegs[i].y + transforms.pegs[i].transformY}px`,
         }}
       >
         <GuitarPeg
-          height={transforms.guitar.pegs[i].height}
-          x={transforms.guitar.pegs[i].x}
-          y={transforms.guitar.pegs[i].y}
+          height={transforms.pegs[i].height}
+          x={transforms.pegs[i].x}
+          y={transforms.pegs[i].y}
           preserveAspectRatio="xMinYMin"
           className={`tuning-peg-svg${isFocused ? " focused-peg" : ""} ${
             isTuned ? " tuned-peg" : ""
@@ -94,13 +113,10 @@ const TuningButton = ({
           fontWeight="bold"
           textAnchor="middle"
           dominantBaseline="middle"
-          x={
-            transforms.guitar.pegs[i].x +
-            transforms.guitar.pegElements.centerLine
-          }
-          y={transforms.guitar.pegs[i].y + transforms.guitar.pegElements.upY}
+          x={transforms.pegs[i].x + transforms.pegElements.centerLine}
+          y={transforms.pegs[i].y + transforms.pegElements.upY}
           onClick={(e) => {
-            transposeNoteCallback(1);
+            onNoteChange(i, Tone.Frequency(children).transpose(1).toNote());
           }}
         >
           +
@@ -111,11 +127,8 @@ const TuningButton = ({
           fontWeight="bold"
           textAnchor="middle"
           dominantBaseline="middle"
-          x={
-            transforms.guitar.pegs[i].x +
-            transforms.guitar.pegElements.centerLine
-          }
-          y={transforms.guitar.pegs[i].y + transforms.guitar.pegElements.playY}
+          x={transforms.pegs[i].x + transforms.pegElements.centerLine}
+          y={transforms.pegs[i].y + transforms.pegElements.playY}
         >
           {children}
         </text>
@@ -125,13 +138,10 @@ const TuningButton = ({
           fontWeight="bold"
           textAnchor="middle"
           dominantBaseline="middle"
-          x={
-            transforms.guitar.pegs[i].x +
-            transforms.guitar.pegElements.centerLine
-          }
-          y={transforms.guitar.pegs[i].y + transforms.guitar.pegElements.downY}
+          x={transforms.pegs[i].x + transforms.pegElements.centerLine}
+          y={transforms.pegs[i].y + transforms.pegElements.downY}
           onClick={(e) => {
-            transposeNoteCallback(-1);
+            onNoteChange(i, Tone.Frequency(children).transpose(-1).toNote());
           }}
         >
           -
