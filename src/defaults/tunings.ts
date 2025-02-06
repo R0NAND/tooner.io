@@ -28,11 +28,17 @@ const defaultTunings: Tunings = {
     },
     {
       "name": "ukulele",
-      "tunings": [{ "name": "Standard", "notes": ["G4", "C4", "E4", "A4"] }]
+      "tunings": [{ "name": "Standard", "notes": ["G4", "C4", "E4", "A4"] },
+      { "name": "Low G", "notes": ["G3", "C4", "E4", "A4"] },
+      { "name": "Half Step Down", "notes": ["F#4", "B3", "D#4", "G#4"] },
+      { "name": "Full Step Down", "notes": ["F4", "A#3", "D4", "G4"] }
+    ]
     },
     {
       "name": "bass",
-      "tunings": [{ "name": "Standard", "notes": ["E1", "A1", "D2", "G2"] }]
+      "tunings": [{ "name": "Standard", "notes": ["E1", "A1", "D2", "G2"] },
+      { "name": "Half Step Down", "notes": ["D#1", "G#1", "C#2", "F#2"] },
+      { "name": "Full Step Down", "notes": ["D1", "G1", "C2", "F2"] }]
     },
     {
       "name": "8-string",

@@ -107,9 +107,13 @@ const TunerPage = () => {
   return (
     <div className="tuner-page">
       <div className="tuning-menu">
-        <div>
+        <div className="instrument-select-panel">
           <button
-            className="instrument-select-button"
+            className={
+              selectedInstrument === InstrumentEnum.guitar
+                ? "instrument-selected-tab"
+                : "instrument-select-button"
+            }
             onClick={() => {
               instrumentSelect(InstrumentEnum.guitar);
             }}
@@ -117,7 +121,11 @@ const TunerPage = () => {
             Guitar
           </button>
           <button
-            className="instrument-select-button"
+            className={
+              selectedInstrument === InstrumentEnum.bass
+                ? "instrument-selected-tab"
+                : "instrument-select-button"
+            }
             onClick={() => {
               instrumentSelect(InstrumentEnum.bass);
             }}
@@ -125,7 +133,11 @@ const TunerPage = () => {
             Bass
           </button>
           <button
-            className="instrument-select-button"
+            className={
+              selectedInstrument === InstrumentEnum.ukulele
+                ? "instrument-selected-tab"
+                : "instrument-select-button"
+            }
             onClick={() => {
               instrumentSelect(InstrumentEnum.ukulele);
             }}
@@ -133,7 +145,11 @@ const TunerPage = () => {
             Ukulele
           </button>
           <button
-            className="instrument-select-button"
+            className={
+              selectedInstrument === InstrumentEnum.eigthString
+                ? "instrument-selected-tab"
+                : "instrument-select-button"
+            }
             onClick={() => {
               instrumentSelect(InstrumentEnum.eigthString);
             }}

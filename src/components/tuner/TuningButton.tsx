@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as Tone from "tone";
 import GuitarPeg from "./assets/guitar-peg.svg?react";
+import UkulelePeg from "./assets/ukulele-peg.svg?react";
+import BassPeg from "./assets/bass-peg.svg?react";
 import guitarTransforms from "./transforms/guitar.json";
 import ukuleleTransforms from "./transforms/ukulele.json";
 import bassTransforms from "./transforms/bass.json";
@@ -75,6 +77,75 @@ const TuningButton = ({
     rotatePeg();
   }, [children, instrument]);
 
+  const renderPeg = () => {
+    switch (instrument) {
+      case InstrumentEnum.guitar:
+        return (
+          <GuitarPeg
+            height={transforms.pegs[i].height}
+            x={transforms.pegs[i].x}
+            y={transforms.pegs[i].y}
+            preserveAspectRatio="xMinYMin"
+            className={`tuning-peg-svg${isFocused ? " focused-peg" : ""} ${
+              isTuned ? " tuned-peg" : ""
+            }`}
+            onClick={() => {
+              playNoteCallback(children);
+            }}
+          ></GuitarPeg>
+        );
+        break;
+      case InstrumentEnum.ukulele:
+        return (
+          <UkulelePeg
+            height={transforms.pegs[i].height}
+            x={transforms.pegs[i].x}
+            y={transforms.pegs[i].y}
+            preserveAspectRatio="xMinYMin"
+            className={`tuning-peg-svg${isFocused ? " focused-peg" : ""} ${
+              isTuned ? " tuned-peg" : ""
+            }`}
+            onClick={() => {
+              playNoteCallback(children);
+            }}
+          ></UkulelePeg>
+        );
+        break;
+      case InstrumentEnum.bass:
+        return (
+          <BassPeg
+            height={transforms.pegs[i].height}
+            x={transforms.pegs[i].x}
+            y={transforms.pegs[i].y}
+            preserveAspectRatio="xMinYMin"
+            className={`tuning-peg-svg${isFocused ? " focused-peg" : ""} ${
+              isTuned ? " tuned-peg" : ""
+            }`}
+            onClick={() => {
+              playNoteCallback(children);
+            }}
+          ></BassPeg>
+        );
+        break;
+      case InstrumentEnum.eigthString:
+        return (
+          <GuitarPeg
+            height={transforms.pegs[i].height}
+            x={transforms.pegs[i].x}
+            y={transforms.pegs[i].y}
+            preserveAspectRatio="xMinYMin"
+            className={`tuning-peg-svg${isFocused ? " focused-peg" : ""} ${
+              isTuned ? " tuned-peg" : ""
+            }`}
+            onClick={() => {
+              playNoteCallback(children);
+            }}
+          ></GuitarPeg>
+        );
+        break;
+    }
+  };
+
   return (
     <g
       className="tuning-peg-group"
@@ -86,25 +157,14 @@ const TuningButton = ({
       }}
     >
       <g
-        transform={transforms.pegs[i].transform}
+        transform={transforms.pegs[i].isMirrored ? "scale(-1 1)" : ""}
         style={{
           transformOrigin: `${
             transforms.pegs[i].x + transforms.pegs[i].transformX
           }px ${transforms.pegs[i].y + transforms.pegs[i].transformY}px`,
         }}
       >
-        <GuitarPeg
-          height={transforms.pegs[i].height}
-          x={transforms.pegs[i].x}
-          y={transforms.pegs[i].y}
-          preserveAspectRatio="xMinYMin"
-          className={`tuning-peg-svg${isFocused ? " focused-peg" : ""} ${
-            isTuned ? " tuned-peg" : ""
-          }`}
-          onClick={() => {
-            playNoteCallback(children);
-          }}
-        ></GuitarPeg>
+        {renderPeg()}
       </g>
       <g ref={textRef}>
         <text

@@ -12,8 +12,9 @@
 
 .tuning-peg-svg {
   fill: var(--main-background-color);
-  stroke-width: 0.333;
+  stroke-width: 0.5;
   stroke: var(--secondary-color);
+  filter: drop-shadow(0px 0px 0px);
 }
 
 .tuning-peg-svg:hover {

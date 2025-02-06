@@ -34,5 +34,26 @@
   background-color: var(--stronger-background-color);
 }
 
+.instrument-select-panel {
+  display: flex;
+  background-color: var(--lighter-background-color);
+}
+
 .instrument-select-button {
+  flex-basis: 25%;
+  padding: 0.5em 0 0.5em 0;
+  background-color: transparent;
+  color: var(--primary-color);
+}
+
+.instrument-select-button:hover {
+  flex-basis: 25%;
+  background-color: var(--lighter-background-color);
+  color: var(--primary-color);
+}
+
+.instrument-selected-tab {
+  flex-basis: 25%;
+  background-color: var(--stronger-background-color);
+  border-radius: 1em 1em 0em 0em;
 }

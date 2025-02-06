@@ -4,60 +4,45 @@
     "y": 25,
     "r": 6
   },
-  "pegs": [
-    {
-      "height": 14.646,
-      "x": 7.187,
-      "y": 64.68,
-      "transformX": 5.3265,
-      "transformY": 7.323,
-      "transform": ""
-    },
-    {
-      "height": 14.646,
-      "x": 7.187,
-      "y": 40.129,
-      "transformX": 5.3265,
-      "transformY": 7.323,
-      "transform": ""
-    },
-    {
-      "height": 14.646,
-      "x": 7.187,
-      "y": 15.578,
-      "transformX": 5.3265,
-      "transformY": 7.323,
-      "transform": ""
-    },
-    {
-      "height": 14.646,
-      "x": 62.16,
-      "y": 15.578,
-      "transformX": 5.3265,
-      "transformY": 7.323,
-      "transform": "scale(-1 1)"
-    },
-    {
-      "height": 14.646,
-      "x": 62.16,
-      "y": 40.129,
-      "transformX": 5.3265,
-      "transformY": 7.323,
-      "transform": "scale(-1 1)"
-    },
-    {
-      "height": 14.646,
-      "x": 62.16,
-      "y": 64.68,
-      "transformX": 5.3265,
-      "transformY": 7.323,
-      "transform": "scale(-1 1)"
+  "pegs": {
+    "height": 14.646,
+    "width": 10.653,
+    "transforms": [
+      {
+        "x": 7.187,
+        "y": 64.68,
+        "isMirrored": false
+      },
+      {
+        "x": 7.187,
+        "y": 40.129,
+        "isMirrored": false
+      },
+      {
+        "x": 7.187,
+        "y": 15.578,
+        "isMirrored": false
+      },
+      {
+        "x": 62.16,
+        "y": 15.578,
+        "isMirrored": true
+      },
+      {
+        "x": 62.16,
+        "y": 40.129,
+        "isMirrored": true
+      },
+      {
+        "x": 62.16,
+        "y": 64.68,
+        "isMirrored": true
+      }
+    ],
+    "text": {
+      "up": { "x": 5.3265, "y": 2.1615 },
+      "note": { "x": 5.3265, "y": 7.323 },
+      "down": { "x": 5.3265, "y": 12.4845 }
     }
-  ],
-  "pegElements": {
-    "centerLine": 5.3265,
-    "downY": 12.4845,
-    "playY": 7.323,
-    "upY": 2.1615
   }
 }
