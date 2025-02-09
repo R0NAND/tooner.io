@@ -1,38 +1,40 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Tuner from "../components/tuner/Tuner";
 import { InstrumentEnum } from "../components/tuner/Tuner";
 import "./TunerPage.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRight,
-  faDeleteLeft,
+  faRemove,
   faSave,
-  faTrash,
   faTrashAlt,
-  faX,
 } from "@fortawesome/free-solid-svg-icons";
 import { Tuning, Tunings } from "../types/tunings";
+import { generateNewString } from "../utils/generateNewString";
+import { measureTextWidth } from "../utils/measureTextWidth";
+import EditableText from "../components/EditableText";
 
 const TunerPage = () => {
   const [tuning, setTuning] = useState<string[]>([]);
-  const [tunings, setTunings] = useState<Tunings>();
   const [selectedInstrument, setSelectedInstrument] = useState(
     InstrumentEnum.guitar
   );
-  const [selectedTunings, setSelectedTunings] = useState<Tuning[]>([]);
-  useEffect(() => {
+  const [instrumentTunings, setInstrumentTunings] = useState<Tuning[]>([]);
+
+  const instrumentSelect = (instrument: InstrumentEnum) => {
     try {
       const tuningsString = localStorage.getItem("tunings");
       if (tuningsString !== null) {
         const localTunings: Tunings = JSON.parse(tuningsString);
-        setTunings(localTunings);
-        setSelectedTunings(
-          localTunings.instruments.filter((t) => t.name === "guitar")[0].tunings
+        setInstrumentTunings(
+          localTunings.instruments.filter((t) => t.name === instrument)[0]
+            .tunings
         );
         setTuning(
-          localTunings.instruments.filter((t) => t.name === "guitar")[0]
+          localTunings.instruments.filter((t) => t.name === instrument)[0]
             .tunings[0].notes
         );
+        setSelectedInstrument(instrument);
       } else {
         throw new Error(
           "Could not retrieve saved tuning data from local storage!"
@@ -41,67 +43,77 @@ const TunerPage = () => {
     } catch {
       throw new Error();
     }
+  };
+
+  useEffect(() => {
+    instrumentSelect(InstrumentEnum.guitar);
   }, []);
-  const changeNote = (index: number, newNote: string) => {
-    const newTuning = tuning.map((note, i) => {
-      return i === index ? newNote : note;
-    });
-    setTuning(newTuning);
+
+  //Checks if current tuning is already in list... if not, allow it to be saved
+  useEffect(() => {
     if (
-      selectedTunings
+      instrumentTunings
         .map((t) => {
-          return t.notes;
+          return t.notes.toString();
         })
-        .includes(newTuning)
+        .includes(tuning.toString())
     ) {
       setCanSaveTuning(false);
     } else {
       setCanSaveTuning(true);
     }
+  }, [tuning, instrumentTunings]);
+
+  const changeNote = (index: number, newNote: string) => {
+    const newTuning = tuning.map((note, i) => {
+      return i === index ? newNote : note;
+    });
+    setTuning(newTuning);
   };
 
   const [canSaveTuning, setCanSaveTuning] = useState(false);
   const saveTuning = () => {
+    const newName = generateNewString(
+      instrumentTunings.map((t) => {
+        return t.name;
+      }),
+      "New Tuning "
+    );
     const newSelectedTunings = [
-      ...selectedTunings,
-      { name: "New Tuning", notes: tuning },
+      ...instrumentTunings,
+      { name: newName, notes: tuning },
     ];
-    setSelectedTunings(newSelectedTunings);
+    setCanSaveTuning(false);
+    setInstrumentTunings(newSelectedTunings);
   };
   const deleteTuning = (selectedTuning: Tuning) => {
-    const newSelectedTuning = selectedTunings.filter(
+    const newSelectedTuning = instrumentTunings.filter(
       (n) => n !== selectedTuning
     );
-    setSelectedTunings(newSelectedTuning);
+    setInstrumentTunings(newSelectedTuning);
   };
 
-  const instrumentSelect = (instrument: InstrumentEnum) => {
-    setSelectedInstrument(instrument);
-    let instrumentString = "";
-    switch (instrument) {
-      case InstrumentEnum.guitar:
-        instrumentString = "guitar";
-        break;
-      case InstrumentEnum.ukulele:
-        instrumentString = "ukulele";
-        break;
-      case InstrumentEnum.bass:
-        instrumentString = "bass";
-        break;
-      case InstrumentEnum.eigthString:
-        instrumentString = "8-string";
-        break;
+  const onNameEdited = (newName: string, oldName: string) => {
+    const otherTuningNames = instrumentTunings
+      .filter((t) => t.name !== oldName)
+      .map((t) => {
+        return t.name;
+      });
+    if (otherTuningNames.includes(newName) || newName === "") {
+      return false;
     }
-    if (tunings !== undefined) {
-      setSelectedTunings(
-        tunings.instruments.filter((t) => t.name === instrumentString)[0]
-          .tunings
-      );
-      setTuning(
-        tunings.instruments.filter((t) => t.name === instrumentString)[0]
-          .tunings[0].notes
-      );
-    }
+    const newSelectedTunings = instrumentTunings.map((t) => {
+      if (t.name === oldName) {
+        return {
+          name: newName,
+          notes: t.notes,
+        };
+      } else {
+        return t;
+      }
+    });
+    setInstrumentTunings(newSelectedTunings);
+    return true;
   };
 
   return (
@@ -157,39 +169,40 @@ const TunerPage = () => {
             8-String
           </button>
         </div>
-        {selectedTunings.map((tuning, i) => {
+        {instrumentTunings.map((tuning) => {
           return (
-            <div className="tuning-menu-item" key={tuning.name}>
+            <div className="tuning-menu-item" key={tuning.notes.toString()}>
               <button
-                className="tuning-table-button"
+                className="tuning-table-delete"
                 onClick={() => {
                   deleteTuning(tuning);
                 }}
               >
-                <FontAwesomeIcon icon={faTrashAlt}></FontAwesomeIcon>
+                <FontAwesomeIcon
+                  fontSize={"1.61em"}
+                  icon={faRemove}
+                ></FontAwesomeIcon>
               </button>
-              <div style={{ textAlign: "left", width: "20em", height: "2em" }}>
-                <div>{tuning.name}</div>
-                <div style={{ fontSize: "0.61em" }}>
-                  {tuning.notes.toString()}
-                </div>
-              </div>
-              <button
-                className="tuning-table-button"
+              <div
+                style={{ textAlign: "left", height: "2em" }}
                 onClick={() => {
                   setTuning(tuning.notes);
                 }}
               >
-                <FontAwesomeIcon icon={faArrowRight}></FontAwesomeIcon>
-              </button>
+                <EditableText onEditCompleted={onNameEdited}>
+                  {tuning.name}
+                </EditableText>
+                <div style={{ fontSize: "0.61em" }}>
+                  {tuning.notes.toString()}
+                </div>
+              </div>
             </div>
           );
         })}
         <button
-          className="tuning-table-button"
+          className="tuning-save-button"
           disabled={!canSaveTuning}
           onClick={saveTuning}
-          style={{ background: "grey", width: "100%" }}
         >
           <FontAwesomeIcon icon={faSave}></FontAwesomeIcon>
         </button>

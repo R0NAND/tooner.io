@@ -18,7 +18,6 @@ function App() {
       localStorage.setItem("tutorials", "");
       localStorage.setItem("tabs", "");
     }
-    console.log(localStorage.getItem("tunings"));
   }, []);
   return (
     <div className="app-container">

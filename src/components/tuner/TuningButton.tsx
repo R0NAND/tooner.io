@@ -82,9 +82,9 @@ const TuningButton = ({
       case InstrumentEnum.guitar:
         return (
           <GuitarPeg
-            height={transforms.pegs[i].height}
-            x={transforms.pegs[i].x}
-            y={transforms.pegs[i].y}
+            height={transforms.pegs.height}
+            x={transforms.pegs.transforms[i].x}
+            y={transforms.pegs.transforms[i].y}
             preserveAspectRatio="xMinYMin"
             className={`tuning-peg-svg${isFocused ? " focused-peg" : ""} ${
               isTuned ? " tuned-peg" : ""
@@ -98,9 +98,9 @@ const TuningButton = ({
       case InstrumentEnum.ukulele:
         return (
           <UkulelePeg
-            height={transforms.pegs[i].height}
-            x={transforms.pegs[i].x}
-            y={transforms.pegs[i].y}
+            height={transforms.pegs.height}
+            x={transforms.pegs.transforms[i].x}
+            y={transforms.pegs.transforms[i].y}
             preserveAspectRatio="xMinYMin"
             className={`tuning-peg-svg${isFocused ? " focused-peg" : ""} ${
               isTuned ? " tuned-peg" : ""
@@ -114,9 +114,9 @@ const TuningButton = ({
       case InstrumentEnum.bass:
         return (
           <BassPeg
-            height={transforms.pegs[i].height}
-            x={transforms.pegs[i].x}
-            y={transforms.pegs[i].y}
+            height={transforms.pegs.height}
+            x={transforms.pegs.transforms[i].x}
+            y={transforms.pegs.transforms[i].y}
             preserveAspectRatio="xMinYMin"
             className={`tuning-peg-svg${isFocused ? " focused-peg" : ""} ${
               isTuned ? " tuned-peg" : ""
@@ -130,9 +130,9 @@ const TuningButton = ({
       case InstrumentEnum.eigthString:
         return (
           <GuitarPeg
-            height={transforms.pegs[i].height}
-            x={transforms.pegs[i].x}
-            y={transforms.pegs[i].y}
+            height={transforms.pegs.height}
+            x={transforms.pegs.transforms[i].x}
+            y={transforms.pegs.transforms[i].y}
             preserveAspectRatio="xMinYMin"
             className={`tuning-peg-svg${isFocused ? " focused-peg" : ""} ${
               isTuned ? " tuned-peg" : ""
@@ -146,22 +146,34 @@ const TuningButton = ({
     }
   };
 
+  const computeTextX = () => {
+    return transforms.pegs.transforms[i].isMirrored
+      ? transforms.pegs.transforms[i].x +
+          transforms.pegs.width -
+          transforms.pegs.text.up.x
+      : transforms.pegs.transforms[i].x + transforms.pegs.text.up.x;
+  };
+
   return (
     <g
       className="tuning-peg-group"
       ref={componentRef}
       style={{
         transformOrigin: `${
-          transforms.pegs[i].x + transforms.pegs[i].transformX
-        }px ${transforms.pegs[i].y + transforms.pegs[i].transformY}px`,
+          transforms.pegs.transforms[i].x + transforms.pegs.transformX
+        }px ${transforms.pegs.transforms[i].y + transforms.pegs.transformY}px`,
       }}
     >
       <g
-        transform={transforms.pegs[i].isMirrored ? "scale(-1 1)" : ""}
+        transform={
+          transforms.pegs.transforms[i].isMirrored ? "scale(-1 1)" : ""
+        }
         style={{
           transformOrigin: `${
-            transforms.pegs[i].x + transforms.pegs[i].transformX
-          }px ${transforms.pegs[i].y + transforms.pegs[i].transformY}px`,
+            transforms.pegs.transforms[i].x + transforms.pegs.transformX
+          }px ${
+            transforms.pegs.transforms[i].y + transforms.pegs.transformY
+          }px`,
         }}
       >
         {renderPeg()}
@@ -173,8 +185,8 @@ const TuningButton = ({
           fontWeight="bold"
           textAnchor="middle"
           dominantBaseline="middle"
-          x={transforms.pegs[i].x + transforms.pegElements.centerLine}
-          y={transforms.pegs[i].y + transforms.pegElements.upY}
+          x={computeTextX()}
+          y={transforms.pegs.transforms[i].y + transforms.pegs.text.up.y}
           onClick={(e) => {
             onNoteChange(i, Tone.Frequency(children).transpose(1).toNote());
           }}
@@ -187,8 +199,8 @@ const TuningButton = ({
           fontWeight="bold"
           textAnchor="middle"
           dominantBaseline="middle"
-          x={transforms.pegs[i].x + transforms.pegElements.centerLine}
-          y={transforms.pegs[i].y + transforms.pegElements.playY}
+          x={computeTextX()}
+          y={transforms.pegs.transforms[i].y + transforms.pegs.text.note.y}
         >
           {children}
         </text>
@@ -198,8 +210,8 @@ const TuningButton = ({
           fontWeight="bold"
           textAnchor="middle"
           dominantBaseline="middle"
-          x={transforms.pegs[i].x + transforms.pegElements.centerLine}
-          y={transforms.pegs[i].y + transforms.pegElements.downY}
+          x={computeTextX()}
+          y={transforms.pegs.transforms[i].y + transforms.pegs.text.down.y}
           onClick={(e) => {
             onNoteChange(i, Tone.Frequency(children).transpose(-1).toNote());
           }}

@@ -7,15 +7,17 @@ import MicOff from "./assets/mic-off.svg?react";
 import GuitarHeadstock from "./assets/guitar-headstock.svg?react";
 import UkuleleHeadstock from "./assets/ukulele-headstock.svg?react";
 import BassHeadstock from "./assets/bass-headstock.svg?react";
-import GuitarPeg from "./assets/guitar-peg.svg?react";
-import transformsJson from "./transforms/guitar.json";
+import guitarTransforms from "./transforms/guitar.json";
+import bassTransforms from "./transforms/bass.json";
+import ukuleleTransforms from "./transforms/ukulele.json";
+import eightStringTransforms from "./transforms/eight-string.json";
 import "./Tuner.css";
 
 export enum InstrumentEnum {
-  guitar,
-  bass,
-  ukulele,
-  eigthString,
+  guitar = "guitar",
+  bass = "bass",
+  ukulele = "ukulele",
+  eigthString = "8-String",
 }
 
 class TuningResult {
@@ -104,20 +106,51 @@ const Tuner = ({ instrument, tuning, onNoteChange }: Props) => {
     })
   );
 
+  const noteChangeRef = useRef(""); // flags that tuning was changed via peg adjustment... no need to playback all notes
   useEffect(() => {
     const now = Tone.now();
     const newTuningState = tuning.map((n, i) => {
-      if (guitarSampler.current.loaded) {
-        guitarSampler.current.triggerAttackRelease(n, "1n", now + i * 0.1);
-      }
       return { note: n, isFocused: false, isTuned: false };
     });
     setTuningState(newTuningState);
     tuningStateRef.current = newTuningState;
     focusedIndex.current = -1;
-  }, [tuning]);
+    if (guitarSampler.current.loaded) {
+      if (noteChangeRef.current === "") {
+        newTuningState.forEach((element, i) => {
+          guitarSampler.current.triggerAttackRelease(
+            element.note,
+            "1n",
+            now + i * 0.1
+          );
+        });
+      } else {
+        guitarSampler.current.triggerAttackRelease(noteChangeRef.current, "1n");
+        noteChangeRef.current = "";
+      }
+    }
+    console.log("Tuner rerendering");
+  }, [tuning, instrument]);
 
-  const transforms = transformsJson;
+  const [transforms, setTransforms] =
+    useState<typeof guitarTransforms>(guitarTransforms);
+  useEffect(() => {
+    console.log("setting transforms");
+    switch (instrument) {
+      case InstrumentEnum.guitar:
+        setTransforms(guitarTransforms);
+        break;
+      case InstrumentEnum.bass:
+        setTransforms(bassTransforms);
+        break;
+      case InstrumentEnum.ukulele:
+        setTransforms(ukuleleTransforms);
+        break;
+      // case InstrumentEnum.eigthString:
+      //   setTransform(eightStringTransforms);
+      //   break;
+    }
+  }, [instrument]);
 
   const [frequency, setFrequency] = useState(0);
   const [isMicEnabled, setIsMicEnabled] = useState(false);
@@ -147,7 +180,6 @@ const Tuner = ({ instrument, tuning, onNoteChange }: Props) => {
               ? { note: n.note, isTuned: true, isFocused: n.isFocused }
               : n;
           });
-          console.log(newTuningState);
           tuningStateRef.current = newTuningState;
           setTuningState(newTuningState);
         }
@@ -260,7 +292,10 @@ const Tuner = ({ instrument, tuning, onNoteChange }: Props) => {
             playNoteCallback={(note: string) => {
               playNoteCallback(index, note);
             }}
-            onNoteChange={onNoteChange}
+            onNoteChange={(index, note) => {
+              onNoteChange(index, note);
+              noteChangeRef.current = note;
+            }}
           >
             {note.note}
           </TuningButton>

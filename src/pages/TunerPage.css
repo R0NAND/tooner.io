@@ -27,6 +27,7 @@
 }
 
 .tuning-menu-item:hover {
+  cursor: pointer;
   background: var(--lighter-background-color);
 }
 
@@ -52,8 +53,46 @@
   color: var(--primary-color);
 }
 
+.tuning-table-delete {
+  visibility: hidden;
+}
+
+.tuning-menu-item:hover .tuning-table-delete {
+  visibility: visible;
+}
+
 .instrument-selected-tab {
   flex-basis: 25%;
   background-color: var(--stronger-background-color);
   border-radius: 1em 1em 0em 0em;
+}
+
+.tuning-name-input {
+  background: none;
+  border: none;
+  font-size: 1em;
+  width: max-content;
+  min-width: 1ch;
+}
+
+.tuning-save-button {
+  cursor: pointer;
+  width: 100%;
+  font-size: 2em;
+  border-radius: 0.25em;
+  background-color: var(--lighter-background-color);
+  color: var(--secondary-color);
+}
+
+.tuning-save-button:hover {
+  cursor: pointer;
+  background-color: var(--lighter-background-color);
+  color: var(--primary-color);
+}
+
+.tuning-save-button:disabled {
+  cursor: default;
+  color: var(--lighter-background-color);
+  background-color: transparent;
+  border: 1px solid var(--lighter-background-color);
 }

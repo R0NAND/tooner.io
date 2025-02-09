@@ -4,44 +4,37 @@
     "y": 25,
     "r": 6
   },
-  "pegs": [
-    {
-      "height": 20.793,
-      "x": 0.71,
-      "y": 40,
-      "transformX": 6.4335,
-      "transformY": 10.3965,
-      "transform": ""
-    },
-    {
-      "height": 20.793,
-      "x": 0.71,
-      "y": 14,
-      "transformX": 6.4335,
-      "transformY": 10.3965,
-      "transform": ""
-    },
-    {
-      "height": 20.793,
-      "x": 66.424,
-      "y": 14,
-      "transformX": 6.4335,
-      "transformY": 10.3965,
-      "transform": "scale(-1 1)"
-    },
-    {
-      "height": 20.793,
-      "x": 66.424,
-      "y": 40,
-      "transformX": 6.4335,
-      "transformY": 10.3965,
-      "transform": "scale(-1 1)"
+  "pegs": {
+    "height": 20.793,
+    "width": 12.867,
+    "transformX": 6.4335,
+    "transformY": 10.3965,
+    "transforms": [
+      {
+        "x": 0.71,
+        "y": 40,
+        "isMirrored": false
+      },
+      {
+        "x": 0.71,
+        "y": 14,
+        "isMirrored": false
+      },
+      {
+        "x": 66.424,
+        "y": 14,
+        "isMirrored": true
+      },
+      {
+        "x": 66.424,
+        "y": 40,
+        "isMirrored": true
+      }
+    ],
+    "text": {
+      "up": { "x": 6.4335, "y": 4 },
+      "note": { "x": 6.4335, "y": 10.3965 },
+      "down": { "x": 6.4335, "y": 16.794 }
     }
-  ],
-  "pegElements": {
-    "centerLine": 6.4335,
-    "downY": 16.794,
-    "playY": 10.3965,
-    "upY": 4
   }
 }
