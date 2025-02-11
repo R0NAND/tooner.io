@@ -1,13 +1,7 @@
-export interface Tunings {
-  instruments: Instrument[]
-}
-
-export interface Instrument {
-  name: string
-  tunings: Tuning[]
-}
+import { InstrumentEnum } from "../components/tuner/Tuner";
 
 export interface Tuning {
-  name: string
-  notes: string[]
+  instrument: InstrumentEnum;
+  name: string;
+  notes: string[];
 }

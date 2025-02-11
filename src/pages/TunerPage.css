@@ -75,6 +75,13 @@
   min-width: 1ch;
 }
 
+.tuning-name-input:focus {
+  outline: none;
+  border: 1px solid var(--primary-hue);
+  border-radius: 0.5em;
+  box-shadow: 0px 0px 10px var(--primary-hue);
+}
+
 .tuning-save-button {
   cursor: pointer;
   width: 100%;

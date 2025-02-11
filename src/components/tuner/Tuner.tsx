@@ -129,13 +129,11 @@ const Tuner = ({ instrument, tuning, onNoteChange }: Props) => {
         noteChangeRef.current = "";
       }
     }
-    console.log("Tuner rerendering");
   }, [tuning, instrument]);
 
   const [transforms, setTransforms] =
     useState<typeof guitarTransforms>(guitarTransforms);
   useEffect(() => {
-    console.log("setting transforms");
     switch (instrument) {
       case InstrumentEnum.guitar:
         setTransforms(guitarTransforms);

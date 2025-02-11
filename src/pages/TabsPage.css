@@ -1,0 +1,31 @@
+.tabs-page {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
+@media (max-aspect-ratio: 1/1) {
+  .tabs-page {
+    flex-direction: column;
+  }
+
+  .tabs-menu {
+    height: 30%;
+    overflow-y: scroll;
+    margin: auto;
+  }
+
+  .tab-display {
+    height: 70%;
+  }
+}
+
+.tab-menu-item {
+  padding: 0.5em;
+  text-align: left;
+}
+
+.tab-menu-item:hover {
+  background-color: var(--lighter-background-color);
+  cursor: pointer;
+}

@@ -1,0 +1,1 @@
+Make generate New string handle duplicate strings

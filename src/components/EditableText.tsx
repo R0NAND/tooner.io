@@ -13,7 +13,11 @@ const EditableText = ({ children, onEditCompleted }: Props) => {
 
   const [textWidth, setTextWidth] = useState(0);
   useEffect(() => {
-    const tWidth = measureTextWidth(children, inputRef.current?.style.font);
+    const font = window
+      //@ts-ignore
+      .getComputedStyle(inputRef.current, null)
+      .getPropertyValue("font");
+    const tWidth = measureTextWidth(children, font, 1);
     setTextWidth(tWidth);
     setTransitoryValue(children);
   }, [children]);

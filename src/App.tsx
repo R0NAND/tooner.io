@@ -8,17 +8,10 @@ import AboutPage from "./pages/AboutPage";
 import TabsPage from "./pages/TabsPage";
 import ToolsPanel from "./components/tools-panel/ToolsPanel";
 import defaultTunings from "./defaults/tunings";
+import defaultTabs from "./defaults/tabs";
 import TestComponent from "./components/TestComponent";
 
 function App() {
-  useEffect(() => {
-    localStorage.clear();
-    if (localStorage.length === 0) {
-      localStorage.setItem("tunings", JSON.stringify(defaultTunings));
-      localStorage.setItem("tutorials", "");
-      localStorage.setItem("tabs", "");
-    }
-  }, []);
   return (
     <div className="app-container">
       {/* <TestComponent></TestComponent> */}
