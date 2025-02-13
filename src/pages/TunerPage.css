@@ -2,22 +2,12 @@
   display: flex;
   flex-direction: row;
   height: 100%;
+  justify-content: space-between;
 }
 
-@media (max-aspect-ratio: 1/1) {
-  .tuner-page {
-    flex-direction: column;
-  }
-
-  .tuning-menu {
-    height: 30%;
-    overflow-y: scroll;
-    margin: auto;
-  }
-
-  .tuner {
-    height: 70%;
-  }
+.tuner {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .tuning-menu-item {
@@ -33,6 +23,11 @@
 
 .tuning-menu {
   background-color: var(--stronger-background-color);
+  width: 20em;
+}
+
+.tuning-help {
+  width: 20em;
 }
 
 .instrument-select-panel {

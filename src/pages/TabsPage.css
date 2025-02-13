@@ -1,31 +1,43 @@
 .tabs-page {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   height: 100%;
 }
 
-@media (max-aspect-ratio: 1/1) {
-  .tabs-page {
-    flex-direction: column;
-  }
+.tab-display {
+  height: 100%;
+}
 
-  .tabs-menu {
-    height: 30%;
-    overflow-y: scroll;
-    margin: auto;
-  }
-
-  .tab-display {
-    height: 70%;
-  }
+.tabs-sidebar {
+  background-color: var(--stronger-background-color);
+  width: 30em;
+  overflow-y: scroll;
 }
 
 .tab-menu-item {
-  padding: 0.5em;
-  text-align: left;
+  padding: 0.125em 0.5em 0.125em 0.5em;
+  display: flex;
+  gap: 0.125em;
 }
 
 .tab-menu-item:hover {
   background-color: var(--lighter-background-color);
   cursor: pointer;
+}
+
+.tab-delete {
+  visibility: hidden;
+}
+
+.tab-menu-item:hover .tab-delete {
+  visibility: visible;
+}
+
+.tab-text-area {
+  height: 100%;
+  resize: none;
+  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box; /* Firefox, other Gecko */
+  box-sizing: border-box;
 }

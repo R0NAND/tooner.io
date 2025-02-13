@@ -13,17 +13,7 @@
   flex-direction: column;
 }
 
-@media (max-aspect-ratio: 1/1) {
-  .app-container > .navbar {
-    order: 2;
-  }
-
-  .app-container > .tools-panel {
-    order: 3;
-  }
-}
-
 .app-content {
   width: 100%;
-  height: calc(100vh - var(--navbar-height) - var(--tools-panel-height));
+  height: calc(100vh - var(--navbar-height));
 }

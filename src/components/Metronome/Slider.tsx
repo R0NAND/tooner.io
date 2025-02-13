@@ -5,7 +5,6 @@ import React, {
   useRef,
   useState,
 } from "react";
-import MetronomeVector from "./assets/MetronomeVector";
 import "./Slider.css";
 
 interface Props {
@@ -26,9 +25,9 @@ const Slider = ({ width, min, max, value, onChange }: Props) => {
   const [thumbLeft, setThumbLeft] = useState(0);
   const [trackWidth, setTrackWidth] = useState(0);
   const [thumbWidth, setThumbWidth] = useState(0);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const thumbRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const thumbRef = useRef<HTMLDivElement | null>(null);
+  const trackRef = useRef<HTMLDivElement | null>(null);
 
   useLayoutEffect(() => {
     const setDimensions = () => {
@@ -97,6 +96,21 @@ const Slider = ({ width, min, max, value, onChange }: Props) => {
     );
   };
 
+  const [inputValue, setInputValue] = useState(value.toString());
+  useEffect(() => {
+    setInputValue(value.toString());
+  }, [value]);
+  const handleBlur = () => {
+    let blurValue = parseFloat(inputValue);
+    if (isNaN(blurValue)) {
+      blurValue = min;
+    } else {
+      blurValue = Math.min(Math.max(blurValue, min), max);
+    }
+    setInputValue(blurValue.toString());
+    onChange(blurValue);
+  };
+
   return (
     <div
       ref={trackRef}
@@ -139,68 +153,33 @@ const Slider = ({ width, min, max, value, onChange }: Props) => {
           alignContent: "center",
           height: "1.5em",
           padding: "0.5ch 2ch 0.5ch 2ch",
-          borderRadius: "3ch",
+          borderRadius: "0.5em",
           position: "absolute",
           left: thumbLeft,
         }}
       >
-        <div>
-          <input
-            className="bpm-slider-input"
-            onMouseDown={(e) => {
-              e.stopPropagation();
-            }}
-            ref={inputRef}
-            style={{
-              textAlign: "right",
-              margin: "auto",
-              border: "none",
-              background: "transparent",
-              color: "black",
-            }}
-            type="text"
-            maxLength={3}
-            onKeyDown={(event) => {
-              var chr = event.key;
-
-              if (
-                event.ctrlKey ||
-                event.altKey ||
-                typeof event.key !== "string" ||
-                event.key.length !== 1
-              ) {
-                return;
-              }
-              if ("0123456789".indexOf(chr) < 0) {
-                event.preventDefault();
-                return true;
-              } else {
-                return false;
-              }
-            }}
-            min={min}
-            max={max}
-            onBlur={(e) => {
-              const newValue = Math.max(
-                min,
-                Math.min(max, Number(e.target.value))
-              );
-              e.target.value = newValue.toString();
-              onChange(newValue);
-            }}
-            onKeyUp={(e) => {
-              if (e.key === "Enter") {
-                inputRef.current?.blur();
-              }
-            }}
-          ></input>
-          <span
-            className="bpm-slider-bpm-label"
-            style={{ color: "black", fontWeight: "bold", fontSize: "0.5em" }}
-          >
-            Bpm
-          </span>
-        </div>
+        <input
+          style={{ width: "7ch", borderRadius: "0.5em" }}
+          ref={inputRef}
+          onMouseDown={(e) => {
+            e.stopPropagation();
+          }}
+          type="number"
+          value={inputValue}
+          onChange={(e) => {
+            setInputValue(e.target.value);
+          }}
+          onBlur={() => {
+            handleBlur();
+          }}
+          min={min}
+          max={max}
+          onKeyUp={(e) => {
+            if (e.key === "Enter") {
+              inputRef.current?.blur();
+            }
+          }}
+        ></input>
       </div>
     </div>
   );

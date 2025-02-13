@@ -7,9 +7,6 @@ import Navbar from "./components/navbar/Navbar";
 import AboutPage from "./pages/AboutPage";
 import TabsPage from "./pages/TabsPage";
 import ToolsPanel from "./components/tools-panel/ToolsPanel";
-import defaultTunings from "./defaults/tunings";
-import defaultTabs from "./defaults/tabs";
-import TestComponent from "./components/TestComponent";
 
 function App() {
   return (
@@ -27,7 +24,7 @@ function App() {
           <Route path="/about" element={<AboutPage></AboutPage>}></Route>
         </Routes>
       </div>
-      <ToolsPanel></ToolsPanel>
+      {/* <ToolsPanel></ToolsPanel> */}
     </div>
   );
 }

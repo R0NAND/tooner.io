@@ -7,11 +7,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import tuningFork from "./assets/tuning-fork.svg";
 import {
   faBookOpen,
+  faClock,
   faPersonChalkboard,
   faQuestionCircle,
   faSliders,
 } from "@fortawesome/free-solid-svg-icons";
 import { faMusic } from "@fortawesome/free-solid-svg-icons/faMusic";
+import PracticeTimer from "../practice-timer/PracticeTimer";
 
 const Navbar = () => {
   return (
@@ -73,8 +75,8 @@ const Navbar = () => {
         </li>
         <li>
           <Link to={"/about"}>
-            <FontAwesomeIcon icon={faQuestionCircle}></FontAwesomeIcon>{" "}
-            <span>About</span>
+            <FontAwesomeIcon icon={faMusic}></FontAwesomeIcon>{" "}
+            <span>Metronome</span>
           </Link>
         </li>
       </ul>

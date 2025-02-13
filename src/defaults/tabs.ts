@@ -35,6 +35,7 @@ I don't believe that anybody feels the way I do
           Em7   G     Dsus4     A7sus4
 about you now
  `;
+
 const seven = `
 e|-----------------|-----------------|
 B|-----------------|-----------------|

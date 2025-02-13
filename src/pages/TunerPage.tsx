@@ -196,6 +196,7 @@ const TunerPage = () => {
         tuning={tuning.notes}
         onNoteChange={changeNote}
       ></Tuner>
+      <div className={"tuning-help"}></div>
     </div>
   );
 };
