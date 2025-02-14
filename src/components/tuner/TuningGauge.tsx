@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import * as Tone from "tone";
 import interpolate from "color-interpolate";
 import "./TuningGauge.css";
+import TuningFork from "../../resources/tuning-fork.svg?react";
 
 interface Props {
   children: number;
@@ -12,11 +13,10 @@ interface Props {
 }
 
 const TuningGauge = ({ children, x, y, width, cents = 5 }: Props) => {
-  const [isTuned, setIsTuned] = useState(false);
-  const [note, setNote] = useState("");
-  const [radianError, setRadianError] = useState(0);
-  const [color, setColor] = useState("rgb(1, 1, 1)");
   //Below is not the best practice, but I don't plan on using this component anywhere else for the time being
+  const outline_color = getComputedStyle(document.body).getPropertyValue(
+    "--secondary-color"
+  );
   const deny_color = getComputedStyle(document.body).getPropertyValue(
     "--deny-color"
   );
@@ -24,6 +24,10 @@ const TuningGauge = ({ children, x, y, width, cents = 5 }: Props) => {
     "--confirm-color"
   );
   const colorMap = interpolate([confirm_color, deny_color]);
+  const [isTuned, setIsTuned] = useState(false);
+  const [note, setNote] = useState("");
+  const [radianError, setRadianError] = useState(0);
+  const [color, setColor] = useState(outline_color);
 
   const twelthRadian = (2 * Math.PI) / 12;
   const midiNoteZeroFreq = Tone.Frequency(0, "midi").toFrequency();
@@ -48,7 +52,7 @@ const TuningGauge = ({ children, x, y, width, cents = 5 }: Props) => {
       setNote("");
       setRadianError(0);
       setIsTuned(false);
-      setColor("rgb(1, 1, 1)");
+      setColor(outline_color);
     }
   }, [children]);
 
@@ -83,6 +87,17 @@ const TuningGauge = ({ children, x, y, width, cents = 5 }: Props) => {
             cy="50"
             filter={`drop-shadow(0px 0px 4px ${color})`}
           />
+          {note === "" && (
+            <TuningFork
+              className="tuning-gauge-fork"
+              preserveAspectRatio="xMinYMin"
+              x={tuningCircleX - 7.5}
+              y={tuningCircleX - 7.5}
+              height={15}
+              stroke={"none"}
+              color={outline_color}
+            ></TuningFork>
+          )}
           {note !== "" && (
             <>
               <circle

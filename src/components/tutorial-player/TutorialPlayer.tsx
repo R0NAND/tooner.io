@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import "./TutorialPlayer.css";
 import VideoSearchPanel from "./VideoSearchPanel";
-import type { VideoData } from "./VideoData";
+import type { VideoData } from "../../types/VideoData";
 import VideoPlaylist from "./VideoPlaylist";
 
 const TutorialPlayer = () => {
@@ -56,6 +56,7 @@ const TutorialPlayer = () => {
             <VideoSearchPanel
               addVideoCallback={(vid: VideoData) => {
                 const newTutorials = [...tutorials, vid];
+                console.log(JSON.stringify(newTutorials));
                 setTutorials(newTutorials);
                 setLocalStorage(newTutorials);
               }}
@@ -65,20 +66,6 @@ const TutorialPlayer = () => {
               }}
             ></VideoSearchPanel>
           </div>
-        </div>
-        <div style={{ width: "auto", height: "200px" }}>
-          <VideoPlaylist
-            videos={tutorials}
-            playVideoCallback={(vid: VideoData) => {
-              setVideoId(vid.id.videoId);
-              setIsPlaying(true);
-            }}
-            deleteVideoCallback={(vid: VideoData) => {
-              const newTutorials = tutorials.filter((v) => v !== vid);
-              setTutorials(newTutorials);
-              setLocalStorage(newTutorials);
-            }}
-          ></VideoPlaylist>
         </div>
       </div>
     </>

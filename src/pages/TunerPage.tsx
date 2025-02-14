@@ -157,10 +157,17 @@ const TunerPage = () => {
           .filter((t) => t.instrument === selectedInstrument)
           .map((t) => {
             return (
-              <div className="tuning-menu-item" key={t.notes.toString()}>
+              <div
+                className="tuning-menu-item"
+                key={t.notes.toString()}
+                onClick={() => {
+                  setTuning(t);
+                }}
+              >
                 <button
                   className="tuning-table-delete"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     deleteTuning(t);
                   }}
                 >
@@ -171,9 +178,6 @@ const TunerPage = () => {
                 </button>
                 <div
                   style={{ textAlign: "left", width: "20ch", height: "2em" }}
-                  onClick={() => {
-                    setTuning(t);
-                  }}
                 >
                   <EditableText onEditCompleted={onNameEdited}>
                     {t.name}

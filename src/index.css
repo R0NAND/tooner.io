@@ -13,7 +13,6 @@
   font-size: clamp(16px, 1.25vw, 32px);
   background-color: var(--main-background-color);
   color: var(--main-color);
-
   color-scheme: light dark;
 }
 

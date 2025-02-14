@@ -2,8 +2,8 @@
   display: flex;
   align-items: center;
   justify-content: space-around;
-  background-color: #000000;
-  color: #ffffff;
+  background-color: var(--main-background-color);
+  color: var(--primary-color);
   width: 100%;
   height: var(--navbar-height);
   border-bottom: 0.125em solid var(--primary-hue);

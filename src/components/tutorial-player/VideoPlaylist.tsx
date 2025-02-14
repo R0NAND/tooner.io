@@ -1,8 +1,8 @@
 import React from "react";
-import type { VideoData } from "./VideoData";
+import type { VideoData } from "../../types/VideoData";
 import "./VideoPlaylist.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlay, faTrash, faX } from "@fortawesome/free-solid-svg-icons";
+import { faPlay, faX } from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
   videos: VideoData[];

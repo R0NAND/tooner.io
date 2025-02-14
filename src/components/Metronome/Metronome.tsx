@@ -1,14 +1,12 @@
 import {
   faAdd,
   faDrum,
-  faFastBackward,
-  faFastForward,
   faPlay,
   faStop,
   faSubtract,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import QuarterNote from "./QuarterNote";
+import QuarterNote from "./assets/quater-note.svg?react";
 import Slider from "./Slider";
 import { useEffect, useRef, useState } from "react";
 import * as Tone from "tone";
@@ -101,59 +99,84 @@ const Metronome = () => {
 
   return (
     <div id="metronome" className="metronome">
-      <button
-        ref={playButton}
-        className={"metronome-base-button"}
-        onClick={() => {
-          setIsPlaying(!isPlaying);
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
         }}
       >
-        <FontAwesomeIcon icon={isPlaying ? faStop : faPlay} />
-      </button>
-      <div className="metronome-note-flex">
         <button
-          className="metronome-base-button"
-          disabled={beats.length <= 1}
+          ref={playButton}
+          className={"metronome-base-button"}
           onClick={() => {
-            setBeats(Array.from(Array(beats.length - 1).keys()));
-            setBeatValues(Array(beats.length - 1).fill(false));
+            setIsPlaying(!isPlaying);
           }}
         >
-          <FontAwesomeIcon icon={faSubtract}></FontAwesomeIcon>
+          <FontAwesomeIcon icon={isPlaying ? faStop : faPlay} />
         </button>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-around",
+          }}
+        >
+          <button
+            style={{ padding: "0.25em" }}
+            className="metronome-base-button"
+            disabled={beats.length >= 10}
+            onClick={() => {
+              setBeats(Array.from(Array(beats.length + 1).keys()));
+              setBeatValues(Array(beats.length + 1).fill(false));
+            }}
+          >
+            <FontAwesomeIcon icon={faAdd}></FontAwesomeIcon>
+          </button>
+          <button
+            style={{ padding: "0.25em" }}
+            className="metronome-base-button"
+            disabled={beats.length <= 1}
+            onClick={() => {
+              setBeats(Array.from(Array(beats.length - 1).keys()));
+              setBeatValues(Array(beats.length - 1).fill(false));
+            }}
+          >
+            <FontAwesomeIcon icon={faSubtract}></FontAwesomeIcon>
+          </button>
+        </div>
+      </div>
+
+      <div className="metronome-note-flex">
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            marginRight: "auto",
+          }}
+        >
+          <span>{beatValues.length}</span>
+          <span>4</span>
+        </div>
         {beatValues.map((n, i) => {
           return (
             <QuarterNote
               key={i}
-              styleClass={n ? "metronome-note-active" : "metronome-note"}
+              style={{ marginRight: "auto" }}
+              className={n ? "metronome-note-active" : "metronome-note"}
             ></QuarterNote>
           );
         })}
-        <button
-          className="metronome-base-button"
-          disabled={beats.length >= 10}
-          onClick={() => {
-            setBeats(Array.from(Array(beats.length + 1).keys()));
-            setBeatValues(Array(beats.length + 1).fill(false));
-          }}
-        >
-          <FontAwesomeIcon icon={faAdd}></FontAwesomeIcon>
-        </button>
       </div>
       <button className="metronome-base-button" onClick={onTapClick}>
         <FontAwesomeIcon icon={faDrum} />
       </button>
-      <div style={{ display: "flex" }}>
-        <button
-          className="metronome-base-button"
-          onClick={() => {
-            setBpm(Math.max(minBpm, bpm - 1));
-          }}
-        >
-          <FontAwesomeIcon icon={faFastBackward}></FontAwesomeIcon>
-        </button>
+      <div
+        style={{
+          display: "flex",
+        }}
+      >
         <Slider
-          width={"15em"}
+          width={"20em"}
           min={minBpm}
           max={maxBpm}
           value={bpm}
@@ -161,14 +184,6 @@ const Metronome = () => {
             setBpm(Math.round(bpm));
           }}
         ></Slider>
-        <button
-          className="metronome-base-button"
-          onClick={() => {
-            setBpm(Math.min(maxBpm, bpm + 1));
-          }}
-        >
-          <FontAwesomeIcon icon={faFastForward}></FontAwesomeIcon>
-        </button>
       </div>
     </div>
   );

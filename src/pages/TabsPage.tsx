@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Tab, Tabs } from "../types/tabs";
+import { Tab } from "../types/tabs";
 import EditableText from "../components/EditableText";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -13,7 +13,6 @@ import useLocalStorageArray from "../hooks/useLocalStorageArray";
 import defaultTabs from "../defaults/tabs";
 import "./TabsPage.css";
 import Metronome from "../components/metronome/Metronome";
-import { text } from "@fortawesome/fontawesome-svg-core";
 import Slider from "../components/metronome/Slider";
 
 const TabsPage = () => {
@@ -85,10 +84,11 @@ const TabsPage = () => {
         <div className="tabs-menu">
           {tabs?.map((t, i) => {
             return (
-              <div className="tab-menu-item">
+              <div className="tab-menu-item" onClick={() => setSelectedTab(t)}>
                 <button
                   className="tab-delete"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     deleteTab(t);
                   }}
                 >
@@ -97,7 +97,7 @@ const TabsPage = () => {
                     icon={faRemove}
                   ></FontAwesomeIcon>
                 </button>
-                <div key={i} onClick={() => setSelectedTab(t)}>
+                <div key={i}>
                   <EditableText onEditCompleted={onNameEdited}>
                     {t.name}
                   </EditableText>

@@ -8,7 +8,7 @@ import {
   faPlay,
   faSearch,
 } from "@fortawesome/free-solid-svg-icons";
-import type { VideoData } from "./VideoData";
+import type { VideoData } from "../../types/VideoData";
 
 interface Props {
   addVideoCallback: (vid: VideoData) => void;
