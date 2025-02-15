@@ -16,31 +16,33 @@ const VideoPlaylist = ({
   deleteVideoCallback,
 }: Props) => {
   return (
-    <table className="playlist-table">
-      <tbody>
-        {videos.map((vid, i) => {
-          return (
-            <tr className="playlist-row" key={vid.id.videoId}>
-              <td>
-                <div onClick={() => playVideoCallback(vid)}>
-                  <FontAwesomeIcon icon={faPlay} />
-                </div>
-              </td>
-              <td>
-                <img height="50px" src={vid.snippet.thumbnails.default.url} />
-              </td>
-              <td>{vid.snippet.title}</td>
-              <td>{vid.snippet.channelTitle}</td>
-              <td>
-                <div onClick={() => deleteVideoCallback(vid)}>
-                  <FontAwesomeIcon icon={faX} />
-                </div>
-              </td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+    <div>
+      {videos.map((vid, i) => {
+        return (
+          <div className="playlist-row" key={vid.id.videoId}>
+            <button
+              className="playlist-video-delete"
+              onClick={() => deleteVideoCallback(vid)}
+            >
+              <FontAwesomeIcon icon={faX} />
+            </button>
+            <img
+              style={{ height: "3em" }}
+              src={vid.snippet.thumbnails.default.url}
+            />
+            <div style={{ textAlign: "left", width: "15em" }}>
+              <div>{vid.snippet.title}</div>
+              <div style={{ fontSize: "0.61em" }}>
+                {vid.snippet.channelTitle}
+              </div>
+            </div>
+            <button onClick={() => playVideoCallback(vid)}>
+              <FontAwesomeIcon icon={faPlay} />
+            </button>
+          </div>
+        );
+      })}
+    </div>
   );
 };
 

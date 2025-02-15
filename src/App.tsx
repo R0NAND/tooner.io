@@ -8,6 +8,7 @@ import AboutPage from "./pages/AboutPage";
 import TabsPage from "./pages/TabsPage";
 import ToolsPanel from "./components/tools-panel/ToolsPanel";
 import TutorialsPage from "./pages/TutorialsPage";
+import TestComponent from "./components/TestComponent";
 
 function App() {
   return (
@@ -25,7 +26,7 @@ function App() {
           <Route path="/about" element={<AboutPage></AboutPage>}></Route>
         </Routes>
       </div>
-      {/* <ToolsPanel></ToolsPanel> */}
+      <TestComponent></TestComponent>
     </div>
   );
 }

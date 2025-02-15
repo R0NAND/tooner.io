@@ -13,19 +13,19 @@ const TestComponent = () => {
   const [color, setColor] = useState("green");
   const colorRef = useRef("green");
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (colorRef.current === "green") {
-        setColor("red");
-        colorRef.current = "red";
-        console.log("turned red");
-      } else {
-        setColor("green");
-        colorRef.current = "green";
-        console.log("turned green");
-      }
-    }, 250);
-  }, []);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     if (colorRef.current === "green") {
+  //       setColor("red");
+  //       colorRef.current = "red";
+  //       console.log("turned red");
+  //     } else {
+  //       setColor("green");
+  //       colorRef.current = "green";
+  //       console.log("turned green");
+  //     }
+  //   }, 250);
+  // }, []);
 
   return (
     <div style={{ height: color === "red" ? 100 : 50, backgroundColor: color }}>

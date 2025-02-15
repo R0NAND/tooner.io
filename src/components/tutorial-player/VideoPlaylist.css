@@ -1,41 +1,17 @@
-.playlist-row{
-
+.playlist-row {
+  display: flex;
+  padding: 0.125em 0.5em 0.125em 0.5em;
+  gap: 0.5em;
 }
 
-.playlist-table td, th{
-  text-align: left;
+.playlist-row:hover {
+  background: var(--lighter-background-color);
 }
 
-
-.playlist-table thead, tbody{
-  display: block;
-}
-
-.playlist-row > td{
-  padding: 10px;
-}
-
-.playlist-row:hover{
-  background: grey;
-}
-
-.playlist-table{
-  border-collapse: collapse;
-}
-
-.playlist-table tbody{
-  overflow-y: scroll;
-  height: 700px;
-}
-
-.playlist-row div{
+.playlist-video-delete {
   visibility: hidden;
 }
 
-.playlist-row div:hover{
-  cursor: pointer;
-}
-
-.playlist-row:hover div{
+.playlist-row:hover .playlist-video-delete {
   visibility: visible;
 }

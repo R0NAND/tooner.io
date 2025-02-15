@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./VideoSearchPanel.css";
 import {
   faAdd,
+  faArrowRight,
   faArrowRotateForward,
   faClose,
   faPlay,
@@ -23,83 +24,77 @@ const VideoSearchPanel = ({ addVideoCallback, playVideoCallback }: Props) => {
   const artistRef = useRef<HTMLInputElement>(null);
   const channelRef = useRef<HTMLInputElement>(null);
 
-  /* Set the width of the sidebar to 250px and the left margin of the page content to 250px */
   const openNav = () => {
-    if (isSearchBarOpen) {
-      setIsSearchBarOpen(false);
-    } else {
-      setIsSearchBarOpen(true);
-    }
+    setIsSearchBarOpen(!isSearchBarOpen);
   };
 
   const queryVideos = () => {
     const song = songRef.current?.value.replace(" ", "+");
     const artist = artistRef.current?.value.replace(" ", "+");
     const channel = channelRef.current?.value.replace(" ", "+");
+    const instrument = "guitar";
 
-    const request = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=5&q=${song}+${artist}+${channel}+Guitar+Tutorial&type=video&key=itsasecret`;
-    fetch(request)
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        setQueriedTutorials(data.items);
-      });
+    const request = `https://tklwhs2x3m.execute-api.us-east-2.amazonaws.com/default/fetchMusicTutorials?song=${song}&artist=${artist}&channel=${channel}&instrument=${instrument}`;
+    try {
+      fetch(request)
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          setQueriedTutorials(data.items);
+        });
+    } catch {
+      throw Error("Failed to Query Videos");
+    }
   };
+
   return (
-    <div
-      className={
-        "search-panel" + (isSearchBarOpen ? " expanded-search-panel" : "")
-      }
-      id="searchPanel"
-    >
+    <div className={"search-panel"} id="searchPanel">
       <button className="video-search-button" onClick={openNav}>
         <FontAwesomeIcon icon={isSearchBarOpen ? faClose : faSearch} />
       </button>
-      <div className="video-query-panel" id="videoQuerySidebar">
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <label>Song</label>
-          <input
-            ref={songRef}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                queryVideos();
-              }
-            }}
-          ></input>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <label>Artist</label>
-          <input
-            ref={artistRef}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                queryVideos();
-              }
-            }}
-          ></input>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <label>Channel</label>
-          <input
-            ref={channelRef}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                queryVideos();
-              }
-            }}
-          ></input>
-        </div>
-        <button>
-          <FontAwesomeIcon icon={faArrowRotateForward} />
+      <div
+        className="video-query-panel"
+        style={{
+          visibility: isSearchBarOpen ? "visible" : "hidden",
+        }}
+      >
+        <label>Song:</label>
+        <input
+          ref={songRef}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              queryVideos();
+            }
+          }}
+        ></input>
+        <label>Artist:</label>
+        <input
+          ref={artistRef}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              queryVideos();
+            }
+          }}
+        ></input>
+        <label>Channel:</label>
+        <input
+          ref={channelRef}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              queryVideos();
+            }
+          }}
+        ></input>
+        <button onClick={queryVideos}>
+          <FontAwesomeIcon icon={faArrowRight} />
         </button>
       </div>
-      <div></div>
       <div
-        className={
-          "queried-videos" +
-          (queriedTutorials.length ? "" : " collapsed-queried-videos")
-        }
+        className={"queried-videos"}
+        style={{
+          visibility: isSearchBarOpen ? "visible" : "hidden",
+        }}
       >
         {queriedTutorials?.map((video, i) => {
           return (
@@ -107,10 +102,20 @@ const VideoSearchPanel = ({ addVideoCallback, playVideoCallback }: Props) => {
               className="queried-video-card"
               key={video.snippet.thumbnails.default.url}
             >
-              <img src={video.snippet.thumbnails.default.url}></img>
-              <div>
-                <h3 style={{ width: 250 }}>{video.snippet.title}</h3>
-                <label>{video.snippet.channelTitle}</label>
+              <img
+                style={{ height: "2em" }}
+                src={video.snippet.thumbnails.default.url}
+              ></img>
+              <div style={{ textAlign: "left" }}>
+                <span
+                  className="queried-video-title"
+                  style={{ fontSize: "1em", width: 250 }}
+                >
+                  {video.snippet.title}
+                </span>
+                <span style={{ fontSize: "0.61em" }}>
+                  {video.snippet.channelTitle}
+                </span>
               </div>
               <button
                 onClick={() => {
