@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import TutorialPlayer from "../components/tutorial-player/TutorialPlayer";
+import { useState } from "react";
 import useLocalStorageArray from "../hooks/useLocalStorageArray";
 import defaultTutorials from "../defaults/tutorials";
 import { VideoData } from "../types/VideoData";

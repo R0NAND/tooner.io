@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import * as Tone from "tone";
 import interpolate from "color-interpolate";
 import "./TuningGauge.css";
@@ -24,7 +24,6 @@ const TuningGauge = ({ children, x, y, width, cents = 5 }: Props) => {
     "--confirm-color"
   );
   const colorMap = interpolate([confirm_color, deny_color]);
-  const [isTuned, setIsTuned] = useState(false);
   const [note, setNote] = useState("");
   const [radianError, setRadianError] = useState(0);
   const [color, setColor] = useState(outline_color);
@@ -32,7 +31,6 @@ const TuningGauge = ({ children, x, y, width, cents = 5 }: Props) => {
   const twelthRadian = (2 * Math.PI) / 12;
   const midiNoteZeroFreq = Tone.Frequency(0, "midi").toFrequency();
   const twelthRootOfTwo = 1.05946309436;
-  const cent = 1.0005777895; // 1200th root of 2
   useEffect(() => {
     if (children !== 0) {
       const newNote = Tone.Frequency(children).toNote();
@@ -43,15 +41,13 @@ const TuningGauge = ({ children, x, y, width, cents = 5 }: Props) => {
         twelthRadian * (continuousMidiNote - targetMidiNote);
       const targetFrequency = Tone.Frequency(newNote).toFrequency();
       const centsOff = 1200 * Math.log2(children / targetFrequency);
-      const isTuned = Math.abs(centsOff) <= 5;
+      const isTuned = Math.abs(centsOff) <= cents;
       setNote(newNote);
       setRadianError(newRadianError);
-      setIsTuned(isTuned);
       setColor(isTuned ? colorMap(0) : colorMap(Math.abs(centsOff) / 50));
     } else {
       setNote("");
       setRadianError(0);
-      setIsTuned(false);
       setColor(outline_color);
     }
   }, [children]);

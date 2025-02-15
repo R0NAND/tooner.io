@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Tab } from "../types/tabs";
 import EditableText from "../components/EditableText";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Tuner from "../components/tuner/Tuner";
 import { InstrumentEnum } from "../components/tuner/Tuner";
 import "./TunerPage.css";

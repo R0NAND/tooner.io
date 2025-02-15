@@ -1,10 +1,9 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./VideoSearchPanel.css";
 import {
   faAdd,
   faArrowRight,
-  faArrowRotateForward,
   faClose,
   faPlay,
   faSearch,
@@ -96,7 +95,7 @@ const VideoSearchPanel = ({ addVideoCallback, playVideoCallback }: Props) => {
           visibility: isSearchBarOpen ? "visible" : "hidden",
         }}
       >
-        {queriedTutorials?.map((video, i) => {
+        {queriedTutorials?.map((video) => {
           return (
             <div
               className="queried-video-card"

@@ -1,4 +1,3 @@
-import React from "react";
 import type { VideoData } from "../../types/VideoData";
 import "./VideoPlaylist.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,7 +16,7 @@ const VideoPlaylist = ({
 }: Props) => {
   return (
     <div>
-      {videos.map((vid, i) => {
+      {videos.map((vid) => {
         return (
           <div className="playlist-row" key={vid.id.videoId}>
             <button

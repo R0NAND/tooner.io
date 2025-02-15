@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router";
 import "./Navbar.css";
 import "./tuning-fork.css";
@@ -6,9 +5,7 @@ import TuningFork from "../../resources/tuning-fork.svg?react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBookOpen,
-  faClock,
   faPersonChalkboard,
-  faQuestionCircle,
   faSliders,
 } from "@fortawesome/free-solid-svg-icons";
 

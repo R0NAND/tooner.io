@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import TuningButton from "./TuningButton";
 import * as Tone from "tone";
 import TuningGauge from "./TuningGauge";
@@ -10,7 +10,7 @@ import BassHeadstock from "./assets/bass-headstock.svg?react";
 import guitarTransforms from "./transforms/guitar.json";
 import bassTransforms from "./transforms/bass.json";
 import ukuleleTransforms from "./transforms/ukulele.json";
-import eightStringTransforms from "./transforms/eight-string.json";
+// import eightStringTransforms from "./transforms/eight-string.json";
 import "./Tuner.css";
 
 export enum InstrumentEnum {
@@ -94,11 +94,6 @@ const Tuner = ({ instrument, tuning, onNoteChange }: Props) => {
       baseUrl: "src/components/tuner/assets/",
     }).toDestination()
   );
-  const confirmationPlayer = useRef(
-    new Tone.Player(
-      "src/components/tuner/assets/confirmation.mp3"
-    ).toDestination()
-  );
 
   const [tuningState, setTuningState] = useState(
     tuning.map((n) => {
@@ -109,7 +104,7 @@ const Tuner = ({ instrument, tuning, onNoteChange }: Props) => {
   const noteChangeRef = useRef(""); // flags that tuning was changed via peg adjustment... no need to playback all notes
   useEffect(() => {
     const now = Tone.now();
-    const newTuningState = tuning.map((n, i) => {
+    const newTuningState = tuning.map((n) => {
       return { note: n, isFocused: false, isTuned: false };
     });
     setTuningState(newTuningState);

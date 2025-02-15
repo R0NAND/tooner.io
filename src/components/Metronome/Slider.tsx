@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import "./Slider.css";
 
 interface Props {
@@ -89,7 +83,7 @@ const Slider = ({ width, min, max, value, onChange }: Props) => {
 
     addEventListener(
       "mouseup",
-      (upEvent: MouseEvent) => {
+      () => {
         removeEventListener("mousemove", mouseMoveHandler);
       },
       { once: true }

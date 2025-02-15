@@ -3,10 +3,6 @@
   text-align: center;
 }
 
-#root * {
-  /* border: 2px solid white; */
-}
-
 .app-container {
   width: 100%;
   display: flex;

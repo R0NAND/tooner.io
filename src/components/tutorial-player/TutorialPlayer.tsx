@@ -1,9 +1,8 @@
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import ReactPlayer from "react-player";
 import "./TutorialPlayer.css";
 import VideoSearchPanel from "./VideoSearchPanel";
 import type { VideoData } from "../../types/VideoData";
-import VideoPlaylist from "./VideoPlaylist";
 
 const TutorialPlayer = () => {
   const [videoId, setVideoId] = useState("");

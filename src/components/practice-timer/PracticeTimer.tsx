@@ -1,11 +1,6 @@
-import {
-  faCancel,
-  faPause,
-  faPlay,
-  faRefresh,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPause, faPlay, faRefresh } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import * as Tone from "tone";
 import "./PracticeTimer.css";
 

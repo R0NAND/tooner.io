@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as Tone from "tone";
 import GuitarPeg from "./assets/guitar-peg.svg?react";
 import UkulelePeg from "./assets/ukulele-peg.svg?react";
@@ -6,7 +6,7 @@ import BassPeg from "./assets/bass-peg.svg?react";
 import guitarTransforms from "./transforms/guitar.json";
 import ukuleleTransforms from "./transforms/ukulele.json";
 import bassTransforms from "./transforms/bass.json";
-import eightStringTransforms from "./transforms/eight-string.json";
+// import eightStringTransforms from "./transforms/eight-string.json";
 import "./TuningButton.css";
 import { InstrumentEnum } from "./Tuner";
 
@@ -49,9 +49,9 @@ const TuningButton = ({
       case InstrumentEnum.bass:
         setTransforms(bassTransforms);
         break;
-      case InstrumentEnum.eigthString:
-        setTransforms(eightStringTransforms);
-        break;
+      // case InstrumentEnum.eigthString:
+      //   setTransforms(eightStringTransforms);
+      //   break;
     }
   }, [instrument]);
 
@@ -187,7 +187,7 @@ const TuningButton = ({
           dominantBaseline="middle"
           x={computeTextX()}
           y={transforms.pegs.transforms[i].y + transforms.pegs.text.up.y}
-          onClick={(e) => {
+          onClick={() => {
             onNoteChange(i, Tone.Frequency(children).transpose(1).toNote());
           }}
         >
@@ -212,7 +212,7 @@ const TuningButton = ({
           dominantBaseline="middle"
           x={computeTextX()}
           y={transforms.pegs.transforms[i].y + transforms.pegs.text.down.y}
-          onClick={(e) => {
+          onClick={() => {
             onNoteChange(i, Tone.Frequency(children).transpose(-1).toNote());
           }}
         >

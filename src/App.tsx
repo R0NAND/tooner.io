@@ -1,12 +1,9 @@
 import "./App.css";
-import TutorialPlayer from "./components/tutorial-player/TutorialPlayer";
-import { useEffect, useState } from "react";
 import { Routes, Route } from "react-router";
 import TunerPage from "./pages/TunerPage";
 import Navbar from "./components/navbar/Navbar";
 import AboutPage from "./pages/AboutPage";
 import TabsPage from "./pages/TabsPage";
-import ToolsPanel from "./components/tools-panel/ToolsPanel";
 import TutorialsPage from "./pages/TutorialsPage";
 import TestComponent from "./components/TestComponent";
 
