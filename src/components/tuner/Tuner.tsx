@@ -11,6 +11,14 @@ import guitarTransforms from "./transforms/guitar.json";
 import bassTransforms from "./transforms/bass.json";
 import ukuleleTransforms from "./transforms/ukulele.json";
 // import eightStringTransforms from "./transforms/eight-string.json";
+import guitarE2 from "./assets/acoustic-guitar-e2.wav";
+import guitarA2 from "./assets/acoustic-guitar-a2.wav";
+import guitarD3 from "./assets/acoustic-guitar-d3.wav";
+import guitarG3 from "./assets/acoustic-guitar-g3.wav";
+import guitarB3 from "./assets/acoustic-guitar-b3.wav";
+import guitarE4 from "./assets/acoustic-guitar-e4.wav";
+import confirmationSound from "./assets/confirmation.mp3";
+import pitchAnalysisNode from "./PitchAnalysis?worker&url";
 import "./Tuner.css";
 
 export enum InstrumentEnum {
@@ -84,14 +92,13 @@ const Tuner = ({ instrument, tuning, onNoteChange }: Props) => {
   const guitarSampler = useRef(
     new Tone.Sampler({
       urls: {
-        E2: "acoustic-guitar-e2.wav",
-        A2: "acoustic-guitar-a2.wav",
-        D3: "acoustic-guitar-d3.wav",
-        G3: "acoustic-guitar-g3.wav",
-        B3: "acoustic-guitar-b3.wav",
-        E4: "acoustic-guitar-e4.wav",
+        E2: guitarE2,
+        A2: guitarA2,
+        D3: guitarD3,
+        G3: guitarG3,
+        B3: guitarB3,
+        E4: guitarE4,
       },
-      baseUrl: "src/components/tuner/assets/",
     }).toDestination()
   );
 
@@ -160,9 +167,7 @@ const Tuner = ({ instrument, tuning, onNoteChange }: Props) => {
     const note = pitchTracker.current.trackFrequency(freq);
     if (note !== "") {
       if (tuning.filter((n) => n === note)) {
-        const confSound = new Tone.Player(
-          "src/components/tuner/assets/confirmation.mp3"
-        ).toDestination();
+        const confSound = new Tone.Player(confirmationSound).toDestination();
         confSound.autostart = true;
         const noteIndex = tuningStateRef.current.findIndex(
           (n) => n.note === note && n.isTuned === false
@@ -182,7 +187,7 @@ const Tuner = ({ instrument, tuning, onNoteChange }: Props) => {
 
   useEffect(() => {
     Tone.getContext()
-      .addAudioWorkletModule("src/components/tuner/PitchAnalysis.js")
+      .addAudioWorkletModule(pitchAnalysisNode)
       .then(() => {
         const analyzer = Tone.getContext().createAudioWorkletNode(
           "PitchAnalysis",
