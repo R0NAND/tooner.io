@@ -15,7 +15,7 @@ class PitchAnalysis extends AudioWorkletProcessor {
         }else{
             this._confidence = 0.9; //defaults to only returning frequencies with a confidence over or equal to 0.9
         }
-        
+        this._id = Math.random();
         this._bufferSize = 2048;
         this._buffer = new Float32Array(this._bufferSize);
         this._isProcessingBuffer = true;
@@ -39,7 +39,6 @@ class PitchAnalysis extends AudioWorkletProcessor {
     }
 
     process(inputs, outputs, parameters) {
-        
         if(inputs[0][0] === undefined){
             // An empty array gets passed in as input when the mic is turned off
             // This check prevents the processor crashing in such a case

@@ -115,8 +115,6 @@ const Tuner = ({ instrument, tuning, onNoteChange }: Props) => {
       return { note: n, isFocused: false, isTuned: false };
     });
     setTuningState(newTuningState);
-    tuningStateRef.current = newTuningState;
-    focusedIndex.current = -1;
     if (guitarSampler.current.loaded) {
       if (noteChangeRef.current === "") {
         newTuningState.forEach((element, i) => {
@@ -157,49 +155,69 @@ const Tuner = ({ instrument, tuning, onNoteChange }: Props) => {
 
   const mic = useRef(new Tone.UserMedia());
   const pitchTracker = useRef(new TuningResult(0.7));
-
-  //TODO: kinda sucks to have to do this due to scope closure on state reference... there should be a better way
-  const focusedIndex = useRef(-1);
-  const tuningStateRef = useRef(tuningState);
   const processPitch = (e: MessageEvent) => {
     const freq = e.data.frequency !== null ? e.data.frequency : 0;
     setFrequency(freq);
-    const note = pitchTracker.current.trackFrequency(freq);
+  };
+
+  useEffect(() => {
+    const note = pitchTracker.current.trackFrequency(frequency);
     if (note !== "") {
-      if (tuning.filter((n) => n === note)) {
+      if (
+        tuningState
+          .map((n) => {
+            return n.note;
+          })
+          .includes(note)
+      ) {
         const confSound = new Tone.Player(confirmationSound).toDestination();
         confSound.autostart = true;
-        const noteIndex = tuningStateRef.current.findIndex(
+        const noteIndex = tuningState.findIndex(
           (n) => n.note === note && n.isTuned === false
         );
         if (noteIndex !== -1) {
-          const newTuningState = tuningStateRef.current.map((n, i) => {
+          const newTuningState = tuningState.map((n, i) => {
             return i === noteIndex
               ? { note: n.note, isTuned: true, isFocused: n.isFocused }
               : n;
           });
-          tuningStateRef.current = newTuningState;
           setTuningState(newTuningState);
         }
       }
     }
-  };
+  }, [frequency]);
 
+  const pitchAnalyzerRef = useRef<AudioWorkletNode | null>(null);
   useEffect(() => {
-    Tone.getContext()
-      .addAudioWorkletModule(pitchAnalysisNode)
-      .then(() => {
-        const analyzer = Tone.getContext().createAudioWorkletNode(
+    const setupPitchAnalyzer = async () => {
+      try {
+        await Tone.getContext().addAudioWorkletModule(pitchAnalysisNode);
+        pitchAnalyzerRef.current = Tone.getContext().createAudioWorkletNode(
           "PitchAnalysis",
           {
-            processorOptions: { sampleFrequency: 3, confidence: 0.9 },
+            processorOptions: { sampleFrequency: 4, confidence: 0.9 },
           }
         );
-        analyzer.port.onmessage = processPitch;
-        Tone.disconnect(mic.current); //TODO: Find better way than this to fix issue where audioworklet resolves promise later asynchronously
-        mic.current.connect(analyzer);
-      });
-  }, []);
+        pitchAnalyzerRef.current.port.onmessage = processPitch;
+        mic.current.connect(pitchAnalyzerRef.current);
+      } catch (error) {
+        console.error(
+          "Failed to connect PitchAnalysis Worklet node to microphone",
+          error
+        );
+      }
+    };
+
+    if (isMicEnabled) {
+      setupPitchAnalyzer();
+    } else {
+      if (pitchAnalyzerRef.current) {
+        mic.current.disconnect(pitchAnalyzerRef.current);
+        pitchAnalyzerRef.current.disconnect();
+        pitchAnalyzerRef.current === null;
+      }
+    }
+  }, [isMicEnabled]);
 
   const playNoteCallback = (noteIndex: number, note: string) => {
     const newTuningState = tuningState.map((n, i) => {
@@ -208,8 +226,6 @@ const Tuner = ({ instrument, tuning, onNoteChange }: Props) => {
         : { note: n.note, isFocused: false, isTuned: n.isTuned };
     });
     setTuningState(newTuningState);
-    focusedIndex.current = noteIndex;
-    tuningStateRef.current = newTuningState;
     guitarSampler.current.triggerAttackRelease(note, "1n");
   };
 
@@ -229,16 +245,12 @@ const Tuner = ({ instrument, tuning, onNoteChange }: Props) => {
     switch (instrument) {
       case InstrumentEnum.guitar:
         return <GuitarHeadstock className="bass-head"></GuitarHeadstock>;
-        break;
       case InstrumentEnum.bass:
         return <BassHeadstock className="bass-head"></BassHeadstock>;
-        break;
       case InstrumentEnum.ukulele:
         return <UkuleleHeadstock className="bass-head"></UkuleleHeadstock>;
-        break;
       case InstrumentEnum.eigthString:
         return <GuitarHeadstock className="bass-head"></GuitarHeadstock>;
-        break;
     }
   };
 
