@@ -28,67 +28,25 @@ export enum InstrumentEnum {
   eigthString = "8-String",
 }
 
-class TuningResult {
-  heardNote: string;
-  consecutiveTimesHeard: number;
-  sensitivity: number;
-  isActive: boolean;
-
-  constructor(s: number) {
-    if (s >= 0.95) {
-      throw new Error("Highest allowable sensitivity is 0.95");
-    }
-    this.heardNote = "";
-    this.consecutiveTimesHeard = 0;
-    this.sensitivity = s;
-    this.isActive = true;
-  }
-
-  trackFrequency(frequency: number) {
-    if (this.isActive) {
-      let note = frequency === 0 ? "" : Tone.Frequency(frequency).toNote();
-      let target = Tone.Frequency(note).toFrequency();
-      let lower_bound = target / 1.02930223664; // 24th root of 2
-      let upper_bound = target * 1.02930223664; // 24th root of 2
-      let tolerance = 1 - this.sensitivity;
-
-      let fraction = 1;
-      if (frequency < target) {
-        fraction = (target - frequency) / (target - lower_bound);
-      } else {
-        fraction = (frequency - target) / (upper_bound - target);
-      }
-
-      if (fraction <= tolerance && note === this.heardNote) {
-        this.consecutiveTimesHeard += 1;
-      } else {
-        this.consecutiveTimesHeard = 0;
-      }
-      this.heardNote = note;
-
-      if (this.consecutiveTimesHeard === 3) {
-        this.isActive = false;
-        setTimeout(() => {
-          this.isActive = true;
-        }, 3000);
-        this.consecutiveTimesHeard = 0;
-        return note;
-      } else {
-        return "";
-      }
-    } else {
-      return "";
-    }
-  }
-}
-
 interface Props {
   instrument: InstrumentEnum;
   tuning: string[];
+  pitchShift: number; //in cents
   onNoteChange: (index: number, newNote: string) => void;
 }
 
-const Tuner = ({ instrument, tuning, onNoteChange }: Props) => {
+const Tuner = ({
+  instrument,
+  tuning,
+  pitchShift,
+  onNoteChange,
+  ref,
+}: Props) => {
+  if (Math.abs(pitchShift) > 50) {
+    throw new Error(
+      "Invalid pitch shift detected. Value must be between -50 and 50 cents"
+    );
+  }
   const guitarSampler = useRef(
     new Tone.Sampler({
       urls: {
@@ -119,17 +77,22 @@ const Tuner = ({ instrument, tuning, onNoteChange }: Props) => {
       if (noteChangeRef.current === "") {
         newTuningState.forEach((element, i) => {
           guitarSampler.current.triggerAttackRelease(
-            element.note,
+            Tone.Frequency(element.note).toFrequency() *
+              Math.pow(1.0005777895, pitchShift),
             "1n",
             now + i * 0.1
           );
         });
       } else {
-        guitarSampler.current.triggerAttackRelease(noteChangeRef.current, "1n");
+        guitarSampler.current.triggerAttackRelease(
+          Tone.Frequency(noteChangeRef.current).toFrequency() *
+            Math.pow(1.0005777895, pitchShift),
+          "1n"
+        );
         noteChangeRef.current = "";
       }
     }
-  }, [tuning, instrument]);
+  }, [tuning, instrument, pitchShift]);
 
   const [transforms, setTransforms] =
     useState<typeof guitarTransforms>(guitarTransforms);
@@ -154,38 +117,34 @@ const Tuner = ({ instrument, tuning, onNoteChange }: Props) => {
   const [isMicEnabled, setIsMicEnabled] = useState(false);
 
   const mic = useRef(new Tone.UserMedia());
-  const pitchTracker = useRef(new TuningResult(0.7));
   const processPitch = (e: MessageEvent) => {
     const freq = e.data.frequency !== null ? e.data.frequency : 0;
     setFrequency(freq);
   };
 
-  useEffect(() => {
-    const note = pitchTracker.current.trackFrequency(frequency);
-    if (note !== "") {
-      if (
-        tuningState
-          .map((n) => {
-            return n.note;
-          })
-          .includes(note)
-      ) {
-        const confSound = new Tone.Player(confirmationSound).toDestination();
-        confSound.autostart = true;
-        const noteIndex = tuningState.findIndex(
-          (n) => n.note === note && n.isTuned === false
-        );
-        if (noteIndex !== -1) {
-          const newTuningState = tuningState.map((n, i) => {
-            return i === noteIndex
-              ? { note: n.note, isTuned: true, isFocused: n.isFocused }
-              : n;
-          });
-          setTuningState(newTuningState);
-        }
+  const onTunedNoteHandler = (note: string) => {
+    if (
+      tuningState
+        .map((n) => {
+          return n.note;
+        })
+        .includes(note)
+    ) {
+      const confSound = new Tone.Player(confirmationSound).toDestination();
+      confSound.autostart = true;
+      const noteIndex = tuningState.findIndex(
+        (n) => n.note === note && n.isTuned === false
+      );
+      if (noteIndex !== -1) {
+        const newTuningState = tuningState.map((n, i) => {
+          return i === noteIndex
+            ? { note: n.note, isTuned: true, isFocused: n.isFocused }
+            : n;
+        });
+        setTuningState(newTuningState);
       }
     }
-  }, [frequency]);
+  };
 
   const pitchAnalyzerRef = useRef<AudioWorkletNode | null>(null);
   useEffect(() => {
@@ -209,12 +168,14 @@ const Tuner = ({ instrument, tuning, onNoteChange }: Props) => {
     };
 
     if (isMicEnabled) {
-      setupPitchAnalyzer();
+      if (pitchAnalyzerRef.current === null) {
+        setupPitchAnalyzer();
+      } else {
+        mic.current.connect(pitchAnalyzerRef.current);
+      }
     } else {
       if (pitchAnalyzerRef.current) {
         mic.current.disconnect(pitchAnalyzerRef.current);
-        pitchAnalyzerRef.current.disconnect();
-        pitchAnalyzerRef.current === null;
       }
     }
   }, [isMicEnabled]);
@@ -226,7 +187,10 @@ const Tuner = ({ instrument, tuning, onNoteChange }: Props) => {
         : { note: n.note, isFocused: false, isTuned: n.isTuned };
     });
     setTuningState(newTuningState);
-    guitarSampler.current.triggerAttackRelease(note, "1n");
+    guitarSampler.current.triggerAttackRelease(
+      Tone.Frequency(note).toFrequency() * Math.pow(1.0005777895, pitchShift),
+      "1n"
+    );
   };
 
   const toggleMic = () => {
@@ -244,77 +208,82 @@ const Tuner = ({ instrument, tuning, onNoteChange }: Props) => {
   const renderHeadstock = () => {
     switch (instrument) {
       case InstrumentEnum.guitar:
-        return <GuitarHeadstock className="bass-head"></GuitarHeadstock>;
+        return <GuitarHeadstock></GuitarHeadstock>;
       case InstrumentEnum.bass:
-        return <BassHeadstock className="bass-head"></BassHeadstock>;
+        return <BassHeadstock></BassHeadstock>;
       case InstrumentEnum.ukulele:
-        return <UkuleleHeadstock className="bass-head"></UkuleleHeadstock>;
+        return <UkuleleHeadstock></UkuleleHeadstock>;
       case InstrumentEnum.eigthString:
-        return <GuitarHeadstock className="bass-head"></GuitarHeadstock>;
+        return <GuitarHeadstock></GuitarHeadstock>;
     }
   };
 
   return (
-    <div className="tuner">
-      <svg
-        version="1.1"
-        width="100%"
-        height="auto"
-        className="headstock"
-        viewBox="0 0 80 100"
-      >
-        <g>
-          {renderHeadstock()}
-          <circle
-            className="mic-button"
-            cx={transforms.mic.x}
-            cy={transforms.mic.y}
-            r={transforms.mic.r}
-            onClick={() => {
-              toggleMic();
-            }}
-          ></circle>
-          {isMicEnabled ? (
-            <MicOff
-              x={transforms.mic.x - transforms.mic.r * 0.75}
-              y={transforms.mic.y - transforms.mic.r * 0.75}
-              height={transforms.mic.r * 2 * 0.75}
-              preserveAspectRatio="xMinYMin"
-              className="mic-button-icon"
-            ></MicOff>
-          ) : (
-            <MicOn
-              x={transforms.mic.x - transforms.mic.r * 0.75}
-              y={transforms.mic.y - transforms.mic.r * 0.75}
-              height={transforms.mic.r * 2 * 0.75}
-              preserveAspectRatio="xMinYMin"
-              className="mic-button-icon"
-            ></MicOn>
-          )}
-        </g>
-        {tuningState.map((note, index) => (
-          <TuningButton
-            key={index}
-            i={index}
-            instrument={instrument}
-            isFocused={note.isFocused}
-            isTuned={note.isTuned}
-            playNoteCallback={(note: string) => {
-              playNoteCallback(index, note);
-            }}
-            onNoteChange={(index, note) => {
-              onNoteChange(index, note);
-              noteChangeRef.current = note;
-            }}
-          >
-            {note.note}
-          </TuningButton>
-        ))}
-        <TuningGauge x={40} y={60} width={20} cents={5}>
-          {frequency}
-        </TuningGauge>
-      </svg>
-    </div>
+    <svg
+      style={{ border: "2px solid red", objectFit: "cover" }}
+      id="tunerSVG"
+      version="1.1"
+      className="headstock"
+      viewBox="0 0 80 100"
+    >
+      <g>
+        {renderHeadstock()}
+        <circle
+          className="mic-button"
+          cx={transforms.mic.x}
+          cy={transforms.mic.y}
+          r={transforms.mic.r}
+          onClick={() => {
+            toggleMic();
+          }}
+        ></circle>
+        {isMicEnabled ? (
+          <MicOff
+            x={transforms.mic.x - transforms.mic.r * 0.75}
+            y={transforms.mic.y - transforms.mic.r * 0.75}
+            height={transforms.mic.r * 2 * 0.75}
+            preserveAspectRatio="xMinYMin"
+            className="mic-button-icon"
+          ></MicOff>
+        ) : (
+          <MicOn
+            x={transforms.mic.x - transforms.mic.r * 0.75}
+            y={transforms.mic.y - transforms.mic.r * 0.75}
+            height={transforms.mic.r * 2 * 0.75}
+            preserveAspectRatio="xMinYMin"
+            className="mic-button-icon"
+          ></MicOn>
+        )}
+      </g>
+      {tuningState.map((note, index) => (
+        <TuningButton
+          key={index}
+          i={index}
+          instrument={instrument}
+          isFocused={note.isFocused}
+          isTuned={note.isTuned}
+          playNoteCallback={(note: string) => {
+            playNoteCallback(index, note);
+          }}
+          onNoteChange={(index, note) => {
+            onNoteChange(index, note);
+            noteChangeRef.current = note;
+          }}
+        >
+          {note.note}
+        </TuningButton>
+      ))}
+      <TuningGauge
+        frequency={frequency}
+        x={40}
+        y={60}
+        width={20}
+        holdDuration={1}
+        cents={5}
+        pitchShift={pitchShift}
+        onTuned={onTunedNoteHandler}
+      ></TuningGauge>
+    </svg>
   );
 };
 

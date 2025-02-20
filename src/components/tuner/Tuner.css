@@ -1,15 +1,10 @@
 .headstock {
+  min-width: 320px;
   fill: var(--background-color);
   fill-opacity: 1;
-  stroke: var(--main-color);
-  stroke-width: 0.347793;
-  stroke-dasharray: none;
-  stroke-opacity: 1;
-}
-
-.bass-head {
-  stroke-width: 1;
   stroke: var(--secondary-color);
+  stroke-width: 1;
+  stroke-dasharray: none;
   stroke-opacity: 1;
 }
 

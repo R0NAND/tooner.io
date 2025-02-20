@@ -9,6 +9,7 @@ import { generateNewString } from "../utils/generateNewString";
 import EditableText from "../components/EditableText";
 import useLocalStorageArray from "../hooks/useLocalStorageArray";
 import defaultTunings from "../defaults/tunings";
+import Slider from "../components/metronome/Slider";
 
 const TunerPage = () => {
   const [tunings, setTunings] = useLocalStorageArray<Tuning>(
@@ -21,6 +22,8 @@ const TunerPage = () => {
   const [tuning, setTuning] = useState(
     tunings.filter((t) => t.instrument === selectedInstrument)[0]
   );
+  const [pitchShift, setPitchShift] = useState(0); //in cents
+  const [isSidebarMinimized, setIsSidebarMinimized] = useState(false);
 
   const instrumentSelect = (instrument: InstrumentEnum) => {
     setTuning(tunings.filter((t) => t.instrument === instrument)[0]);
@@ -102,7 +105,9 @@ const TunerPage = () => {
 
   return (
     <div className="tuner-page">
-      <div className="tuning-menu">
+      <div
+        className={`tuning-menu ${isSidebarMinimized ? "hidden-sidebar" : ""}`}
+      >
         <div className="instrument-select-panel">
           <button
             className={
@@ -153,40 +158,44 @@ const TunerPage = () => {
             8-String
           </button>
         </div>
-        {tunings
-          .filter((t) => t.instrument === selectedInstrument)
-          .map((t) => {
-            return (
-              <div
-                className="tuning-menu-item"
-                key={t.notes.toString()}
-                onClick={() => {
-                  setTuning(t);
-                }}
-              >
-                <button
-                  className="tuning-table-delete"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    deleteTuning(t);
+        <div className="tunings-list">
+          {tunings
+            .filter((t) => t.instrument === selectedInstrument)
+            .map((t) => {
+              return (
+                <div
+                  className="tuning-menu-item"
+                  key={t.notes.toString()}
+                  onClick={() => {
+                    setTuning(t);
                   }}
                 >
-                  <FontAwesomeIcon
-                    fontSize={"1.61em"}
-                    icon={faRemove}
-                  ></FontAwesomeIcon>
-                </button>
-                <div
-                  style={{ textAlign: "left", width: "20ch", height: "2em" }}
-                >
-                  <EditableText onEditCompleted={onNameEdited}>
-                    {t.name}
-                  </EditableText>
-                  <div style={{ fontSize: "0.61em" }}>{t.notes.toString()}</div>
+                  <button
+                    className="tuning-table-delete"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteTuning(t);
+                    }}
+                  >
+                    <FontAwesomeIcon
+                      fontSize={"1.61em"}
+                      icon={faRemove}
+                    ></FontAwesomeIcon>
+                  </button>
+                  <div
+                    style={{ textAlign: "left", width: "20ch", height: "2em" }}
+                  >
+                    <EditableText onEditCompleted={onNameEdited}>
+                      {t.name}
+                    </EditableText>
+                    <div style={{ fontSize: "0.61em" }}>
+                      {t.notes.toString()}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+        </div>
         <button
           className="tuning-save-button"
           disabled={!canSaveTuning}
@@ -194,13 +203,41 @@ const TunerPage = () => {
         >
           <FontAwesomeIcon icon={faSave}></FontAwesomeIcon>
         </button>
+        <div className="tuning-slider">
+          <span>Shift Pitch (cents)</span>
+          <Slider
+            min={-50}
+            max={50}
+            value={pitchShift}
+            width={"auto"}
+            onChange={(n) => setPitchShift(n)}
+          ></Slider>
+        </div>
       </div>
-      <Tuner
-        instrument={tuning.instrument}
-        tuning={tuning.notes}
-        onNoteChange={changeNote}
-      ></Tuner>
-      <div className={"tuning-help"}></div>
+      <div
+        className="tuning-sidebar-toggle"
+        onClick={() => {
+          setIsSidebarMinimized(!isSidebarMinimized);
+          //@ts-ignore
+          const foo = document
+            //@ts-ignore
+            .getElementById("tunerSVG")
+            //@ts-ignore
+            .getBBox();
+          console.log(foo);
+        }}
+      >
+        <div>{selectedInstrument}</div>
+        <div style={{ fontSize: "0.61em" }}>{tuning.name}</div>
+      </div>
+      <div style={{ height: "100%", border: "2px solid blue" }}>
+        <Tuner
+          instrument={tuning.instrument}
+          tuning={tuning.notes}
+          onNoteChange={changeNote}
+          pitchShift={pitchShift}
+        ></Tuner>
+      </div>
     </div>
   );
 };

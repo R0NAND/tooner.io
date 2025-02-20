@@ -65,7 +65,7 @@
   display: flex;
 }
 
-@media (max-aspect-ratio: 1/1) {
+/* @media (max-aspect-ratio: 1/1) {
   .navbar-ul span {
     display: none;
   }
@@ -75,4 +75,4 @@
   .navbar-ul > a {
     display: none;
   }
-}
+} */

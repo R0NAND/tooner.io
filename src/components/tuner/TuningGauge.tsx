@@ -1,18 +1,35 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as Tone from "tone";
 import interpolate from "color-interpolate";
 import "./TuningGauge.css";
 import TuningFork from "../../resources/tuning-fork.svg?react";
 
 interface Props {
-  children: number;
+  frequency: number;
   x: number;
   y: number;
   width: number;
+  holdDuration: number;
   cents: number;
+  pitchShift: number; //In cents
+  onTuned: (note: string) => void;
 }
 
-const TuningGauge = ({ children, x, y, width, cents = 5 }: Props) => {
+const TuningGauge = ({
+  frequency,
+  x,
+  y,
+  width,
+  holdDuration = 1,
+  cents = 5,
+  pitchShift = 0,
+  onTuned,
+}: Props) => {
+  if (Math.abs(pitchShift) > 50) {
+    throw new Error(
+      "Invalid pitch shift detected. Value must be between -50 and 50 cents"
+    );
+  }
   //Below is not the best practice, but I don't plan on using this component anywhere else for the time being
   const outline_color = getComputedStyle(document.body).getPropertyValue(
     "--secondary-color"
@@ -31,26 +48,46 @@ const TuningGauge = ({ children, x, y, width, cents = 5 }: Props) => {
   const twelthRadian = (2 * Math.PI) / 12;
   const midiNoteZeroFreq = Tone.Frequency(0, "midi").toFrequency();
   const twelthRootOfTwo = 1.05946309436;
+  const initialHeardTime = useRef(Date.now());
+  const lastHeardNote = useRef("");
   useEffect(() => {
-    if (children !== 0) {
-      const newNote = Tone.Frequency(children).toNote();
+    if (frequency !== 0) {
+      const pitchShiftCoeff = Math.pow(1.0005777895, pitchShift);
+      const newNote = Tone.Frequency(frequency / pitchShiftCoeff).toNote();
       const targetMidiNote = Tone.Frequency(newNote).toMidi();
       const continuousMidiNote =
-        Math.log(children / midiNoteZeroFreq) / Math.log(twelthRootOfTwo);
+        Math.log(frequency / pitchShiftCoeff / midiNoteZeroFreq) /
+        Math.log(twelthRootOfTwo);
       const newRadianError =
         twelthRadian * (continuousMidiNote - targetMidiNote);
-      const targetFrequency = Tone.Frequency(newNote).toFrequency();
-      const centsOff = 1200 * Math.log2(children / targetFrequency);
+      const targetFrequency =
+        Tone.Frequency(newNote).toFrequency() * pitchShiftCoeff;
+      const centsOff = 1200 * Math.log2(frequency / targetFrequency);
       const isTuned = Math.abs(centsOff) <= cents;
       setNote(newNote);
       setRadianError(newRadianError);
+      console.log(centsOff);
       setColor(isTuned ? colorMap(0) : colorMap(Math.abs(centsOff) / 50));
+      if (isTuned) {
+        if (newNote === lastHeardNote.current) {
+          if (Date.now() - initialHeardTime.current >= holdDuration * 1000) {
+            onTuned(newNote);
+            lastHeardNote.current = "";
+          }
+        } else {
+          lastHeardNote.current = newNote;
+          initialHeardTime.current = Date.now();
+        }
+      } else {
+        lastHeardNote.current = "";
+      }
     } else {
+      lastHeardNote.current = "";
       setNote("");
       setRadianError(0);
       setColor(outline_color);
     }
-  }, [children]);
+  }, [frequency]);
 
   const tuningCircleRadius = 150;
   const tuningCircleX = 50;
