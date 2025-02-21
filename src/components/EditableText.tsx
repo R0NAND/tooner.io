@@ -12,15 +12,27 @@ const EditableText = ({ children, onEditCompleted }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [textWidth, setTextWidth] = useState(0);
-  useEffect(() => {
+  const calcWidth = () => {
     const font = window
       //@ts-ignore
       .getComputedStyle(inputRef.current, null)
       .getPropertyValue("font");
     const tWidth = measureTextWidth(children, font, 1);
     setTextWidth(tWidth);
+  };
+
+  useEffect(() => {
+    calcWidth();
     setTransitoryValue(children);
   }, [children]);
+
+  useEffect(() => {
+    //Handles my case where I change font size with screen size
+    addEventListener("resize", calcWidth);
+    return () => {
+      removeEventListener("resize", calcWidth);
+    };
+  }, []);
 
   return (
     <input

@@ -1,15 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Tuner from "../components/tuner/Tuner";
 import { InstrumentEnum } from "../components/tuner/Tuner";
 import "./TunerPage.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faRemove, faSave } from "@fortawesome/free-solid-svg-icons";
+import { faGear, faRemove, faSave } from "@fortawesome/free-solid-svg-icons";
 import { Tuning } from "../types/tunings";
 import { generateNewString } from "../utils/generateNewString";
 import EditableText from "../components/EditableText";
 import useLocalStorageArray from "../hooks/useLocalStorageArray";
 import defaultTunings from "../defaults/tunings";
 import Slider from "../components/metronome/Slider";
+import { width } from "@fortawesome/free-solid-svg-icons/fa0";
+import { measureTextWidth } from "../utils/measureTextWidth";
 
 const TunerPage = () => {
   const [tunings, setTunings] = useLocalStorageArray<Tuning>(
@@ -23,7 +25,34 @@ const TunerPage = () => {
     tunings.filter((t) => t.instrument === selectedInstrument)[0]
   );
   const [pitchShift, setPitchShift] = useState(0); //in cents
+
   const [isSidebarMinimized, setIsSidebarMinimized] = useState(false);
+  const [isMobileView, setIsMobileView] = useState(false);
+  const sidebarWidth = 30; //characters
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const tunerResizeHandler = (width: number, height: number) => {
+    if (sidebarRef.current && window.visualViewport) {
+      const font = window
+        //@ts-ignore
+        .getComputedStyle(sidebarRef.current, null)
+        .getPropertyValue("font");
+      const sidebarWidthApproximation = measureTextWidth(
+        "0".repeat(sidebarWidth),
+        font
+      );
+      console.log(sidebarWidthApproximation);
+      if (
+        window.visualViewport.width - 2 * sidebarWidthApproximation - width <
+        0
+      ) {
+        setIsMobileView(true);
+        setIsSidebarMinimized(true);
+      } else {
+        setIsMobileView(false);
+        setIsSidebarMinimized(false);
+      }
+    }
+  };
 
   const instrumentSelect = (instrument: InstrumentEnum) => {
     setTuning(tunings.filter((t) => t.instrument === instrument)[0]);
@@ -50,9 +79,16 @@ const TunerPage = () => {
     const newNotes = tuning.notes.map((note, i) => {
       return i === index ? newNote : note;
     });
+    const matchedTuning = tunings.filter(
+      (t) => t.notes.toString() === newNotes.toString()
+    );
+    let newTuningName = "Custom Tuning";
+    if (matchedTuning.length === 1) {
+      newTuningName = matchedTuning[0].name;
+    }
     setTuning({
       instrument: selectedInstrument,
-      name: tuning.name,
+      name: newTuningName,
       notes: newNotes,
     });
   };
@@ -106,7 +142,16 @@ const TunerPage = () => {
   return (
     <div className="tuner-page">
       <div
-        className={`tuning-menu ${isSidebarMinimized ? "hidden-sidebar" : ""}`}
+        ref={sidebarRef}
+        style={{
+          width:
+            isMobileView && !isSidebarMinimized
+              ? "100%"
+              : sidebarWidth.toString() + "ch",
+        }}
+        className={`tuning-menu ${isMobileView ? "tuning-menu-mobile" : ""} ${
+          isSidebarMinimized ? "hidden-sidebar" : ""
+        }`}
       >
         <div className="instrument-select-panel">
           <button
@@ -210,34 +255,33 @@ const TunerPage = () => {
             max={50}
             value={pitchShift}
             width={"auto"}
+            updateOnDrag={false}
             onChange={(n) => setPitchShift(n)}
           ></Slider>
         </div>
       </div>
       <div
-        className="tuning-sidebar-toggle"
+        className={`tuning-sidebar-toggle ${isMobileView ? "" : "hidden"}`}
         onClick={() => {
           setIsSidebarMinimized(!isSidebarMinimized);
-          //@ts-ignore
-          const foo = document
-            //@ts-ignore
-            .getElementById("tunerSVG")
-            //@ts-ignore
-            .getBBox();
-          console.log(foo);
         }}
       >
         <div>{selectedInstrument}</div>
         <div style={{ fontSize: "0.61em" }}>{tuning.name}</div>
+        <div>
+          <FontAwesomeIcon icon={faSave}></FontAwesomeIcon>
+        </div>
+        <div>
+          <FontAwesomeIcon icon={faGear}></FontAwesomeIcon>
+        </div>
       </div>
-      <div style={{ height: "100%", border: "2px solid blue" }}>
-        <Tuner
-          instrument={tuning.instrument}
-          tuning={tuning.notes}
-          onNoteChange={changeNote}
-          pitchShift={pitchShift}
-        ></Tuner>
-      </div>
+      <Tuner
+        instrument={tuning.instrument}
+        tuning={tuning.notes}
+        onNoteChange={changeNote}
+        pitchShift={pitchShift}
+        onResize={tunerResizeHandler}
+      ></Tuner>
     </div>
   );
 };

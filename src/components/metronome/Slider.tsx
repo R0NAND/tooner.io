@@ -6,10 +6,18 @@ interface Props {
   min: number;
   max: number;
   value: number;
+  updateOnDrag: boolean;
   onChange: (percentage: number) => void;
 }
 
-const Slider = ({ width, min, max, value, onChange }: Props) => {
+const Slider = ({
+  width,
+  min,
+  max,
+  value,
+  updateOnDrag = true,
+  onChange,
+}: Props) => {
   useEffect(() => {
     if (value < min || value > max) {
       throw new Error("value not within range");
@@ -47,31 +55,43 @@ const Slider = ({ width, min, max, value, onChange }: Props) => {
   };
 
   useEffect(() => {
+    debugger;
     if (inputRef.current != null) {
       inputRef.current.value = value.toString();
     }
     setThumbLeft((trackWidth - thumbWidth) * ((value - min) / (max - min)));
   }, [value]);
 
-  const onMouseDown = (downEvent: React.MouseEvent<HTMLDivElement>) => {
+  const getEventX = (e: MouseEvent | TouchEvent): number => {
+    if ("touches" in e) {
+      return e.touches[0].clientX;
+    } else {
+      return e.clientX;
+    }
+  };
+
+  const onPressDown = (downEvent: React.MouseEvent | React.TouchEvent) => {
+    downEvent.preventDefault();
+    debugger;
     const clickPosition =
-      downEvent.clientX - getTrackPosition() - 0.5 * thumbWidth;
+      getEventX(downEvent.nativeEvent) - getTrackPosition() - 0.5 * thumbWidth;
     const newThumbLeft = Math.max(
       0,
       Math.min(trackWidth - thumbWidth, clickPosition)
     );
     const clickedValue =
       min + (max - min) * (newThumbLeft / (trackWidth - thumbWidth));
+    if (updateOnDrag) {
+    }
     onChange(clickedValue);
     setThumbLeft(newThumbLeft);
-    downEvent.preventDefault();
 
-    const mouseMoveHandler = (e: MouseEvent) => {
+    const dragHandler = (e: MouseEvent | TouchEvent) => {
       const dragPosition = Math.max(
         0,
         Math.min(
           trackWidth - thumbWidth,
-          newThumbLeft + (e.clientX - downEvent.clientX)
+          newThumbLeft + (getEventX(e) - getEventX(downEvent.nativeEvent))
         )
       );
       const draggedValue =
@@ -79,12 +99,22 @@ const Slider = ({ width, min, max, value, onChange }: Props) => {
       setThumbLeft(dragPosition);
       onChange(draggedValue);
     };
-    addEventListener("mousemove", mouseMoveHandler);
+    addEventListener("mousemove", dragHandler);
+    addEventListener("touchmove", dragHandler);
 
     addEventListener(
       "mouseup",
       () => {
-        removeEventListener("mousemove", mouseMoveHandler);
+        removeEventListener("mousemove", dragHandler);
+        removeEventListener("touchmove", dragHandler);
+      },
+      { once: true }
+    );
+    addEventListener(
+      "touchend",
+      () => {
+        removeEventListener("mousemove", dragHandler);
+        removeEventListener("touchmove", dragHandler);
       },
       { once: true }
     );
@@ -109,7 +139,8 @@ const Slider = ({ width, min, max, value, onChange }: Props) => {
     <div
       ref={trackRef}
       className="big-d"
-      onMouseDown={onMouseDown}
+      onMouseDown={onPressDown}
+      onTouchStart={onPressDown}
       style={{
         width: width,
         height: "1.5em",
@@ -139,7 +170,8 @@ const Slider = ({ width, min, max, value, onChange }: Props) => {
       ></div>
       <div
         className="bpm-slider-thumb"
-        onMouseDown={onMouseDown}
+        onMouseDown={onPressDown}
+        onTouchStart={onPressDown}
         ref={thumbRef}
         style={{
           display: "flex",

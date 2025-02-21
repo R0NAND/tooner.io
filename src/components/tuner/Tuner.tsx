@@ -33,6 +33,7 @@ interface Props {
   tuning: string[];
   pitchShift: number; //in cents
   onNoteChange: (index: number, newNote: string) => void;
+  onResize: (width: number, height: number) => void;
 }
 
 const Tuner = ({
@@ -40,7 +41,7 @@ const Tuner = ({
   tuning,
   pitchShift,
   onNoteChange,
-  ref,
+  onResize,
 }: Props) => {
   if (Math.abs(pitchShift) > 50) {
     throw new Error(
@@ -218,10 +219,29 @@ const Tuner = ({
     }
   };
 
+  const svgRef = useRef<SVGSVGElement>(null);
+  const callResizeCallback = () => {
+    if (svgRef.current) {
+      const { width, height } = svgRef.current.getBoundingClientRect();
+      onResize(width, height);
+    }
+  };
+  useEffect(() => {
+    addEventListener("resize", callResizeCallback);
+
+    return () => removeEventListener("resize", callResizeCallback);
+  }, [onResize]);
+  useEffect(() => {
+    callResizeCallback();
+  }, []);
+
   return (
     <svg
-      style={{ border: "2px solid red", objectFit: "cover" }}
-      id="tunerSVG"
+      style={{
+        maxHeight: "100%",
+        maxWidth: "100%",
+      }}
+      ref={svgRef}
       version="1.1"
       className="headstock"
       viewBox="0 0 80 100"
