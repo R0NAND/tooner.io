@@ -10,7 +10,6 @@ import EditableText from "../components/EditableText";
 import useLocalStorageArray from "../hooks/useLocalStorageArray";
 import defaultTunings from "../defaults/tunings";
 import Slider from "../components/metronome/Slider";
-import { width } from "@fortawesome/free-solid-svg-icons/fa0";
 import { measureTextWidth } from "../utils/measureTextWidth";
 
 const TunerPage = () => {
@@ -30,7 +29,7 @@ const TunerPage = () => {
   const [isMobileView, setIsMobileView] = useState(false);
   const sidebarWidth = 30; //characters
   const sidebarRef = useRef<HTMLDivElement>(null);
-  const tunerResizeHandler = (width: number, height: number) => {
+  const tunerResizeHandler = (width: number) => {
     if (sidebarRef.current && window.visualViewport) {
       const font = window
         //@ts-ignore
@@ -248,15 +247,22 @@ const TunerPage = () => {
         >
           <FontAwesomeIcon icon={faSave}></FontAwesomeIcon>
         </button>
-        <div className="tuning-slider">
-          <span>Shift Pitch (cents)</span>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+          className="tuning-slider"
+        >
+          <span>Shift Pitch</span>
           <Slider
             min={-50}
             max={50}
             value={pitchShift}
-            width={"auto"}
+            width={"20ch"}
             updateOnDrag={false}
-            onChange={(n) => setPitchShift(n)}
+            onChange={(n) => setPitchShift(Math.round(n))}
           ></Slider>
         </div>
       </div>
