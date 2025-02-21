@@ -39,13 +39,16 @@ const TunerPage = () => {
         "0".repeat(sidebarWidth),
         font
       );
-      console.log(sidebarWidthApproximation);
       if (
         window.visualViewport.width - 2 * sidebarWidthApproximation - width <
         0
       ) {
-        setIsMobileView(true);
-        setIsSidebarMinimized(true);
+        if (!isMobileView) {
+          //resize event also gets triggered by mobile keyboard
+          //putting contents within this prevents keyboard from minimizing menu
+          setIsMobileView(true);
+          setIsSidebarMinimized(true);
+        }
       } else {
         setIsMobileView(false);
         setIsSidebarMinimized(false);
@@ -262,6 +265,7 @@ const TunerPage = () => {
             value={pitchShift}
             width={"20ch"}
             updateOnDrag={false}
+            label={"cents"}
             onChange={(n) => setPitchShift(Math.round(n))}
           ></Slider>
         </div>

@@ -180,6 +180,7 @@ const Metronome = () => {
           min={minBpm}
           max={maxBpm}
           value={bpm}
+          label="bpm"
           onChange={(bpm: number) => {
             setBpm(Math.round(bpm));
           }}

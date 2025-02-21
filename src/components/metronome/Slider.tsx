@@ -1,4 +1,5 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { clamp } from "../../utils/clamp";
 import "./Slider.css";
 
 interface Props {
@@ -7,6 +8,7 @@ interface Props {
   max: number;
   value: number;
   updateOnDrag?: boolean;
+  label?: string;
   onChange: (percentage: number) => void;
 }
 
@@ -16,6 +18,7 @@ const Slider = ({
   max,
   value,
   updateOnDrag = true,
+  label = "",
   onChange,
 }: Props) => {
   useEffect(() => {
@@ -24,32 +27,52 @@ const Slider = ({
     }
   }, [min, max, value]);
 
-  const [thumbLeft, setThumbLeft] = useState(0);
-  const [trackWidth, setTrackWidth] = useState(0);
-  const [thumbWidth, setThumbWidth] = useState(0);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const thumbRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
+  const [thumbPos, setThumbPos] = useState(0);
+  const trackWidthRef = useRef(0);
+  const thumbWidthRef = useRef(0);
+
+  const positionToValue = (pos: number) => {
+    const adjustedPos = pos - 0.5 * thumbWidthRef.current;
+    return (
+      min +
+      (max - min) *
+        (adjustedPos / (trackWidthRef.current - thumbWidthRef.current))
+    );
+  };
+
+  const valueToPosition = (value: number) => {
+    console.log({ value });
+    const foo =
+      0.5 * thumbWidthRef.current +
+      (trackWidthRef.current - thumbWidthRef.current) *
+        ((value - min) / (max - min));
+    console.log({ foo });
+    return foo;
+  };
 
   useLayoutEffect(() => {
     const setDimensions = () => {
       if (trackRef.current !== null && thumbRef.current !== null) {
-        setTrackWidth(trackRef.current.getBoundingClientRect().width);
-        setThumbWidth(thumbRef.current.getBoundingClientRect().width);
-        setThumbLeft(
+        trackWidthRef.current = trackRef.current.getBoundingClientRect().width;
+        thumbWidthRef.current = thumbRef.current.getBoundingClientRect().width;
+        const foo =
+          0.5 * thumbRef.current.getBoundingClientRect().width +
           (trackRef.current.getBoundingClientRect().width -
             thumbRef.current.getBoundingClientRect().width) *
-            ((value - min) / (max - min))
-        );
+            ((value - min) / (max - min));
+        setThumbPos(foo);
       }
     };
+
     window.addEventListener("resize", setDimensions);
-    console.log("ayo");
     setDimensions();
     return () => window.removeEventListener("resize", setDimensions);
   }, []);
 
-  const getTrackPosition = () => {
+  const getTrackX = () => {
     if (trackRef.current !== null) {
       return trackRef.current.getBoundingClientRect().x;
     } else return 0;
@@ -59,7 +82,7 @@ const Slider = ({
     if (inputRef.current !== null) {
       inputRef.current.value = value.toString();
     }
-    setThumbLeft((trackWidth - thumbWidth) * ((value - min) / (max - min)));
+    setThumbPos(valueToPosition(value));
   }, [value]);
 
   const getEventX = (e: MouseEvent | TouchEvent): number => {
@@ -70,61 +93,52 @@ const Slider = ({
     }
   };
 
-  const dragValueRef = useRef(0);
-  const onPressDown = (downEvent: React.MouseEvent | React.TouchEvent) => {
-    downEvent.preventDefault();
-    const clickPosition = getEventX(downEvent.nativeEvent) - getTrackPosition();
-    const newThumbLeft = Math.max(
-      0.5 * thumbWidth,
-      Math.min(trackWidth - 0.5 * thumbWidth, clickPosition)
+  const dragHandler = (e: MouseEvent | TouchEvent) => {
+    const dragPosition = clamp(
+      0.5 * thumbWidthRef.current,
+      getEventX(e) - getTrackX(),
+      trackWidthRef.current - 0.5 * thumbWidthRef.current
     );
-    const clickedValue =
-      min + (max - min) * (newThumbLeft / (trackWidth - thumbWidth));
-    if (updateOnDrag) {
-      onChange(clickedValue);
-    }
-    setThumbLeft(newThumbLeft);
 
-    const dragHandler = (e: MouseEvent | TouchEvent) => {
-      const dragPosition = Math.max(
-        0.5 * thumbWidth,
-        Math.min(
-          trackWidth - 0.5 * thumbWidth,
-          newThumbLeft + (getEventX(e) - getEventX(downEvent.nativeEvent))
-        )
-      );
-      dragValueRef.current =
-        min + (max - min) * (dragPosition / (trackWidth - 0.5 * thumbWidth));
-      setThumbLeft(dragPosition);
-      if (updateOnDrag) {
-        onChange(dragValueRef.current);
-      }
-    };
+    if (updateOnDrag) {
+      onChange(positionToValue(dragPosition));
+    } else {
+      setThumbPos(dragPosition);
+      setInputValue(positionToValue(dragPosition).toString());
+    }
+  };
+
+  const onPressDown = (downEvent: React.MouseEvent | React.TouchEvent) => {
+    const initialPress = clamp(
+      0.5 * thumbWidthRef.current,
+      getEventX(downEvent.nativeEvent) - getTrackX(),
+      trackWidthRef.current - 0.5 * thumbWidthRef.current
+    );
+    if (updateOnDrag) {
+      onChange(positionToValue(initialPress));
+    } else {
+      setThumbPos(initialPress);
+      setInputValue(positionToValue(initialPress).toString());
+    }
     addEventListener("mousemove", dragHandler);
     addEventListener("touchmove", dragHandler);
+    addEventListener("mouseup", onRelease);
+    addEventListener("touchend", onRelease);
+  };
 
-    addEventListener(
-      "mouseup",
-      () => {
-        removeEventListener("mousemove", dragHandler);
-        removeEventListener("touchmove", dragHandler);
-        if (!updateOnDrag) {
-          onChange(dragValueRef.current);
-        }
-      },
-      { once: true }
-    );
-    addEventListener(
-      "touchend",
-      () => {
-        removeEventListener("mousemove", dragHandler);
-        removeEventListener("touchmove", dragHandler);
-        if (!updateOnDrag) {
-          onChange(dragValueRef.current);
-        }
-      },
-      { once: true }
-    );
+  const onRelease = (e: MouseEvent | TouchEvent) => {
+    if (!updateOnDrag) {
+      const position = clamp(
+        0.5 * thumbWidthRef.current,
+        getEventX(e) - getTrackX(),
+        trackWidthRef.current - 0.5 * thumbWidthRef.current
+      );
+      onChange(positionToValue(position));
+    }
+    removeEventListener("mousemove", dragHandler);
+    removeEventListener("touchmove", dragHandler);
+    removeEventListener("mouseup", onRelease);
+    removeEventListener("touchend", onRelease);
   };
 
   const [inputValue, setInputValue] = useState(value.toString());
@@ -136,10 +150,9 @@ const Slider = ({
     if (isNaN(blurValue)) {
       blurValue = min;
     } else {
-      blurValue = Math.min(Math.max(blurValue, min), max);
+      blurValue = clamp(min, blurValue, max);
     }
     setInputValue(blurValue.toString());
-    debugger;
     onChange(blurValue);
   };
 
@@ -159,29 +172,26 @@ const Slider = ({
       }}
     >
       <div
-        className="bpm-slider-track-left"
-        style={{
-          height: "0.5em",
-          position: "absolute",
-          top: "0.5em",
-          left: "0",
-          border: "none",
-          borderRadius: 5,
-          width: thumbLeft,
-        }}
-      ></div>
-      <div
         className="bpm-slider-track-right"
         style={{
+          width: "100%",
           height: "0.5em",
           position: "absolute",
           top: "0.5em",
-          left: thumbLeft,
           border: "none",
           borderRadius: 5,
-          width: trackWidth - thumbLeft,
         }}
-      ></div>
+      >
+        <div
+          className="bpm-slider-track-left"
+          style={{
+            height: "0.5em",
+            border: "none",
+            borderRadius: 5,
+            width: thumbPos,
+          }}
+        ></div>
+      </div>
       <div
         className="bpm-slider-thumb"
         onMouseDown={onPressDown}
@@ -194,38 +204,46 @@ const Slider = ({
           borderRadius: "50%",
           position: "absolute",
           transform: "translateX(-50%)",
-          left: thumbLeft,
+          left: thumbPos,
         }}
       ></div>
-      <input
+      <div
         style={{
           position: "absolute",
-          top: "2.5em",
-          left: thumbLeft,
+          top: "2em",
+          left: thumbPos,
           transform: "translateX(-50%)",
-          width: "7ch",
-          borderRadius: "0.5em",
+          display: "flex",
+          flexDirection: "column",
         }}
-        ref={inputRef}
-        onMouseDown={(e) => {
-          e.stopPropagation();
-        }}
-        type="number"
-        value={inputValue}
-        onChange={(e) => {
-          setInputValue(e.target.value);
-        }}
-        onBlur={() => {
-          handleBlur();
-        }}
-        min={min}
-        max={max}
-        onKeyUp={(e) => {
-          if (e.key === "Enter") {
-            inputRef.current?.blur();
-          }
-        }}
-      ></input>
+      >
+        <input
+          style={{
+            width: "7ch",
+            borderRadius: "0.5em",
+          }}
+          ref={inputRef}
+          onMouseDown={(e) => {
+            e.stopPropagation();
+          }}
+          type="number"
+          value={inputValue}
+          onChange={(e) => {
+            setInputValue(e.target.value);
+          }}
+          onBlur={() => {
+            handleBlur();
+          }}
+          min={min}
+          max={max}
+          onKeyUp={(e) => {
+            if (e.key === "Enter") {
+              inputRef.current?.blur();
+            }
+          }}
+        ></input>
+        {label !== "" && <label>{label}</label>}
+      </div>
     </div>
   );
 };
