@@ -147,7 +147,7 @@ const TabsPage = () => {
           max={100}
           width="20em"
           onChange={(v: number) => {
-            setScrollRate(Math.round(v));
+            setScrollRate(v);
           }}
         ></Slider>
       </div>

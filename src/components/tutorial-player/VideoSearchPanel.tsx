@@ -55,7 +55,7 @@ const VideoSearchPanel = ({ addVideoCallback, playVideoCallback }: Props) => {
       <div
         className="video-query-panel"
         style={{
-          visibility: isSearchBarOpen ? "visible" : "hidden",
+          display: isSearchBarOpen ? "grid" : "none",
         }}
       >
         <label>Song:</label>
@@ -92,7 +92,7 @@ const VideoSearchPanel = ({ addVideoCallback, playVideoCallback }: Props) => {
       <div
         className={"queried-videos"}
         style={{
-          visibility: isSearchBarOpen ? "visible" : "hidden",
+          display: isSearchBarOpen ? "inline" : "none",
         }}
       >
         {queriedTutorials?.map((video) => {

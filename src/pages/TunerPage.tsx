@@ -266,7 +266,7 @@ const TunerPage = () => {
             width={"20ch"}
             updateOnDrag={false}
             label={"cents"}
-            onChange={(n) => setPitchShift(Math.round(n))}
+            onChange={(n) => setPitchShift(n)}
           ></Slider>
         </div>
       </div>

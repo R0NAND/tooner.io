@@ -6,6 +6,7 @@ import VideoPlaylist from "../components/tutorial-player/VideoPlaylist";
 import ReactPlayer from "react-player";
 import VideoSearchPanel from "../components/tutorial-player/VideoSearchPanel";
 import "./TutorialsPage.css";
+import Slider from "../components/metronome/Slider";
 
 const TutorialsPage = () => {
   const [tutorials, setTutorials] = useLocalStorageArray<VideoData>(
@@ -26,19 +27,8 @@ const TutorialsPage = () => {
 
   return (
     <div className="tutorials-page">
-      <VideoPlaylist
-        videos={tutorials}
-        playVideoCallback={playVideo}
-        deleteVideoCallback={deleteVideo}
-      ></VideoPlaylist>
-      <div style={{ display: "flex", height: "800px" }}>
-        <div
-          style={{
-            position: "relative",
-            height: "720px",
-            width: "1080px",
-          }}
-        >
+      <div className="tutorials-player-container">
+        <div className="tutorials-player">
           <ReactPlayer
             style={{ position: "absolute" }}
             id="youtube-player"
@@ -61,7 +51,24 @@ const TutorialsPage = () => {
             ></VideoSearchPanel>
           </div>
         </div>
+        <div style={{ display: "flex" }}>
+          <label>Timestamp Looper Placeholder:</label>
+          <Slider
+            min={0}
+            max={100}
+            value={50}
+            width="7em"
+            onChange={() => {
+              return 50;
+            }}
+          ></Slider>
+        </div>
       </div>
+      <VideoPlaylist
+        videos={tutorials}
+        playVideoCallback={playVideo}
+        deleteVideoCallback={deleteVideo}
+      ></VideoPlaylist>
     </div>
   );
 };

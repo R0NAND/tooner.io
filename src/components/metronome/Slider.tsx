@@ -9,6 +9,7 @@ interface Props {
   value: number;
   updateOnDrag?: boolean;
   label?: string;
+  rounding?: (v: number) => number;
   onChange: (percentage: number) => void;
 }
 
@@ -19,6 +20,9 @@ const Slider = ({
   value,
   updateOnDrag = true,
   label = "",
+  rounding = (v: number) => {
+    return Math.round(v);
+  },
   onChange,
 }: Props) => {
   useEffect(() => {
@@ -44,13 +48,11 @@ const Slider = ({
   };
 
   const valueToPosition = (value: number) => {
-    console.log({ value });
-    const foo =
+    return (
       0.5 * thumbWidthRef.current +
       (trackWidthRef.current - thumbWidthRef.current) *
-        ((value - min) / (max - min));
-    console.log({ foo });
-    return foo;
+        ((value - min) / (max - min))
+    );
   };
 
   useLayoutEffect(() => {
@@ -58,12 +60,12 @@ const Slider = ({
       if (trackRef.current !== null && thumbRef.current !== null) {
         trackWidthRef.current = trackRef.current.getBoundingClientRect().width;
         thumbWidthRef.current = thumbRef.current.getBoundingClientRect().width;
-        const foo =
+        const pos =
           0.5 * thumbRef.current.getBoundingClientRect().width +
           (trackRef.current.getBoundingClientRect().width -
             thumbRef.current.getBoundingClientRect().width) *
             ((value - min) / (max - min));
-        setThumbPos(foo);
+        setThumbPos(pos);
       }
     };
 
@@ -93,32 +95,37 @@ const Slider = ({
     }
   };
 
+  const dragPositionRef = useRef(0);
   const dragHandler = (e: MouseEvent | TouchEvent) => {
-    const dragPosition = clamp(
+    dragPositionRef.current = clamp(
       0.5 * thumbWidthRef.current,
       getEventX(e) - getTrackX(),
       trackWidthRef.current - 0.5 * thumbWidthRef.current
     );
 
     if (updateOnDrag) {
-      onChange(positionToValue(dragPosition));
+      onChange(rounding(positionToValue(dragPositionRef.current)));
     } else {
-      setThumbPos(dragPosition);
-      setInputValue(positionToValue(dragPosition).toString());
+      setThumbPos(dragPositionRef.current);
+      setInputValue(
+        rounding(positionToValue(dragPositionRef.current)).toString()
+      );
     }
   };
 
   const onPressDown = (downEvent: React.MouseEvent | React.TouchEvent) => {
-    const initialPress = clamp(
+    dragPositionRef.current = clamp(
       0.5 * thumbWidthRef.current,
       getEventX(downEvent.nativeEvent) - getTrackX(),
       trackWidthRef.current - 0.5 * thumbWidthRef.current
     );
     if (updateOnDrag) {
-      onChange(positionToValue(initialPress));
+      onChange(rounding(positionToValue(dragPositionRef.current)));
     } else {
-      setThumbPos(initialPress);
-      setInputValue(positionToValue(initialPress).toString());
+      setThumbPos(dragPositionRef.current);
+      setInputValue(
+        rounding(positionToValue(dragPositionRef.current)).toString()
+      );
     }
     addEventListener("mousemove", dragHandler);
     addEventListener("touchmove", dragHandler);
@@ -128,12 +135,7 @@ const Slider = ({
 
   const onRelease = (e: MouseEvent | TouchEvent) => {
     if (!updateOnDrag) {
-      const position = clamp(
-        0.5 * thumbWidthRef.current,
-        getEventX(e) - getTrackX(),
-        trackWidthRef.current - 0.5 * thumbWidthRef.current
-      );
-      onChange(positionToValue(position));
+      onChange(rounding(positionToValue(dragPositionRef.current)));
     }
     removeEventListener("mousemove", dragHandler);
     removeEventListener("touchmove", dragHandler);

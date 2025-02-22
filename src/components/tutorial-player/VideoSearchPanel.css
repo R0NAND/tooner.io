@@ -38,7 +38,7 @@
 }
 
 .collapsed-queried-videos {
-  height: 0px;
+  visibility: hidden;
 }
 
 .video-search-button {

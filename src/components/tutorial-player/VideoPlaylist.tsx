@@ -15,7 +15,7 @@ const VideoPlaylist = ({
   deleteVideoCallback,
 }: Props) => {
   return (
-    <div>
+    <div style={{ overflowY: "scroll" }}>
       {videos.map((vid) => {
         return (
           <div className="playlist-row" key={vid.id.videoId}>
