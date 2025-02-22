@@ -133,7 +133,7 @@ const Slider = ({
     addEventListener("touchend", onRelease);
   };
 
-  const onRelease = (e: MouseEvent | TouchEvent) => {
+  const onRelease = () => {
     if (!updateOnDrag) {
       onChange(rounding(positionToValue(dragPositionRef.current)));
     }
