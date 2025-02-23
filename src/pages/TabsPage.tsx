@@ -1,12 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { Tab } from "../types/tabs";
-import EditableText from "../components/EditableText";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faAdd,
+  faArrowDown,
   faPause,
-  faPlay,
-  faRemove,
+  faScroll,
 } from "@fortawesome/free-solid-svg-icons";
 import { generateNewString } from "../utils/generateNewString";
 import useLocalStorageArray from "../hooks/useLocalStorageArray";
@@ -14,6 +12,8 @@ import defaultTabs from "../defaults/tabs";
 import "./TabsPage.css";
 import Metronome from "../components/metronome/Metronome";
 import Slider from "../components/metronome/Slider";
+import TabsMenu from "../components/tabs-menu/TabsMenu";
+import { measureTextWidth } from "../utils/measureTextWidth";
 
 const TabsPage = () => {
   const [tabs, setTabs] = useLocalStorageArray<Tab>("tabs", defaultTabs);
@@ -41,7 +41,10 @@ const TabsPage = () => {
         return t.name;
       });
       const tabName = generateNewString(names, "New Tab ");
-      const newTabs = [...tabs, { name: tabName, tab: "" }];
+      const newTabs = [
+        ...tabs,
+        { name: tabName, tab: "Copy and paste your tab in here!" },
+      ];
       setTabs(newTabs);
     }
   };
@@ -77,81 +80,105 @@ const TabsPage = () => {
     }
   }, [isScrolling, scrollRate]);
 
+  const tabsMenuWidth = 20; // In Characters
+  const tabsMenuRef = useRef<HTMLDivElement | null>(null);
+  const tabDisplayRef = useRef<HTMLDivElement | null>(null);
+  const [isMobileView, setIsMobileView] = useState(false);
+
+  useEffect(() => {
+    const isIntersecting = () => {
+      if (tabDisplayRef.current) {
+        const font = window
+          //@ts-ignore
+          .getComputedStyle(tabDisplayRef.current, null)
+          .getPropertyValue("font");
+        const menuWidthApproximation = measureTextWidth(
+          "0".repeat(tabsMenuWidth),
+          font
+        );
+        return (
+          menuWidthApproximation >
+          tabDisplayRef.current.getBoundingClientRect().left
+        );
+      }
+    };
+
+    const onResize = () => {
+      if (isIntersecting()) {
+        setIsMobileView(true);
+      } else {
+        setIsMobileView(false);
+      }
+    };
+
+    onResize();
+    addEventListener("resize", () => {
+      onResize();
+    });
+  }, []);
   return (
-    <div className="tabs-page">
-      <div className="tabs-sidebar">
-        <h3>Saved Tabs</h3>
-        <div className="tabs-menu">
-          {tabs?.map((t, i) => {
-            return (
-              <div className="tab-menu-item" onClick={() => setSelectedTab(t)}>
-                <button
-                  className="tab-delete"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    deleteTab(t);
-                  }}
-                >
-                  <FontAwesomeIcon
-                    fontSize={"1.61em"}
-                    icon={faRemove}
-                  ></FontAwesomeIcon>
-                </button>
-                <div key={i}>
-                  <EditableText onEditCompleted={onNameEdited}>
-                    {t.name}
-                  </EditableText>
-                </div>
-              </div>
-            );
-          })}
-          <button onClick={() => createNewTab()}>
-            <FontAwesomeIcon icon={faAdd}></FontAwesomeIcon>
-          </button>
-        </div>
-      </div>
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          justifyContent: "center",
-          padding: "1em",
-        }}
-        className="tab-display"
-      >
+    <>
+      <div ref={tabDisplayRef} className="tab-display">
         <textarea
+          style={{ fontSize: "0.61em" }}
           ref={textAreaRef}
           className="tab-text-area"
           value={selectedTab.tab}
-          cols={100}
+          cols={80}
           onChange={(e) => onTextAreaChange(e.target.value)}
         ></textarea>
-      </div>
-      <div>
-        <h3>Metronome</h3>
-        <Metronome></Metronome>
-        <h3>Auto-Scroll</h3>
-        <button
-          onClick={() => {
-            setIsScrolling(!isScrolling);
-          }}
+        <div
+          style={{ display: "flex", fontSize: "0.5em", alignItems: "center" }}
         >
-          <FontAwesomeIcon
-            icon={isScrolling ? faPause : faPlay}
-          ></FontAwesomeIcon>
-        </button>
-        <Slider
-          value={scrollRate}
-          min={10}
-          max={100}
-          width="20em"
-          onChange={(v: number) => {
-            setScrollRate(v);
-          }}
-        ></Slider>
+          <button
+            onClick={() => {
+              setIsScrolling(!isScrolling);
+            }}
+            title={isScrolling ? "stop autoscroll" : "begin autoscroll"}
+            style={{ fontSize: "2em" }}
+          >
+            {isScrolling ? (
+              <FontAwesomeIcon icon={faPause}></FontAwesomeIcon>
+            ) : (
+              <div style={{ position: "relative" }}>
+                <FontAwesomeIcon icon={faScroll}></FontAwesomeIcon>
+                <FontAwesomeIcon
+                  style={{
+                    fontSize: "0.8em",
+                    position: "absolute",
+                    color: "black",
+                    top: "-0.1em",
+                    left: "0.38em",
+                  }}
+                  icon={faArrowDown}
+                ></FontAwesomeIcon>
+              </div>
+            )}
+          </button>
+          <Slider
+            value={scrollRate}
+            min={10}
+            max={100}
+            width="20em"
+            onChange={(v: number) => {
+              setScrollRate(v);
+            }}
+          ></Slider>
+          <Metronome></Metronome>
+        </div>
       </div>
-    </div>
+
+      <TabsMenu
+        tabs={tabs}
+        desktopWidth={tabsMenuWidth.toString() + "ch"}
+        isMobileMenu={isMobileView}
+        ref={tabsMenuRef}
+        onClicked={(t) => setSelectedTab(t)}
+        onDeleted={deleteTab}
+        onCreateNew={createNewTab}
+        onNameEdited={onNameEdited}
+      ></TabsMenu>
+    </>
   );
 };
 

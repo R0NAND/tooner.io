@@ -166,7 +166,7 @@ const Slider = ({
       onTouchStart={onPressDown}
       style={{
         width: width,
-        height: "5em",
+        height: "1em",
         border: "none",
         display: "flex",
         position: "relative",
@@ -179,7 +179,7 @@ const Slider = ({
           width: "100%",
           height: "0.5em",
           position: "absolute",
-          top: "0.5em",
+          top: "0.25em",
           border: "none",
           borderRadius: 5,
         }}
@@ -200,8 +200,8 @@ const Slider = ({
         onTouchStart={onPressDown}
         ref={thumbRef}
         style={{
-          height: "1.5em",
-          width: "1.5em",
+          height: "1em",
+          width: "1em",
           top: "0",
           borderRadius: "50%",
           position: "absolute",
@@ -212,7 +212,7 @@ const Slider = ({
       <div
         style={{
           position: "absolute",
-          top: "2em",
+          top: "1.25em",
           left: thumbPos,
           transform: "translateX(-50%)",
           display: "flex",
@@ -223,6 +223,8 @@ const Slider = ({
           style={{
             width: "7ch",
             borderRadius: "0.5em",
+            fontFamily: "inherit",
+            fontSize: "inherit",
           }}
           ref={inputRef}
           onMouseDown={(e) => {

@@ -1,30 +1,9 @@
 .metronome {
+  display: flex;
   margin: 0.5em;
-  display: grid;
-  grid-template-columns: auto auto;
-  grid-template-rows: auto auto;
   row-gap: 0.5em;
   column-gap: 0.5em;
   align-items: center;
-}
-
-@keyframes metronome-dormant-animation {
-  0% {
-    height: 53px;
-    width: 53px;
-  }
-  50% {
-    height: 48px;
-    width: 48px;
-  }
-  75% {
-    height: 53px;
-    width: 53px;
-  }
-  100% {
-    height: 53px;
-    width: 53px;
-  }
 }
 
 .metronome-play-button {

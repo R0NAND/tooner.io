@@ -10,14 +10,15 @@ import QuarterNote from "./assets/quater-note.svg?react";
 import Slider from "./Slider";
 import { useEffect, useRef, useState } from "react";
 import * as Tone from "tone";
+import metronomeHi from "./assets/Metronome-hi.wav";
+import metronomeLo from "./assets/Metronome-lo.wav";
 import "./Metronome.css";
 
 const player = new Tone.Players({
   urls: {
-    hi: "Metronome-hi.wav",
-    lo: "Metronome-lo.wav",
+    hi: metronomeHi,
+    lo: metronomeLo,
   },
-  baseUrl: "src/components/Metronome/assets/",
 }).toDestination();
 
 const Metronome = () => {

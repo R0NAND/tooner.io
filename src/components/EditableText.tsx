@@ -52,7 +52,7 @@ const EditableText = ({ children, onEditCompleted }: Props) => {
         }
         onFocusRef.current = "";
       }}
-      style={{ width: textWidth }}
+      style={{ width: textWidth, fontFamily: "inherit" }}
     ></input>
   );
 };

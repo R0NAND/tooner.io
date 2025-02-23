@@ -10,7 +10,7 @@
   --navbar-height: 4em;
   --tools-panel-height: 4em;
   --button-font-size: 1em;
-  font-size: clamp(16px, 1.25vw, 32px);
+  font-size: clamp(16px, 2vw, 1.5vw);
   background-color: var(--main-background-color);
   color: var(--main-color);
   color-scheme: light dark;

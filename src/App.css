@@ -7,9 +7,11 @@
   width: 100%;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .app-content {
   width: 100%;
+  position: relative;
   height: calc(100vh - var(--navbar-height));
 }

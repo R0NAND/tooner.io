@@ -6,7 +6,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBookOpen,
   faPersonChalkboard,
-  faSliders,
 } from "@fortawesome/free-solid-svg-icons";
 
 const Navbar = () => {
@@ -31,10 +30,6 @@ const Navbar = () => {
             <FontAwesomeIcon icon={faBookOpen}></FontAwesomeIcon>{" "}
             <span>Tabs</span>
           </Link>
-        </li>
-        <li style={{}}>
-          <FontAwesomeIcon icon={faSliders}></FontAwesomeIcon>
-          <span> Effects</span>
         </li>
       </ul>
     </nav>
