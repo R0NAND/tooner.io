@@ -186,14 +186,10 @@ const TuningMenu = ({
           <FontAwesomeIcon icon={faSave}></FontAwesomeIcon>
         </button>
         <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
+          style={{ display: "flex", alignItems: "end" }}
           className="tuning-slider"
         >
-          <span>Shift Pitch</span>
+          <label>Shift Pitch: </label>
           <Slider
             min={-50}
             max={50}
@@ -201,6 +197,7 @@ const TuningMenu = ({
             width={"20ch"}
             updateOnDrag={false}
             label={"cents"}
+            inputPosition="top"
             onChange={(n) => onPitchShift(n)}
           ></Slider>
         </div>

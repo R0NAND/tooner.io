@@ -12,7 +12,7 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <ul className="navbar-ul">
-        <a>Tohn.io</a>
+        <a>Tooner.io</a>
         <li>
           <Link to={"/tuner"}>
             <TuningFork className="tuning-fork-svg"></TuningFork>{" "}

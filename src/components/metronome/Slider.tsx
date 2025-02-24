@@ -1,14 +1,17 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { clamp } from "../../utils/clamp";
 import "./Slider.css";
+import { playerTimeToSeconds } from "../../utils/time";
 
 interface Props {
   width: number | string;
   min: number;
   max: number;
   value: number;
+  type?: "number" | "time";
   updateOnDrag?: boolean;
   label?: string;
+  inputPosition?: "none" | "top" | "bottom";
   rounding?: (v: number) => number;
   onChange: (percentage: number) => void;
 }
@@ -18,8 +21,10 @@ const Slider = ({
   min,
   max,
   value,
+  type,
   updateOnDrag = true,
   label = "",
+  inputPosition = "bottom",
   rounding = (v: number) => {
     return Math.round(v);
   },
@@ -143,6 +148,7 @@ const Slider = ({
     removeEventListener("touchend", onRelease);
   };
 
+  const [isInputVisible, setIsInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState(value.toString());
   useEffect(() => {
     setInputValue(value.toString());
@@ -164,6 +170,12 @@ const Slider = ({
       className="big-d"
       onMouseDown={onPressDown}
       onTouchStart={onPressDown}
+      onMouseEnter={() => {
+        setIsInputVisible(true);
+      }}
+      onMouseLeave={() => {
+        setIsInputVisible(false);
+      }}
       style={{
         width: width,
         height: "1em",
@@ -209,45 +221,51 @@ const Slider = ({
           left: thumbPos,
         }}
       ></div>
-      <div
-        style={{
-          position: "absolute",
-          top: "1.25em",
-          left: thumbPos,
-          transform: "translateX(-50%)",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <input
+      {inputPosition !== "none" && (
+        <div
           style={{
-            width: "7ch",
-            borderRadius: "0.5em",
-            fontFamily: "inherit",
-            fontSize: "inherit",
+            position: "absolute",
+            top: inputPosition === "bottom" ? "1.25em" : "-1.5em",
+            left: thumbPos,
+            transform: "translateX(-50%)",
+            display: "flex",
+            flexDirection: "column",
           }}
-          ref={inputRef}
-          onMouseDown={(e) => {
-            e.stopPropagation();
-          }}
-          type="number"
-          value={inputValue}
-          onChange={(e) => {
-            setInputValue(e.target.value);
-          }}
-          onBlur={() => {
-            handleBlur();
-          }}
-          min={min}
-          max={max}
-          onKeyUp={(e) => {
-            if (e.key === "Enter") {
-              inputRef.current?.blur();
-            }
-          }}
-        ></input>
-        {label !== "" && <label>{label}</label>}
-      </div>
+        >
+          <input
+            style={{
+              width:
+                (
+                  Math.max(min.toString().length, max.toString().length) + 1
+                ).toString() + "ch",
+              borderRadius: "0.5em",
+              fontFamily: "inherit",
+              fontSize: "inherit",
+              display: isInputVisible ? "inline" : "none",
+            }}
+            ref={inputRef}
+            onMouseDown={(e) => {
+              e.stopPropagation();
+            }}
+            type="number"
+            value={inputValue}
+            onChange={(e) => {
+              setInputValue(e.target.value);
+            }}
+            onBlur={() => {
+              handleBlur();
+            }}
+            min={min}
+            max={max}
+            onKeyUp={(e) => {
+              if (e.key === "Enter") {
+                inputRef.current?.blur();
+              }
+            }}
+          ></input>
+          {/* {label !== "" && <label>{label}</label>} */}
+        </div>
+      )}
     </div>
   );
 };

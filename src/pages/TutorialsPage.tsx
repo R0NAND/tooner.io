@@ -28,8 +28,9 @@ const TutorialsPage = () => {
   return (
     <div className="tutorials-page">
       <div className="tutorials-player-container">
-        <div className="tutorials-player">
+        <div className="player-wrapper">
           <ReactPlayer
+            className="react-player"
             style={{ position: "absolute" }}
             id="youtube-player"
             height="100%"
@@ -38,18 +39,16 @@ const TutorialsPage = () => {
             controls={true}
             url={`https://www.youtube.com/watch?v=${selectedVideo.id.videoId}`}
           />
-          <div style={{ margin: 15, position: "absolute" }}>
-            <VideoSearchPanel
-              addVideoCallback={(vid: VideoData) => {
-                const newTutorials = [...tutorials, vid];
-                setTutorials(newTutorials);
-              }}
-              playVideoCallback={(vid: VideoData) => {
-                setSelectedVideo(vid);
-                setIsPlaying(true);
-              }}
-            ></VideoSearchPanel>
-          </div>
+          <VideoSearchPanel
+            addVideoCallback={(vid: VideoData) => {
+              const newTutorials = [...tutorials, vid];
+              setTutorials(newTutorials);
+            }}
+            playVideoCallback={(vid: VideoData) => {
+              setSelectedVideo(vid);
+              setIsPlaying(true);
+            }}
+          ></VideoSearchPanel>
         </div>
         <div style={{ display: "flex" }}>
           <label>Timestamp Looper Placeholder:</label>
