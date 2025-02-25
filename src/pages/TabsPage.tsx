@@ -11,7 +11,7 @@ import useLocalStorageArray from "../hooks/useLocalStorageArray";
 import defaultTabs from "../defaults/tabs";
 import "./TabsPage.css";
 import Metronome from "../components/metronome/Metronome";
-import Slider from "../components/metronome/Slider";
+import Slider from "../components/slider/Slider";
 import TabsMenu from "../components/tabs-menu/TabsMenu";
 import { measureTextWidth } from "../utils/measureTextWidth";
 

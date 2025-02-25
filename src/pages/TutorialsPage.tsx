@@ -6,7 +6,7 @@ import VideoPlaylist from "../components/tutorial-player/VideoPlaylist";
 import ReactPlayer from "react-player";
 import VideoSearchPanel from "../components/tutorial-player/VideoSearchPanel";
 import "./TutorialsPage.css";
-import Slider from "../components/metronome/Slider";
+import Slider from "../components/slider/Slider";
 
 const TutorialsPage = () => {
   const [tutorials, setTutorials] = useLocalStorageArray<VideoData>(
@@ -25,6 +25,7 @@ const TutorialsPage = () => {
     setTutorials(newTutorials);
   };
 
+  const [loopStartTime, setLoopStartTime] = useState(0);
   return (
     <div className="tutorials-page">
       <div className="tutorials-player-container">
@@ -54,12 +55,11 @@ const TutorialsPage = () => {
           <label>Timestamp Looper Placeholder:</label>
           <Slider
             min={0}
-            max={100}
-            value={50}
+            max={1000}
+            value={loopStartTime}
+            displayType="time"
             width="7em"
-            onChange={() => {
-              return 50;
-            }}
+            onChange={setLoopStartTime}
           ></Slider>
         </div>
       </div>

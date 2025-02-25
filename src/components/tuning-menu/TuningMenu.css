@@ -13,7 +13,7 @@
   position: absolute;
   top: 0px;
   left: 0px;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.1);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   height: 100%;
@@ -51,21 +51,6 @@
   flex-basis: 25%;
   background-color: var(--stronger-background-color);
   border-radius: 1em 1em 0em 0em;
-}
-
-.tuning-name-input {
-  background: none;
-  border: none;
-  font-size: 1em;
-  width: max-content;
-  min-width: 1ch;
-}
-
-.tuning-name-input:focus {
-  outline: none;
-  border: 1px solid var(--primary-hue);
-  border-radius: 0.5em;
-  box-shadow: 0px 0px 10px var(--primary-hue);
 }
 
 .tuning-save-button {

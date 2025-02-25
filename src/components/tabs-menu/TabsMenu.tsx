@@ -6,7 +6,7 @@ import {
   faList,
   faRemove,
 } from "@fortawesome/free-solid-svg-icons";
-import EditableText from "../EditableText";
+import EditableText from "../editable-text/EditableText";
 import "./TabsMenu.css";
 import { forwardRef, useEffect, useState } from "react";
 

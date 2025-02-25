@@ -7,7 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import QuarterNote from "./assets/quater-note.svg?react";
-import Slider from "./Slider";
+import Slider from "../slider/Slider";
 import { useEffect, useRef, useState } from "react";
 import * as Tone from "tone";
 import metronomeHi from "./assets/Metronome-hi.wav";

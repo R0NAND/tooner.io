@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { measureTextWidth } from "../utils/measureTextWidth";
+import { measureTextWidth } from "../../utils/measureTextWidth";
+import "./EditableText.css";
 
 interface Props {
   children: string;
@@ -37,7 +38,7 @@ const EditableText = ({ children, onEditCompleted }: Props) => {
   return (
     <input
       ref={inputRef}
-      className="tuning-name-input"
+      className="editable-text-input"
       type="text"
       value={transitoryValue}
       onFocus={(e) => {

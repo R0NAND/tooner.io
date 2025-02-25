@@ -1,14 +1,14 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { clamp } from "../../utils/clamp";
 import "./Slider.css";
-import { playerTimeToSeconds } from "../../utils/time";
+import { playerTimeToSeconds, secondsToPlayerTime } from "../../utils/time";
 
 interface Props {
   width: number | string;
   min: number;
   max: number;
   value: number;
-  type?: "number" | "time";
+  displayType?: "number" | "time";
   updateOnDrag?: boolean;
   label?: string;
   inputPosition?: "none" | "top" | "bottom";
@@ -21,7 +21,7 @@ const Slider = ({
   min,
   max,
   value,
-  type,
+  displayType,
   updateOnDrag = true,
   label = "",
   inputPosition = "bottom",
@@ -85,13 +85,6 @@ const Slider = ({
     } else return 0;
   };
 
-  useEffect(() => {
-    if (inputRef.current !== null) {
-      inputRef.current.value = value.toString();
-    }
-    setThumbPos(valueToPosition(value));
-  }, [value]);
-
   const getEventX = (e: MouseEvent | TouchEvent): number => {
     if ("touches" in e) {
       return e.touches[0].clientX;
@@ -118,7 +111,13 @@ const Slider = ({
     }
   };
 
+  const [isDragging, setIsDragging] = useState(false);
+  const [isSliderHovering, setIsSliderHovering] = useState(false);
+  const [isInputHovering, setIsInputHovering] = useState(false);
+  const [isInputFocused, setIsInputFocused] = useState(false);
   const onPressDown = (downEvent: React.MouseEvent | React.TouchEvent) => {
+    downEvent.preventDefault();
+    setIsDragging(true);
     dragPositionRef.current = clamp(
       0.5 * thumbWidthRef.current,
       getEventX(downEvent.nativeEvent) - getTrackX(),
@@ -139,6 +138,7 @@ const Slider = ({
   };
 
   const onRelease = () => {
+    setIsDragging(false);
     if (!updateOnDrag) {
       onChange(rounding(positionToValue(dragPositionRef.current)));
     }
@@ -148,124 +148,139 @@ const Slider = ({
     removeEventListener("touchend", onRelease);
   };
 
-  const [isInputVisible, setIsInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState(value.toString());
   useEffect(() => {
-    setInputValue(value.toString());
+    setThumbPos(valueToPosition(value));
+    if (displayType === "number") {
+      setInputValue(value.toString());
+    } else if (displayType === "time") {
+      setInputValue(secondsToPlayerTime(value));
+    }
   }, [value]);
   const handleBlur = () => {
-    let blurValue = parseFloat(inputValue);
+    let blurValue = value;
+    const numberConversion =
+      displayType === "time" ? playerTimeToSeconds : parseFloat;
+    try {
+      blurValue = numberConversion(inputValue);
+    } catch {}
     if (isNaN(blurValue)) {
       blurValue = min;
     } else {
       blurValue = clamp(min, blurValue, max);
     }
-    setInputValue(blurValue.toString());
+    setInputValue(
+      displayType === "number"
+        ? blurValue.toString()
+        : secondsToPlayerTime(blurValue)
+    );
     onChange(blurValue);
   };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const allowedKeys = [
+      "Backspace",
+      "Tab",
+      "ArrowLeft",
+      "ArrowRight",
+      "Delete",
+      "Enter",
+    ];
+
+    const validCharsExp = displayType === "number" ? /[\d-]/ : /[\d-:]/;
+    if (!validCharsExp.test(e.key) && !allowedKeys.includes(e.key)) {
+      e.preventDefault();
+    }
+
+    if (e.key === "Enter") {
+      inputRef.current?.blur();
+    }
+  };
+
+  const [isActivated, setIsActivated] = useState(false);
+  useEffect(() => {
+    if (isDragging || isInputHovering || isSliderHovering || isInputFocused) {
+      setIsActivated(true);
+    } else {
+      setIsActivated(false);
+    }
+  }, [isDragging, isInputHovering, isSliderHovering, isInputFocused]);
 
   return (
     <div
       ref={trackRef}
-      className="big-d"
+      className="custom-slider"
       onMouseDown={onPressDown}
       onTouchStart={onPressDown}
-      onMouseEnter={() => {
-        setIsInputVisible(true);
-      }}
-      onMouseLeave={() => {
-        setIsInputVisible(false);
-      }}
+      onMouseEnter={() => setIsSliderHovering(true)}
+      onMouseLeave={() => setIsSliderHovering(false)}
       style={{
         width: width,
-        height: "1em",
-        border: "none",
-        display: "flex",
-        position: "relative",
-        alignItems: "center",
       }}
     >
       <div
-        className="bpm-slider-track-right"
-        style={{
-          width: "100%",
-          height: "0.5em",
-          position: "absolute",
-          top: "0.25em",
-          border: "none",
-          borderRadius: 5,
-        }}
+        className={`custom-slider-track-right ${
+          isActivated ? "custom-slider-track-right-activated" : ""
+        }`}
       >
         <div
-          className="bpm-slider-track-left"
-          style={{
-            height: "0.5em",
-            border: "none",
-            borderRadius: 5,
-            width: thumbPos,
-          }}
+          className={`custom-slider-track-left ${
+            isActivated ? "custom-slider-track-left-activated" : ""
+          }`}
+          style={{ width: thumbPos }}
         ></div>
       </div>
       <div
-        className="bpm-slider-thumb"
+        className="custom-slider-thumb"
         onMouseDown={onPressDown}
         onTouchStart={onPressDown}
         ref={thumbRef}
+        style={{ left: thumbPos }}
+      ></div>
+      <div
+        className={`custom-slider-panel acrylic ${
+          isActivated ? "visible" : "fade-out"
+        }`}
         style={{
-          height: "1em",
-          width: "1em",
-          top: "0",
-          borderRadius: "50%",
-          position: "absolute",
-          transform: "translateX(-50%)",
+          top: inputPosition === "bottom" ? "1.25em" : "-1.75em",
           left: thumbPos,
         }}
-      ></div>
-      {inputPosition !== "none" && (
-        <div
+        onMouseEnter={() => setIsInputHovering(true)}
+        onMouseLeave={() => setIsInputHovering(false)}
+      >
+        <input
+          className="custom-slider-input"
           style={{
-            position: "absolute",
-            top: inputPosition === "bottom" ? "1.25em" : "-1.5em",
-            left: thumbPos,
-            transform: "translateX(-50%)",
-            display: "flex",
-            flexDirection: "column",
+            width: (inputValue.length + 1).toString() + "ch",
           }}
-        >
-          <input
-            style={{
-              width:
-                (
-                  Math.max(min.toString().length, max.toString().length) + 1
-                ).toString() + "ch",
-              borderRadius: "0.5em",
-              fontFamily: "inherit",
-              fontSize: "inherit",
-              display: isInputVisible ? "inline" : "none",
-            }}
-            ref={inputRef}
-            onMouseDown={(e) => {
-              e.stopPropagation();
-            }}
-            type="number"
-            value={inputValue}
-            onChange={(e) => {
-              setInputValue(e.target.value);
-            }}
-            onBlur={() => {
-              handleBlur();
-            }}
-            min={min}
-            max={max}
-            onKeyUp={(e) => {
-              if (e.key === "Enter") {
-                inputRef.current?.blur();
-              }
-            }}
-          ></input>
-          {/* {label !== "" && <label>{label}</label>} */}
-        </div>
-      )}
+          ref={inputRef}
+          onMouseDown={(e) => {
+            e.stopPropagation();
+          }}
+          type="text"
+          value={inputValue}
+          onChange={(e) => {
+            setInputValue(e.target.value);
+          }}
+          onFocus={() => setIsInputFocused(true)}
+          onBlur={() => {
+            setIsInputFocused(false);
+            handleBlur();
+          }}
+          min={min}
+          max={max}
+          maxLength={
+            displayType === "number"
+              ? Math.max(min.toString().length, max.toString().length)
+              : Math.max(
+                  secondsToPlayerTime(min).length,
+                  secondsToPlayerTime(max).length
+                )
+          }
+          onKeyDown={handleKeyDown}
+        ></input>
+        <label style={{ fontSize: "0.5em" }}>{label}</label>
+      </div>
     </div>
   );
 };

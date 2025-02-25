@@ -9,8 +9,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { InstrumentEnum } from "../tuner/Tuner";
 import { useEffect, useState } from "react";
 import { Tuning } from "../../types/tunings";
-import EditableText from "../EditableText";
-import Slider from "../metronome/Slider";
+import EditableText from "../editable-text/EditableText";
+import Slider from "../slider/Slider";
 
 interface Props {
   tuning: Tuning;

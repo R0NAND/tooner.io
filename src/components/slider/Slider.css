@@ -1,0 +1,119 @@
+.custom-slider {
+  height: 1em;
+  border: none;
+  display: inline-block;
+  position: relative;
+}
+
+.custom-slider:hover {
+  cursor: pointer;
+}
+
+.custom-slider-track-left {
+  background-color: var(--secondary-color);
+  transition: background-color 0.25s;
+  height: 0.5em;
+  border-radius: 0.25em;
+}
+
+.custom-slider-track-right {
+  background-color: var(--lighter-background-color);
+  transition: background-color 0.25s;
+  width: 100%;
+  height: 0.5em;
+  position: absolute;
+  top: 0.25em;
+  border: none;
+  border-radius: 0.25em;
+}
+
+.custom-slider-track-left-activated {
+  background-color: var(--primary-hue);
+}
+
+.custom-slider-track-right-activated {
+  background-color: var(--secondary-color);
+}
+
+.custom-slider-thumb {
+  background-color: var(--main-color);
+  height: 1em;
+  width: 1em;
+  top: 0;
+  border-radius: 50%;
+  position: absolute;
+  transform: translateX(-50%);
+}
+
+.custom-slider-thumb:hover {
+  cursor: grab;
+}
+
+.custom-slider-thumb:hover ~ .custom-slider .custom-slider-track-right {
+  background-color: var(--secondary-color);
+}
+
+.custom-slider:has(~ .custom-slider-thumb:hover) .custom-slider-track-right {
+  background-color: var(--secondary-color);
+}
+
+.custom-slider:has(~ .custom-slider-thumb:hover) .custom-slider-track-left {
+  background-color: var(--primary-hue);
+}
+
+.custom-slider-thumb:hover ~ .custom-slider .custom-slider-track-left {
+  background-color: var(--primary-hue);
+}
+
+.custom-slider-input {
+  background: none;
+  border: none;
+  font-weight: bold;
+  border-radius: 0.5em;
+  background-color: none;
+  outline: none;
+  text-align: right;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.custom-slider-input:focus {
+  outline: none;
+}
+
+.custom-slider-panel {
+  position: absolute;
+  transform: translateX(-50%);
+  display: inline;
+  white-space: nowrap;
+  border: 1px solid var(--secondary-color);
+  border-radius: 0.5em;
+  padding: 0.125em;
+}
+
+@keyframes custom-slider-fadeout-animation {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.custom-slider-panel.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.custom-slider-panel.fade-out {
+  opacity: 0;
+  animation-name: custom-slider-fadeout-animation;
+  animation-duration: 2s;
+}
+
+.custom-slider-panel.hidden {
+  display: none;
+}

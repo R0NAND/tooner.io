@@ -31,6 +31,11 @@ const Navbar = () => {
             <span>Tabs</span>
           </Link>
         </li>
+        <li>
+          <Link to={"/sandbox"}>
+            <span>sandbox</span>
+          </Link>
+        </li>
       </ul>
     </nav>
   );
