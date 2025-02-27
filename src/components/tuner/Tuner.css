@@ -1,4 +1,6 @@
 .headstock {
+  width: 100%;
+  height: auto;
   min-width: 320px;
   fill: var(--lighter-background-color);
   fill-opacity: 1;

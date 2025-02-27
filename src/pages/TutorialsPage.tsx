@@ -1,4 +1,4 @@
-import { LegacyRef, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useLocalStorageArray from "../hooks/useLocalStorageArray";
 import defaultTutorials from "../defaults/tutorials";
 import { VideoData } from "../types/VideoData";
@@ -6,7 +6,6 @@ import VideoPlaylist from "../components/tutorial-player/VideoPlaylist";
 import ReactPlayer from "react-player";
 import VideoSearchPanel from "../components/tutorial-player/VideoSearchPanel";
 import "./TutorialsPage.css";
-import Slider from "../components/slider/Slider";
 import DualSlider from "../components/dual-slider/DualSlider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRepeat, faStop } from "@fortawesome/free-solid-svg-icons";

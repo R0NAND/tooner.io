@@ -1,7 +1,66 @@
-.tuner-container {
-  height: 100%;
-  position: relative;
-  display: flex;
+.tuning-ui {
+  width: max-content;
   justify-content: center;
+  margin: auto;
+  display: flex;
+}
+
+.tuner-container {
+  padding: var(--main-margin);
+  width: 18em;
+  display: flex;
   align-items: center;
+  align-content: center;
+}
+
+.instrument-select-box {
+  display: flex;
+  width: 6em;
+  margin: 1em 0em;
+  flex-direction: column;
+  height: auto;
+  justify-content: space-between;
+  align-items: center;
+}
+
+button.instrument-select-button {
+  background-color: var(--lighter-background-color);
+  color: var(--main-color);
+  border-radius: 1em;
+  box-shadow: 0 3px 10px var(--shadow-color);
+  border: 0.125em solid transparent;
+  height: 4em;
+  width: 4em;
+  transition: border-color 0.25s, background-color 0.25s, width 0.25s,
+    height 0.25s;
+  flex: 0 0 auto;
+}
+
+.instrument-select-button:hover {
+  border-color: var(--secondary-color);
+}
+
+button.instrument-select-button.is-selected {
+  background-color: var(--lightest-background-color);
+  height: 4.5em;
+  width: 4.5em;
+}
+
+@media only screen and (max-width: 1500px) {
+  .tuning-ui {
+    flex-direction: column;
+    width: 50%;
+    min-width: 320px;
+    align-items: center;
+  }
+  .instrument-select-box {
+    flex-direction: row;
+    width: 100%;
+  }
+  .tuner-container {
+    width: 100%;
+  }
+  .tuning-menu {
+    width: 100%;
+  }
 }

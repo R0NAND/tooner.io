@@ -30,16 +30,22 @@ const TuningGauge = ({
       "Invalid pitch shift detected. Value must be between -50 and 50 cents"
     );
   }
+  function getResolvedColor(variableName: string) {
+    const probe = document.createElement("div");
+    probe.style.position = "absolute";
+    probe.style.visibility = "hidden";
+    probe.style.backgroundColor = `var(${variableName})`;
+    document.body.appendChild(probe);
+
+    const resolvedColor = getComputedStyle(probe).backgroundColor;
+    document.body.removeChild(probe);
+
+    return resolvedColor;
+  }
   //Below is not the best practice, but I don't plan on using this component anywhere else for the time being
-  const outline_color = getComputedStyle(document.body).getPropertyValue(
-    "--secondary-color"
-  );
-  const deny_color = getComputedStyle(document.body).getPropertyValue(
-    "--deny-color"
-  );
-  const confirm_color = getComputedStyle(document.body).getPropertyValue(
-    "--confirm-color"
-  );
+  const outline_color = getResolvedColor("--secondary-color");
+  const deny_color = getResolvedColor("--deny-color");
+  const confirm_color = getResolvedColor("--confirm-color");
   const colorMap = interpolate([confirm_color, deny_color]);
   const [note, setNote] = useState("");
   const [radianError, setRadianError] = useState(0);

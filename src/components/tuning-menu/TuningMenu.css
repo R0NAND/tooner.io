@@ -12,8 +12,15 @@
 
 .tuning-menu {
   height: 100%;
+  width: 18em;
   display: flex;
   flex-direction: column;
+}
+
+@media only screen and (max-width: 1500px) {
+  .tuning-menu {
+    width: 100%;
+  }
 }
 
 .instrument-select-button {
@@ -37,30 +44,34 @@
   border-radius: 1em 1em 0em 0em;
 }
 
-.tuning-save-button {
+button.tuning-save-button {
   cursor: pointer;
-  width: 100%;
+  margin: 0em;
+  width: auto;
   font-size: 2em;
   border-radius: 0.25em;
-  background-color: var(--lighter-background-color);
-  color: var(--secondary-color);
+  background-color: var(--lightest-background-color);
+  color: var(--primary-color);
+  border: 0.0625em solid transparent;
+  transition: border-color 0.25s, color 0.25s, background-color 0.25s;
 }
 
 .tuning-save-button:hover {
   cursor: pointer;
-  background-color: var(--lighter-background-color);
-  color: var(--primary-color);
+  border-color: var(--secondary-color);
+  color: var(--text-glow-color);
 }
 
 .tuning-save-button:disabled {
   cursor: default;
-  color: var(--lighter-background-color);
+  color: var(--main-background-color);
   background-color: transparent;
-  border: 1px solid var(--lighter-background-color);
+  border: 0.0625em solid var(--main-background-color);
 }
 
 .tunings-list {
-  height: 10em;
+  height: auto;
+  max-height: 10em;
   padding: 1em;
   overflow-y: auto;
   background-color: var(--main-background-color);

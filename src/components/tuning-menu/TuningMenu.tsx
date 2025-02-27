@@ -1,9 +1,4 @@
-import {
-  faClose,
-  faList,
-  faRemove,
-  faSave,
-} from "@fortawesome/free-solid-svg-icons";
+import { faRemove, faSave } from "@fortawesome/free-solid-svg-icons";
 import "./TuningMenu.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { InstrumentEnum } from "../tuner/Tuner";
@@ -17,7 +12,6 @@ interface Props {
   tunings: Tuning[];
   selectedInstrument: InstrumentEnum;
   pitchShift: number;
-  desktopWidth: string;
   isMobileMenu: boolean;
   onInstrumentSelect: (i: InstrumentEnum) => void;
   onClicked: (t: Tuning) => void;
@@ -32,9 +26,7 @@ const TuningMenu = ({
   tunings,
   selectedInstrument,
   pitchShift,
-  desktopWidth,
   isMobileMenu,
-  onInstrumentSelect,
   onClicked,
   onDeleted,
   onNameEdited,
@@ -74,7 +66,6 @@ const TuningMenu = ({
         style={{
           height: "auto",
           padding: "0.5em",
-          width: isMobileMenu ? "100%" : desktopWidth,
           transform: isMobileMenu && isMinimized ? "translateX(-100%)" : "",
           transition: isMobileMenu //Very hard to read, but also effective animation solution
             ? "transform 0.3s ease-in-out, width 0s 0.3s"
@@ -83,7 +74,21 @@ const TuningMenu = ({
             : "transform 0.3s ease-in-out, width 0.3s ease-in-out",
         }}
       >
-        <h3 style={{ textAlign: "left" }}>Tunings</h3>
+        <h3
+          style={{ margin: "0.5em", textAlign: "left", marginBottom: "0.5em" }}
+        >{`${tuning.name} Tuning`}</h3>
+        <button
+          className="tuning-save-button"
+          disabled={!canSaveTuning}
+          onClick={onSave}
+        >
+          <FontAwesomeIcon icon={faSave}></FontAwesomeIcon>
+        </button>
+        <h3
+          style={{ margin: "0.5em", textAlign: "left", marginBottom: "0.5em" }}
+        >
+          Saved Tunings
+        </h3>
         <div style={{ margin: "0.5em" }} className="tunings-list">
           {tunings
             .filter((t) => t.instrument === selectedInstrument)
@@ -122,18 +127,11 @@ const TuningMenu = ({
               );
             })}
         </div>
-        <button
-          className="tuning-save-button"
-          disabled={!canSaveTuning}
-          onClick={onSave}
-        >
-          <FontAwesomeIcon icon={faSave}></FontAwesomeIcon>
-        </button>
         <div
           style={{ display: "flex", alignItems: "end", padding: "0.5em" }}
           className="tuning-slider"
         >
-          <label>Shift Pitch: </label>
+          <label>Detune:</label>
           <Slider
             min={-50}
             max={50}
@@ -146,19 +144,6 @@ const TuningMenu = ({
           ></Slider>
         </div>
       </div>
-      {/* <div
-        className="tuner-menu-tab"
-        onClick={() => setIsMinimized(false)}
-        style={{
-          display: isMinimized ? "inline" : "none",
-        }}
-      >
-        <div style={{ textAlign: "left" }}>
-          <div>{selectedInstrument}</div>
-          <div style={{ fontSize: "0.61em" }}>{tuning.name}</div>
-        </div>
-        <FontAwesomeIcon icon={faList}></FontAwesomeIcon>
-      </div> */}
     </>
   );
 };

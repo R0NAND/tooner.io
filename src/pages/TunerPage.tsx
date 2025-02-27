@@ -8,7 +8,6 @@ import useLocalStorageArray from "../hooks/useLocalStorageArray";
 import defaultTunings from "../defaults/tunings";
 import { measureTextWidth } from "../utils/measureTextWidth";
 import TuningMenu from "../components/tuning-menu/TuningMenu";
-import Slider from "../components/slider/Slider";
 
 const TunerPage = () => {
   const [tunings, setTunings] = useLocalStorageArray<Tuning>(
@@ -62,7 +61,7 @@ const TunerPage = () => {
     const matchedTuning = tunings.filter(
       (t) => t.notes.toString() === newNotes.toString()
     );
-    let newTuningName = "Custom Tuning";
+    let newTuningName = "Custom";
     if (matchedTuning.length === 1) {
       newTuningName = matchedTuning[0].name;
     }
@@ -118,29 +117,12 @@ const TunerPage = () => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        width: "max-content",
-        justifyContent: "center",
-        margin: "auto",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          margin: "1em",
-          flexDirection: "column",
-          height: "auto",
-          justifyContent: "space-between",
-        }}
-      >
+    <div className="tuning-ui">
+      <div className="instrument-select-box">
         <button
-          className="main-panel"
-          style={{
-            width: "4em",
-            height: "4em",
-          }}
+          className={`instrument-select-button ${
+            selectedInstrument === InstrumentEnum.guitar ? "is-selected" : ""
+          }`}
           onClick={() => {
             instrumentSelect(InstrumentEnum.guitar);
           }}
@@ -148,11 +130,9 @@ const TunerPage = () => {
           Guitar
         </button>
         <button
-          className="main-panel"
-          style={{
-            width: "4em",
-            height: "4em",
-          }}
+          className={`instrument-select-button ${
+            selectedInstrument === InstrumentEnum.bass ? "is-selected" : ""
+          }`}
           onClick={() => {
             instrumentSelect(InstrumentEnum.bass);
           }}
@@ -160,44 +140,31 @@ const TunerPage = () => {
           Bass
         </button>
         <button
-          className="main-panel"
-          style={{
-            width: "4em",
-            height: "4em",
-          }}
+          className={`instrument-select-button ${
+            selectedInstrument === InstrumentEnum.ukulele ? "is-selected" : ""
+          }`}
           onClick={() => {
             instrumentSelect(InstrumentEnum.ukulele);
           }}
         >
           Ukulele
         </button>
-        <button
-          className="main-panel"
-          style={{
-            width: "4em",
-            height: "4em",
-          }}
-        >
-          8-string
-        </button>
+        <button className="instrument-select-button">8-string</button>
       </div>
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        <div style={{ width: "18em", margin: "1em" }}>
-          <Tuner
-            instrument={tuning.instrument}
-            tuning={tuning.notes}
-            onNoteChange={changeNote}
-            pitchShift={pitchShift}
-            onResize={tunerResizeHandler}
-          ></Tuner>
-        </div>
+      <div className="tuner-container">
+        <Tuner
+          instrument={tuning.instrument}
+          tuning={tuning.notes}
+          onNoteChange={changeNote}
+          pitchShift={pitchShift}
+          onResize={tunerResizeHandler}
+        ></Tuner>
       </div>
       <TuningMenu
         tuning={tuning}
         tunings={tunings}
         selectedInstrument={selectedInstrument}
         pitchShift={pitchShift}
-        desktopWidth={sidebarWidth.toString() + "ch"}
         isMobileMenu={false}
         onInstrumentSelect={instrumentSelect}
         onClicked={setTuning}
@@ -207,31 +174,6 @@ const TunerPage = () => {
         onPitchShift={setPitchShift}
       ></TuningMenu>
     </div>
-    // <>
-    //   <div className="tuner-container">
-    //     <Tuner
-    //       instrument={tuning.instrument}
-    //       tuning={tuning.notes}
-    //       onNoteChange={changeNote}
-    //       pitchShift={pitchShift}
-    //       onResize={tunerResizeHandler}
-    //     ></Tuner>
-    //   </div>
-    //   <TuningMenu
-    //     tuning={tuning}
-    //     tunings={tunings}
-    //     selectedInstrument={selectedInstrument}
-    //     pitchShift={pitchShift}
-    //     desktopWidth={sidebarWidth.toString() + "ch"}
-    //     isMobileMenu={isMobileView}
-    //     onInstrumentSelect={instrumentSelect}
-    //     onClicked={setTuning}
-    //     onDeleted={deleteTuning}
-    //     onNameEdited={onNameEdited}
-    //     onSave={saveTuning}
-    //     onPitchShift={setPitchShift}
-    //   ></TuningMenu>
-    // </>
   );
 };
 

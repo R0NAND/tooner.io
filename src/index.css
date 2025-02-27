@@ -1,19 +1,33 @@
 :root {
-  --main-background-color: #001c29;
-  --lighter-background-color: #0e2f3f;
-  --lightest-background-color: #194054;
-  --main-color: #d3d9dc;
-  --secondary-color: #9ea8ae;
-  --primary-hue: #23a8f2;
-  --confirm-color: #06df67;
-  --deny-color: #f91905;
+  color-scheme: light dark;
+
+  --main-background-color: light-dark(#ffffff, #333333);
+  --lighter-background-color: light-dark(#f8f8f8, #414141);
+  --lightest-background-color: light-dark(#f0f0f0, #4d4d4d);
+  --main-color: light-dark(#000000, #d3d9dc);
+  --secondary-color: light-dark(#a5a5a5, #9ea8ae);
+  --text-glow-color: light-dark(#000000, #ffffff);
+  --shadow-color: light-dark(rgb(0 0 0 / 0.2), rgb(128 128 128 / 0.2));
+  --primary-hue: light-dark(#23a8f2, #6d7ab5);
+  --confirm-color: light-dark(#06df67, #479e6e);
+  --deny-color: light-dark(#f91905, #b0564e);
+
+  font-size: clamp(16px, 1.5vw, 64px);
+  --main-margin: 1em;
+
   --navbar-height: 4em;
-  --tools-panel-height: 4em;
   --button-font-size: 1em;
-  font-size: clamp(16px, 2vw, 1.5vw);
   background-color: var(--main-background-color);
   color: var(--main-color);
-  color-scheme: light dark;
+}
+
+.light-mode {
+  /* forces light color-scheme */
+  color-scheme: light;
+}
+.dark-mode {
+  /* forces dark color-scheme */
+  color-scheme: dark;
 }
 
 body {
@@ -37,7 +51,6 @@ button {
   background: none;
   font-size: var(--button-font-size);
   background-color: transparent;
-  border: "2px solid red";
   color: var(--secondary-color);
   transition: color 0.25s;
 }
@@ -56,9 +69,10 @@ svg text {
 
 .main-panel {
   background-color: var(--lighter-background-color);
-  color: var(--secondary-color);
+  color: var(--main-color);
   border-radius: 1em;
   margin: 1em;
+  box-shadow: 0 3px 10px var(--shadow-color);
 }
 
 .acrylic {

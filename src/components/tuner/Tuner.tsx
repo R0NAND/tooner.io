@@ -236,16 +236,7 @@ const Tuner = ({
   }, []);
 
   return (
-    <svg
-      style={{
-        maxHeight: "100%",
-        maxWidth: "100%",
-      }}
-      ref={svgRef}
-      version="1.1"
-      className="headstock"
-      viewBox="0 0 80 100"
-    >
+    <svg ref={svgRef} version="1.1" className="headstock" viewBox="0 0 80 100">
       <g>
         {renderHeadstock()}
         <circle

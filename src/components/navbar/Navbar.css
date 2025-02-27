@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: space-between;
   background-color: var(--lighter-background-color);
-  color: var(--secondary-color);
+  color: var(--main-color);
   border-radius: 2em;
   z-index: 999;
   padding: 0em 2em;
@@ -33,8 +33,9 @@
 
 .navbar > ul > li > a {
   padding: 0em 1em;
+  transition: color 0.25s;
 }
 
 .navbar > ul > li > a:hover {
-  color: var(--main-color);
+  color: var(--text-glow-color);
 }
