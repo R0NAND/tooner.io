@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { LegacyRef, useEffect, useRef, useState } from "react";
 import useLocalStorageArray from "../hooks/useLocalStorageArray";
 import defaultTutorials from "../defaults/tutorials";
 import { VideoData } from "../types/VideoData";
@@ -7,6 +7,10 @@ import ReactPlayer from "react-player";
 import VideoSearchPanel from "../components/tutorial-player/VideoSearchPanel";
 import "./TutorialsPage.css";
 import Slider from "../components/slider/Slider";
+import DualSlider from "../components/dual-slider/DualSlider";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faRepeat, faStop } from "@fortawesome/free-solid-svg-icons";
+import { OnProgressProps } from "react-player/base";
 
 const TutorialsPage = () => {
   const [tutorials, setTutorials] = useLocalStorageArray<VideoData>(
@@ -25,7 +29,31 @@ const TutorialsPage = () => {
     setTutorials(newTutorials);
   };
 
+  const playerRef = useRef<ReactPlayer | null>(null);
+  const [videoDuration, setVideoDuration] = useState(0);
+  useEffect(() => {}, [selectedVideo]);
   const [loopStartTime, setLoopStartTime] = useState(0);
+  const [loopEndTime, setLoopEndTime] = useState(0);
+  const [isLooping, setIsLooping] = useState(false);
+  const onNewVideo = (rp: ReactPlayer) => {
+    const duration = rp.getDuration();
+    setVideoDuration(duration);
+    setLoopStartTime(0);
+    setLoopEndTime(duration);
+  };
+
+  const onProgressCallback = (progress: OnProgressProps) => {
+    if (isLooping && progress.playedSeconds > loopEndTime) {
+      playerRef.current?.seekTo(loopStartTime);
+    }
+  };
+
+  useEffect(() => {
+    if (isLooping && isPlaying) {
+      playerRef.current?.seekTo(loopStartTime);
+    }
+  }, [isPlaying, isLooping, loopStartTime, loopEndTime]);
+
   return (
     <div className="tutorials-page">
       <div className="tutorials-player-container">
@@ -33,12 +61,14 @@ const TutorialsPage = () => {
           <ReactPlayer
             className="react-player"
             style={{ position: "absolute" }}
-            id="youtube-player"
+            ref={playerRef}
             height="100%"
             width="100%"
             playing={isPlaying}
             controls={true}
             url={`https://www.youtube.com/watch?v=${selectedVideo.id.videoId}`}
+            onReady={onNewVideo}
+            onProgress={onProgressCallback}
           />
           <VideoSearchPanel
             addVideoCallback={(vid: VideoData) => {
@@ -51,17 +81,36 @@ const TutorialsPage = () => {
             }}
           ></VideoSearchPanel>
         </div>
-        <div style={{ display: "flex" }}>
-          <label>Timestamp Looper Placeholder:</label>
-          <Slider
-            min={0}
-            max={1000}
-            value={loopStartTime}
-            displayType="time"
-            width="7em"
-            onChange={setLoopStartTime}
-          ></Slider>
-        </div>
+        {videoDuration > 0 && (
+          <div style={{ display: "flex" }}>
+            <button
+              onClick={() => {
+                if (!isLooping) {
+                  setIsPlaying(true);
+                  setIsLooping(true);
+                } else {
+                  setIsPlaying(false);
+                  setIsLooping(false);
+                }
+              }}
+            >
+              <FontAwesomeIcon
+                icon={!isLooping ? faRepeat : faStop}
+              ></FontAwesomeIcon>
+            </button>
+            <DualSlider
+              min={0}
+              max={videoDuration}
+              minValue={loopStartTime}
+              maxValue={loopEndTime}
+              displayType="time"
+              inputPosition="top"
+              width="100%"
+              onMinChange={setLoopStartTime}
+              onMaxChange={setLoopEndTime}
+            ></DualSlider>
+          </div>
+        )}
       </div>
       <VideoPlaylist
         videos={tutorials}

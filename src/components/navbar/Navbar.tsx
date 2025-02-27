@@ -6,13 +6,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBookOpen,
   faPersonChalkboard,
+  faQuestionCircle,
 } from "@fortawesome/free-solid-svg-icons";
 
 const Navbar = () => {
   return (
     <nav className="navbar">
+      <Link to="/" style={{ fontSize: "1.61em" }}>
+        Tooner.io
+      </Link>
       <ul className="navbar-ul">
-        <a>Tooner.io</a>
         <li>
           <Link to={"/tuner"}>
             <TuningFork className="tuning-fork-svg"></TuningFork>{" "}
@@ -31,12 +34,11 @@ const Navbar = () => {
             <span>Tabs</span>
           </Link>
         </li>
-        <li>
-          <Link to={"/sandbox"}>
-            <span>sandbox</span>
-          </Link>
-        </li>
       </ul>
+      <Link to={"/sandbox"}>
+        <FontAwesomeIcon icon={faQuestionCircle}></FontAwesomeIcon>{" "}
+        <span>About</span>
+      </Link>
     </nav>
   );
 };

@@ -34,7 +34,7 @@ const TestComponent = () => {
       <div>
         <h1>My Slider</h1>
         <Slider
-          width={"20em"}
+          width={"auto"}
           min={0}
           max={100}
           value={sliderValue}
@@ -45,7 +45,11 @@ const TestComponent = () => {
       <div>
         <h1>Default Slider</h1>
         <input
-          style={{ width: "20em", fontSize: "inherit" }}
+          style={{
+            display: "inline",
+            width: "auto",
+            fontSize: "inherit",
+          }}
           min={0}
           max={100}
           defaultValue={50}

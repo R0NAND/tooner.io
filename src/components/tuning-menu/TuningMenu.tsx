@@ -70,8 +70,10 @@ const TuningMenu = ({
     <>
       <div
         id="tuning-menu"
-        className="tuning-menu"
+        className="tuning-menu main-panel"
         style={{
+          height: "auto",
+          padding: "0.5em",
           width: isMobileMenu ? "100%" : desktopWidth,
           transform: isMobileMenu && isMinimized ? "translateX(-100%)" : "",
           transition: isMobileMenu //Very hard to read, but also effective animation solution
@@ -81,66 +83,8 @@ const TuningMenu = ({
             : "transform 0.3s ease-in-out, width 0.3s ease-in-out",
         }}
       >
-        <div className="instrument-select-panel">
-          <button
-            style={{
-              display: isMobileMenu ? "inline" : "none",
-              fontSize: "2em",
-            }}
-            onClick={() => setIsMinimized(true)}
-          >
-            <FontAwesomeIcon icon={faClose}></FontAwesomeIcon>
-          </button>
-          <button
-            className={
-              selectedInstrument === InstrumentEnum.guitar
-                ? "instrument-selected-tab"
-                : "instrument-select-button"
-            }
-            onClick={() => {
-              onInstrumentSelect(InstrumentEnum.guitar);
-            }}
-          >
-            Guitar
-          </button>
-          <button
-            className={
-              selectedInstrument === InstrumentEnum.bass
-                ? "instrument-selected-tab"
-                : "instrument-select-button"
-            }
-            onClick={() => {
-              onInstrumentSelect(InstrumentEnum.bass);
-            }}
-          >
-            Bass
-          </button>
-          <button
-            className={
-              selectedInstrument === InstrumentEnum.ukulele
-                ? "instrument-selected-tab"
-                : "instrument-select-button"
-            }
-            onClick={() => {
-              onInstrumentSelect(InstrumentEnum.ukulele);
-            }}
-          >
-            Ukulele
-          </button>
-          <button
-            className={
-              selectedInstrument === InstrumentEnum.eigthString
-                ? "instrument-selected-tab"
-                : "instrument-select-button"
-            }
-            // onClick={() => {
-            //   instrumentSelect(InstrumentEnum.eigthString);
-            // }}
-          >
-            8-String
-          </button>
-        </div>
-        <div className="tunings-list">
+        <h3 style={{ textAlign: "left" }}>Tunings</h3>
+        <div style={{ margin: "0.5em" }} className="tunings-list">
           {tunings
             .filter((t) => t.instrument === selectedInstrument)
             .map((t) => {
@@ -152,6 +96,16 @@ const TuningMenu = ({
                     onClicked(t);
                   }}
                 >
+                  <div
+                    style={{ textAlign: "left", width: "20ch", height: "2em" }}
+                  >
+                    <EditableText onEditCompleted={onNameEdited}>
+                      {t.name}
+                    </EditableText>
+                    <div style={{ fontSize: "0.61em" }}>
+                      {t.notes.toString()}
+                    </div>
+                  </div>
                   <button
                     className="tuning-table-delete"
                     onClick={(e) => {
@@ -164,16 +118,6 @@ const TuningMenu = ({
                       icon={faRemove}
                     ></FontAwesomeIcon>
                   </button>
-                  <div
-                    style={{ textAlign: "left", width: "20ch", height: "2em" }}
-                  >
-                    <EditableText onEditCompleted={onNameEdited}>
-                      {t.name}
-                    </EditableText>
-                    <div style={{ fontSize: "0.61em" }}>
-                      {t.notes.toString()}
-                    </div>
-                  </div>
                 </div>
               );
             })}
@@ -186,7 +130,7 @@ const TuningMenu = ({
           <FontAwesomeIcon icon={faSave}></FontAwesomeIcon>
         </button>
         <div
-          style={{ display: "flex", alignItems: "end" }}
+          style={{ display: "flex", alignItems: "end", padding: "0.5em" }}
           className="tuning-slider"
         >
           <label>Shift Pitch: </label>
@@ -202,7 +146,7 @@ const TuningMenu = ({
           ></Slider>
         </div>
       </div>
-      <div
+      {/* <div
         className="tuner-menu-tab"
         onClick={() => setIsMinimized(false)}
         style={{
@@ -214,7 +158,7 @@ const TuningMenu = ({
           <div style={{ fontSize: "0.61em" }}>{tuning.name}</div>
         </div>
         <FontAwesomeIcon icon={faList}></FontAwesomeIcon>
-      </div>
+      </div> */}
     </>
   );
 };

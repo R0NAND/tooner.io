@@ -1,22 +1,29 @@
-.custom-slider {
+.dual-slider {
   height: 1em;
   border: none;
   display: inline-block;
   position: relative;
 }
 
-.custom-slider:hover {
+.dual-slider:hover {
   cursor: pointer;
 }
 
-.custom-slider-track-left {
+.dual-slider-track-left {
+  background-color: var(--lighter-background-color);
+  transition: background-color 0.25s;
+  height: 0.5em;
+  border-radius: 0.25em;
+}
+
+.dual-slider-track-middle {
   background-color: var(--secondary-color);
   transition: background-color 0.25s;
   height: 0.5em;
   border-radius: 0.25em;
 }
 
-.custom-slider-track-right {
+.dual-slider-track-right {
   background-color: var(--lighter-background-color);
   transition: background-color 0.25s;
   width: 100%;
@@ -27,15 +34,19 @@
   border-radius: 0.25em;
 }
 
-.custom-slider-track-left.activated {
-  background-color: var(--primary-hue);
-}
-
-.custom-slider-track-right.activated {
+.dual-slider-track-left.activated {
   background-color: var(--secondary-color);
 }
 
-.custom-slider-thumb {
+.dual-slider-track-middle.activated {
+  background-color: var(--primary-hue);
+}
+
+.dual-slider-track-right.activated {
+  background-color: var(--secondary-color);
+}
+
+.dual-slider-thumb {
   background-color: var(--main-color);
   height: 1em;
   width: 1em;
@@ -45,11 +56,11 @@
   transform: translateX(-50%);
 }
 
-.custom-slider-thumb:hover {
+.dual-slider-thumb:hover {
   cursor: grab;
 }
 
-.custom-slider-input {
+.dual-slider-input {
   background: none;
   border: none;
   font-weight: bold;
@@ -61,11 +72,11 @@
   font-size: inherit;
 }
 
-.custom-slider-input:focus {
+.dual-slider-input:focus {
   outline: none;
 }
 
-.custom-slider-panel {
+.dual-slider-panel {
   position: absolute;
   transform: translateX(-50%);
   display: inline;
@@ -75,7 +86,7 @@
   padding: 0.125em;
 }
 
-@keyframes custom-slider-fadeout-animation {
+@keyframes dual-slider-fadeout-animation {
   0% {
     opacity: 1;
   }
@@ -87,17 +98,17 @@
   }
 }
 
-.custom-slider-panel.visible {
+.dual-slider-panel.visible {
   opacity: 1;
   pointer-events: auto;
 }
 
-.custom-slider-panel.fade-out {
+.dual-slider-panel.fade-out {
   opacity: 0;
-  animation-name: custom-slider-fadeout-animation;
+  animation-name: dual-slider-fadeout-animation;
   animation-duration: 2s;
 }
 
-.custom-slider-panel.hidden {
+.dual-slider-panel.hidden {
   display: none;
 }

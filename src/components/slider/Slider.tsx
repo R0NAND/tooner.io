@@ -21,7 +21,7 @@ const Slider = ({
   min,
   max,
   value,
-  displayType,
+  displayType = "number",
   updateOnDrag = true,
   label = "",
   inputPosition = "bottom",
@@ -220,12 +220,12 @@ const Slider = ({
     >
       <div
         className={`custom-slider-track-right ${
-          isActivated ? "custom-slider-track-right-activated" : ""
+          isActivated ? "activated" : ""
         }`}
       >
         <div
           className={`custom-slider-track-left ${
-            isActivated ? "custom-slider-track-left-activated" : ""
+            isActivated ? "activated" : ""
           }`}
           style={{ width: thumbPos }}
         ></div>

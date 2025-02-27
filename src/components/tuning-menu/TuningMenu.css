@@ -2,6 +2,7 @@
   padding: 0.125em 0.5em 0.125em 0.5em;
   display: flex;
   gap: 0.125em;
+  border-radius: 1em;
 }
 
 .tuning-menu-item:hover {
@@ -10,32 +11,15 @@
 }
 
 .tuning-menu {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  background: rgba(0, 0, 0, 0.1);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
   height: 100%;
   display: flex;
   flex-direction: column;
-}
-
-.instrument-select-panel {
-  display: flex;
-  background-color: var(--lighter-background-color);
 }
 
 .instrument-select-button {
   flex-basis: 25%;
   padding: 0.5em 0 0.5em 0;
   background-color: transparent;
-  color: var(--primary-color);
-}
-
-.instrument-select-button:hover {
-  flex-basis: 25%;
-  background-color: var(--lighter-background-color);
   color: var(--primary-color);
 }
 
@@ -76,24 +60,40 @@
 }
 
 .tunings-list {
-  width: 100%;
-  overflow-y: scroll;
+  height: 10em;
+  padding: 1em;
+  overflow-y: auto;
+  background-color: var(--main-background-color);
+  border-radius: 0.5em;
+}
+
+/* width */
+.tunings-list::-webkit-scrollbar {
+  width: 1em;
+  right: -8px;
+  position: absolute;
+}
+
+/* Track */
+.tunings-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+.tunings-list::-webkit-scrollbar-thumb {
+  background-color: var(--lightest-background-color);
+  border-radius: 0.5em;
+  border: 0.25em solid transparent;
+  background-clip: content-box;
+  width: 0.5em;
+  cursor: grab;
+  transform: translateX(-0.25em);
+}
+
+/* Handle on hover */
+.tunings-list::-webkit-scrollbar-thumb:hover {
 }
 
 .tuning-slider {
   margin-top: auto;
-}
-
-.tuner-menu-tab {
-  position: absolute;
-  color: var(--secondary-color);
-  top: 1em;
-  left: 0.5em;
-  text-align: left;
-  cursor: pointer;
-  transition: color 0.25s;
-}
-
-.tuner-menu-tab:hover {
-  color: var(--primary-color);
 }
