@@ -6,7 +6,6 @@ import { Tuning } from "../types/tunings";
 import { generateNewString } from "../utils/generateNewString";
 import useLocalStorageArray from "../hooks/useLocalStorageArray";
 import defaultTunings from "../defaults/tunings";
-import { measureTextWidth } from "../utils/measureTextWidth";
 import TuningMenu from "../components/tuning-menu/TuningMenu";
 
 const TunerPage = () => {
@@ -21,33 +20,6 @@ const TunerPage = () => {
     tunings.filter((t) => t.instrument === selectedInstrument)[0]
   );
   const [pitchShift, setPitchShift] = useState(0); //in cents
-
-  const [isMobileView, setIsMobileView] = useState(false);
-  const sidebarWidth = 30; //characters
-  const tunerResizeHandler = (width: number) => {
-    if (window.visualViewport) {
-      const font = window
-        //@ts-ignore
-        .getComputedStyle(document.getElementById("tuning-menu"), null)
-        .getPropertyValue("font");
-      const sidebarWidthApproximation = measureTextWidth(
-        "0".repeat(sidebarWidth),
-        font
-      );
-      if (
-        window.visualViewport.width - 2 * sidebarWidthApproximation - width <
-        0
-      ) {
-        if (!isMobileView) {
-          //resize event also gets triggered by mobile keyboard
-          //putting contents within this prevents keyboard from minimizing menu
-          setIsMobileView(true);
-        }
-      } else {
-        setIsMobileView(false);
-      }
-    }
-  };
 
   const instrumentSelect = (instrument: InstrumentEnum) => {
     setTuning(tunings.filter((t) => t.instrument === instrument)[0]);
@@ -157,15 +129,14 @@ const TunerPage = () => {
           tuning={tuning.notes}
           onNoteChange={changeNote}
           pitchShift={pitchShift}
-          onResize={tunerResizeHandler}
         ></Tuner>
       </div>
       <TuningMenu
+        className="tuning-menu main-panel"
         tuning={tuning}
         tunings={tunings}
         selectedInstrument={selectedInstrument}
         pitchShift={pitchShift}
-        isMobileMenu={false}
         onInstrumentSelect={instrumentSelect}
         onClicked={setTuning}
         onDeleted={deleteTuning}

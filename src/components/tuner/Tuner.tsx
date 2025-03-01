@@ -33,16 +33,9 @@ interface Props {
   tuning: string[];
   pitchShift: number; //in cents
   onNoteChange: (index: number, newNote: string) => void;
-  onResize: (width: number, height: number) => void;
 }
 
-const Tuner = ({
-  instrument,
-  tuning,
-  pitchShift,
-  onNoteChange,
-  onResize,
-}: Props) => {
+const Tuner = ({ instrument, tuning, pitchShift, onNoteChange }: Props) => {
   if (Math.abs(pitchShift) > 50) {
     throw new Error(
       "Invalid pitch shift detected. Value must be between -50 and 50 cents"
@@ -220,20 +213,6 @@ const Tuner = ({
   };
 
   const svgRef = useRef<SVGSVGElement>(null);
-  const callResizeCallback = () => {
-    if (svgRef.current) {
-      const { width, height } = svgRef.current.getBoundingClientRect();
-      onResize(width, height);
-    }
-  };
-  useEffect(() => {
-    addEventListener("resize", callResizeCallback);
-
-    return () => removeEventListener("resize", callResizeCallback);
-  }, [onResize]);
-  useEffect(() => {
-    callResizeCallback();
-  }, []);
 
   return (
     <svg ref={svgRef} version="1.1" className="headstock" viewBox="0 0 80 100">

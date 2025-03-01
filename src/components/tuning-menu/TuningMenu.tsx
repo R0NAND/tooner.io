@@ -12,7 +12,7 @@ interface Props {
   tunings: Tuning[];
   selectedInstrument: InstrumentEnum;
   pitchShift: number;
-  isMobileMenu: boolean;
+  className?: string;
   onInstrumentSelect: (i: InstrumentEnum) => void;
   onClicked: (t: Tuning) => void;
   onDeleted: (t: Tuning) => void;
@@ -26,22 +26,13 @@ const TuningMenu = ({
   tunings,
   selectedInstrument,
   pitchShift,
-  isMobileMenu,
+  className = "",
   onClicked,
   onDeleted,
   onNameEdited,
   onSave,
   onPitchShift,
 }: Props) => {
-  const [isMinimized, setIsMinimized] = useState(false);
-  useEffect(() => {
-    if (isMobileMenu) {
-      setIsMinimized(true);
-    } else {
-      setIsMinimized(false);
-    }
-  }, [isMobileMenu]);
-
   const [canSaveTuning, setCanSaveTuning] = useState(false);
   //Checks if current tuning is already in list... if not, allow it to be saved
   useEffect(() => {
@@ -60,20 +51,7 @@ const TuningMenu = ({
   }, [tuning, tunings]);
   return (
     <>
-      <div
-        id="tuning-menu"
-        className="tuning-menu main-panel"
-        style={{
-          height: "auto",
-          padding: "0.5em",
-          transform: isMobileMenu && isMinimized ? "translateX(-100%)" : "",
-          transition: isMobileMenu //Very hard to read, but also effective animation solution
-            ? "transform 0.3s ease-in-out, width 0s 0.3s"
-            : isMinimized
-            ? "transform 0.3s ease-in-out"
-            : "transform 0.3s ease-in-out, width 0.3s ease-in-out",
-        }}
-      >
+      <div className={className}>
         <h3
           style={{ margin: "0.5em", textAlign: "left", marginBottom: "0.5em" }}
         >{`${tuning.name} Tuning`}</h3>

@@ -1,16 +1,22 @@
 .tuning-ui {
-  width: max-content;
-  justify-content: center;
-  margin: auto;
+  width: 100%;
+  margin: var(--main-margin) auto;
+  padding: 0em 15vw;
   display: flex;
 }
 
 .tuner-container {
   padding: var(--main-margin);
-  width: 18em;
+  flex: 1 1 0;
   display: flex;
   align-items: center;
   align-content: center;
+}
+
+.tuning-menu {
+  width: 18em;
+  display: flex;
+  flex-direction: column;
 }
 
 .instrument-select-box {
@@ -49,12 +55,13 @@ button.instrument-select-button.is-selected {
 @media only screen and (max-width: 1500px) {
   .tuning-ui {
     flex-direction: column;
-    width: 50%;
+    padding: 0em 1em;
     min-width: 320px;
     align-items: center;
   }
   .instrument-select-box {
     flex-direction: row;
+    justify-content: space-around;
     width: 100%;
   }
   .tuner-container {
@@ -62,5 +69,6 @@ button.instrument-select-button.is-selected {
   }
   .tuning-menu {
     width: 100%;
+    height: 20em;
   }
 }

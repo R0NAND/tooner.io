@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./VideoSearchPanel.css";
 import {
   faAdd,
-  faArrowRight,
   faClose,
   faPlay,
   faSearch,
@@ -17,23 +16,23 @@ interface Props {
 
 const VideoSearchPanel = ({ addVideoCallback, playVideoCallback }: Props) => {
   const [queriedTutorials, setQueriedTutorials] = useState<VideoData[]>([]);
-  const [isSearchBarOpen, setIsSearchBarOpen] = useState(false);
+  const [isSearchBarExpanded, setIsSearchBarExpanded] = useState(false);
+
+  const [song, setSong] = useState("");
+  const [artist, setArtist] = useState("");
+  const [channel, setChannel] = useState("");
+  const instruments = ["guitar", "bass", "ukulele", "piano"];
+  const [instrument, setInstrument] = useState(instruments[0]);
 
   const songRef = useRef<HTMLInputElement>(null);
-  const artistRef = useRef<HTMLInputElement>(null);
-  const channelRef = useRef<HTMLInputElement>(null);
-
-  const openNav = () => {
-    setIsSearchBarOpen(!isSearchBarOpen);
-  };
 
   const queryVideos = () => {
-    const song = songRef.current?.value.replace(" ", "+");
-    const artist = artistRef.current?.value.replace(" ", "+");
-    const channel = channelRef.current?.value.replace(" ", "+");
-    const instrument = "guitar";
-
-    const request = `https://tklwhs2x3m.execute-api.us-east-2.amazonaws.com/default/fetchMusicTutorials?song=${song}&artist=${artist}&channel=${channel}&instrument=${instrument}`;
+    const qsong = song.replace(" ", "+");
+    const qartist = artist.replace(" ", "+");
+    const qchannel = channel.replace(" ", "+");
+    const qinstrument = instrument.replace(" ", "+");
+    debugger;
+    const request = `https://tklwhs2x3m.execute-api.us-east-2.amazonaws.com/default/fetchMusicTutorials?song=${qsong}&artist=${qartist}&channel=${qchannel}&instrument=${qinstrument}`;
     try {
       fetch(request)
         .then((res) => {
@@ -48,83 +47,101 @@ const VideoSearchPanel = ({ addVideoCallback, playVideoCallback }: Props) => {
   };
 
   return (
-    <div className={"search-panel"} id="searchPanel">
-      <button className="video-search-button" onClick={openNav}>
-        <FontAwesomeIcon icon={isSearchBarOpen ? faClose : faSearch} />
-      </button>
+    <div className={"search-panel"}>
       <div
-        className="video-query-panel"
-        style={{
-          display: isSearchBarOpen ? "grid" : "none",
-        }}
+        className={`video-search-bar ${
+          isSearchBarExpanded || queriedTutorials.length != 0 ? "expanded" : ""
+        } ${queriedTutorials.length !== 0 ? "queried" : ""}`}
       >
-        <label>Song:</label>
-        <input
-          ref={songRef}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              queryVideos();
+        <button
+          className={`video-search-button ${
+            isSearchBarExpanded ? "expanded" : ""
+          }`}
+          onClick={() => {
+            if (queriedTutorials.length > 0) {
+              setQueriedTutorials(new Array<VideoData>());
+              setSong("");
+              setArtist("");
+              setChannel("");
+            } else {
+              songRef.current?.focus();
             }
           }}
-        ></input>
-        <label>Artist:</label>
-        <input
-          ref={artistRef}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              queryVideos();
-            }
-          }}
-        ></input>
-        <label>Channel:</label>
-        <input
-          ref={channelRef}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              queryVideos();
-            }
-          }}
-        ></input>
-        <button onClick={queryVideos}>
-          <FontAwesomeIcon icon={faArrowRight} />
+        >
+          <FontAwesomeIcon
+            icon={queriedTutorials.length > 0 ? faClose : faSearch}
+          />
         </button>
+        <input
+          className="song-search-input"
+          onFocus={() => {
+            setIsSearchBarExpanded(true);
+            setChannel("");
+            setArtist("");
+          }}
+          onBlur={() => setIsSearchBarExpanded(false)}
+          ref={songRef}
+          value={song}
+          onChange={(e) => setSong(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              queryVideos();
+            }
+          }}
+          placeholder="Search song..."
+        ></input>
       </div>
       <div
-        className={"queried-videos"}
-        style={{
-          display: isSearchBarOpen ? "inline" : "none",
-        }}
+        className={`queried-videos ${
+          queriedTutorials.length !== 0 ? "visible" : ""
+        } acrylic`}
       >
+        <div className="tutorials-filters-flex">
+          <span>Filters:</span>
+          <input
+            className="tutorial-filter-input"
+            value={artist}
+            onChange={(e) => setArtist(e.target.value)}
+            placeholder="Artist"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                queryVideos();
+              }
+            }}
+          ></input>
+          <input
+            className="tutorial-filter-input"
+            value={channel}
+            onChange={(e) => setChannel(e.target.value)}
+            placeholder="Channel"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                queryVideos();
+              }
+            }}
+          ></input>
+          <select
+            className="tutorial-filter-input"
+            value={instrument}
+            onChange={(e) => setInstrument(e.target.value)}
+          >
+            {instruments.map((inst) => {
+              return <option value={inst}>{inst}</option>;
+            })}
+          </select>
+          <button onClick={queryVideos}>
+            <FontAwesomeIcon icon={faSearch} />
+          </button>
+        </div>
         {queriedTutorials?.map((video) => {
           return (
             <div
               className="queried-video-card"
               key={video.snippet.thumbnails.default.url}
             >
-              <img
-                style={{ height: "2em" }}
-                src={video.snippet.thumbnails.default.url}
-              ></img>
-              <div style={{ textAlign: "left" }}>
-                <span
-                  className="queried-video-title"
-                  style={{ fontSize: "1em", width: 250 }}
-                >
-                  {video.snippet.title}
-                </span>
-                <span style={{ fontSize: "0.61em" }}>
-                  {video.snippet.channelTitle}
-                </span>
-              </div>
               <button
                 onClick={() => {
                   playVideoCallback(video);
-                }}
-                style={{
-                  margin: "auto",
-                  height: 50,
-                  width: 50,
-                  borderRadius: "25%",
                 }}
               >
                 <FontAwesomeIcon icon={faPlay} />
@@ -133,15 +150,27 @@ const VideoSearchPanel = ({ addVideoCallback, playVideoCallback }: Props) => {
                 onClick={() => {
                   addVideoCallback(video);
                 }}
-                style={{
-                  margin: "auto",
-                  height: 50,
-                  width: 50,
-                  borderRadius: "25%",
-                }}
               >
                 <FontAwesomeIcon icon={faAdd} />
               </button>
+              <img
+                style={{ height: "100%" }}
+                src={video.snippet.thumbnails.default.url}
+              ></img>
+              <div style={{ textAlign: "left" }}>
+                <div
+                  className="queried-video-title"
+                  style={{ fontSize: "1em" }}
+                >
+                  {video.snippet.title}
+                </div>
+                <div
+                  className="queried-video-title"
+                  style={{ fontSize: "0.61em", marginLeft: "auto" }}
+                >
+                  {video.snippet.channelTitle}
+                </div>
+              </div>
             </div>
           );
         })}

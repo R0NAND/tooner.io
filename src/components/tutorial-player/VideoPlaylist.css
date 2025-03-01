@@ -1,7 +1,9 @@
 .playlist-row {
   display: flex;
-  padding: 0.125em 0.5em 0.125em 0.5em;
-  gap: 0.5em;
+  align-items: center;
+  padding: 0.5em;
+  gap: 1em;
+  border-radius: 0.5em;
 }
 
 .playlist-row:hover {
@@ -12,6 +14,35 @@
   visibility: hidden;
 }
 
+.playlist-video-play {
+  visibility: hidden;
+}
+
+.playlist-video-delete:hover {
+  color: var(--deny-color);
+}
+
+.playlist-video-play:hover {
+  color: var(--confirm-color);
+}
+
 .playlist-row:hover .playlist-video-delete {
   visibility: visible;
+}
+
+.playlist-row:hover .playlist-video-play {
+  visibility: visible;
+}
+
+.playlist-row-title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.playlist-video-info {
+  text-align: left;
+  flex-grow: 1;
 }

@@ -7,36 +7,41 @@ interface Props {
   videos: VideoData[];
   playVideoCallback: (vid: VideoData) => void;
   deleteVideoCallback: (vid: VideoData) => void;
+  className?: string;
 }
 
 const VideoPlaylist = ({
   videos,
   playVideoCallback,
   deleteVideoCallback,
+  className = "",
 }: Props) => {
   return (
-    <div style={{ overflowY: "scroll" }}>
+    <div className={className}>
       {videos.map((vid) => {
         return (
           <div className="playlist-row" key={vid.id.videoId}>
             <button
-              className="playlist-video-delete"
-              onClick={() => deleteVideoCallback(vid)}
+              className="playlist-video-play"
+              onClick={() => playVideoCallback(vid)}
             >
-              <FontAwesomeIcon icon={faX} />
+              <FontAwesomeIcon icon={faPlay} />
             </button>
             <img
               style={{ height: "3em" }}
               src={vid.snippet.thumbnails.default.url}
             />
-            <div style={{ textAlign: "left", width: "15em" }}>
-              <div>{vid.snippet.title}</div>
+            <div className="playlist-video-info">
+              <span className="playlist-row-title">{vid.snippet.title}</span>
               <div style={{ fontSize: "0.61em" }}>
                 {vid.snippet.channelTitle}
               </div>
             </div>
-            <button onClick={() => playVideoCallback(vid)}>
-              <FontAwesomeIcon icon={faPlay} />
+            <button
+              className="playlist-video-delete"
+              onClick={() => deleteVideoCallback(vid)}
+            >
+              <FontAwesomeIcon icon={faX} />
             </button>
           </div>
         );

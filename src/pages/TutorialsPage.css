@@ -1,8 +1,14 @@
 .tutorials-page {
+  width: 100%;
+  margin: var(--main-margin) auto;
+  padding: 0em 3.5vw;
+}
+
+.tutorials-panel {
   display: flex;
   flex-direction: row;
-  align-items: center;
-  height: 100%;
+  column-gap: 1em;
+  align-items: stretch;
 }
 
 .react-player {
@@ -16,16 +22,63 @@
   padding-top: 56.25%;
 }
 
-.tutorials-player-container {
-  width: 70%;
+.tutorials-queue {
+  width: 20em;
+  display: flex;
+  flex-direction: column;
 }
 
-@media (max-aspect-ratio: 3/2) {
-  .tutorials-page {
+.tutorials-player-container {
+  flex-grow: 1;
+}
+
+.video-playlist {
+  width: auto;
+  padding: 1em;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+  background-color: var(--main-background-color);
+  border-radius: 0.5em;
+}
+
+/* width */
+.video-playlist::-webkit-scrollbar {
+  width: 1em;
+  right: -8px;
+  position: absolute;
+}
+
+/* Track */
+.video-playlist::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+.video-playlist::-webkit-scrollbar-thumb {
+  background-color: var(--lightest-background-color);
+  border-radius: 0.5em;
+  border: 0.25em solid transparent;
+  background-clip: content-box;
+  width: 0.5em;
+  cursor: grab;
+  transform: translateX(-0.25em);
+}
+
+/* Handle on hover */
+.video-playlist::-webkit-scrollbar-thumb:hover {
+}
+
+@media only screen and (max-width: 1500px) {
+  .tutorials-panel {
     flex-direction: column;
     align-items: center;
   }
   .tutorials-player-container {
     width: 100%;
+  }
+  .tutorials-queue {
+    width: 100%;
+    height: 20em;
   }
 }

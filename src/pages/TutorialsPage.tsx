@@ -55,67 +55,80 @@ const TutorialsPage = () => {
 
   return (
     <div className="tutorials-page">
-      <div className="tutorials-player-container">
-        <div className="player-wrapper">
-          <ReactPlayer
-            className="react-player"
-            style={{ position: "absolute" }}
-            ref={playerRef}
-            height="100%"
-            width="100%"
-            playing={isPlaying}
-            controls={true}
-            url={`https://www.youtube.com/watch?v=${selectedVideo.id.videoId}`}
-            onReady={onNewVideo}
-            onProgress={onProgressCallback}
-          />
-          <VideoSearchPanel
-            addVideoCallback={(vid: VideoData) => {
-              const newTutorials = [...tutorials, vid];
-              setTutorials(newTutorials);
-            }}
-            playVideoCallback={(vid: VideoData) => {
-              setSelectedVideo(vid);
-              setIsPlaying(true);
-            }}
-          ></VideoSearchPanel>
-        </div>
-        {videoDuration > 0 && (
-          <div style={{ display: "flex" }}>
-            <button
-              onClick={() => {
-                if (!isLooping) {
-                  setIsPlaying(true);
-                  setIsLooping(true);
-                } else {
-                  setIsPlaying(false);
-                  setIsLooping(false);
-                }
+      <div className="tutorials-panel main-panel">
+        <div className="tutorials-player-container">
+          <div className="player-wrapper">
+            <ReactPlayer
+              className="react-player"
+              style={{ position: "absolute" }}
+              ref={playerRef}
+              height="100%"
+              width="100%"
+              playing={isPlaying}
+              controls={true}
+              url={`https://www.youtube.com/watch?v=${selectedVideo.id.videoId}`}
+              onReady={onNewVideo}
+              onProgress={onProgressCallback}
+            />
+            <VideoSearchPanel
+              addVideoCallback={(vid: VideoData) => {
+                const newTutorials = [...tutorials, vid];
+                setTutorials(newTutorials);
+              }}
+              playVideoCallback={(vid: VideoData) => {
+                setSelectedVideo(vid);
+                setIsPlaying(true);
+              }}
+            ></VideoSearchPanel>
+          </div>
+          {videoDuration > 0 && (
+            <div
+              style={{
+                marginTop: "1em",
+                alignItems: "center",
+                display: "flex",
               }}
             >
-              <FontAwesomeIcon
-                icon={!isLooping ? faRepeat : faStop}
-              ></FontAwesomeIcon>
-            </button>
-            <DualSlider
-              min={0}
-              max={videoDuration}
-              minValue={loopStartTime}
-              maxValue={loopEndTime}
-              displayType="time"
-              inputPosition="top"
-              width="100%"
-              onMinChange={setLoopStartTime}
-              onMaxChange={setLoopEndTime}
-            ></DualSlider>
-          </div>
-        )}
+              <button
+                style={{ fontSize: "1.5em", marginRight: "1em" }}
+                onClick={() => {
+                  if (!isLooping) {
+                    setIsPlaying(true);
+                    setIsLooping(true);
+                  } else {
+                    setIsPlaying(false);
+                    setIsLooping(false);
+                  }
+                }}
+              >
+                <FontAwesomeIcon
+                  icon={!isLooping ? faRepeat : faStop}
+                ></FontAwesomeIcon>
+              </button>
+              <DualSlider
+                min={0}
+                max={videoDuration}
+                minValue={loopStartTime}
+                maxValue={loopEndTime}
+                displayType="time"
+                inputPosition="top"
+                width="100%"
+                onMinChange={setLoopStartTime}
+                onMaxChange={setLoopEndTime}
+              ></DualSlider>
+            </div>
+          )}
+        </div>
+        <div className="tutorials-queue">
+          <h3 style={{ textAlign: "left" }}>Tutorials Playlist</h3>
+          <VideoPlaylist
+            className="video-playlist"
+            videos={tutorials}
+            playVideoCallback={playVideo}
+            deleteVideoCallback={deleteVideo}
+          ></VideoPlaylist>
+        </div>
       </div>
-      <VideoPlaylist
-        videos={tutorials}
-        playVideoCallback={playVideo}
-        deleteVideoCallback={deleteVideo}
-      ></VideoPlaylist>
     </div>
   );
 };

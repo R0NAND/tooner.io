@@ -10,13 +10,6 @@
   background: var(--lighter-background-color);
 }
 
-.tuning-menu {
-  height: 100%;
-  width: 18em;
-  display: flex;
-  flex-direction: column;
-}
-
 @media only screen and (max-width: 1500px) {
   .tuning-menu {
     width: 100%;
@@ -36,6 +29,10 @@
 
 .tuning-menu-item:hover .tuning-table-delete {
   visibility: visible;
+}
+
+.tuning-table-delete:hover {
+  color: var(--deny-color);
 }
 
 .instrument-selected-tab {
@@ -70,10 +67,12 @@ button.tuning-save-button {
 }
 
 .tunings-list {
-  height: auto;
-  max-height: 10em;
+  flex: 1 1 0;
   padding: 1em;
+  max-height: 10em;
   overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
   background-color: var(--main-background-color);
   border-radius: 0.5em;
 }

@@ -1,43 +1,61 @@
 .queried-video-title {
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
-
-  display: -moz-box;
-  -moz-box-orient: vertical;
-
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.video-query-panel {
-  padding: 15px;
-  display: grid;
-  grid-template-columns: auto auto;
-  gap: 15px;
-  height: 10em;
-  background-color: var(--main-background-color);
+.search-panel {
+  --panel-margin: 1em;
+  --search-button-height: 2.5em;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
 }
 
-.search-panel {
-  position: absolute;
-  top: 0.5em;
-  left: 0.5em;
+.video-search-bar {
+  pointer-events: auto;
+  margin: var(--panel-margin) var(--panel-margin) 0em var(--panel-margin);
+  width: 30%;
   display: flex;
+  transition: width 0.3s ease-in-out;
+}
+
+.video-search-bar.expanded {
+  width: calc(100% - 2 * var(--panel-margin));
 }
 
 .queried-video-card {
   display: flex;
   align-items: center;
-  height: 4em;
-  margin: 5px;
-  background-color: var(--main-background-color);
+  align-content: left;
+  padding: 0 4.5em;
+  column-gap: 1em;
+  height: 3.5em;
+  margin: 0.5em;
 }
 
 .queried-videos {
-  overflow-y: scroll;
-  background-color: var(--main-background-color);
-  height: 15em;
+  pointer-events: auto;
+  overflow-y: auto;
+  margin: 0em var(--panel-margin) var(--panel-margin) var(--panel-margin);
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  border-radius: 0 0 1em 1em;
+  transition: max-height 0.4s ease, opacity 0.3s ease;
+}
+
+.queried-videos.visible {
+  overflow: auto;
+  max-height: calc(70% - var(--search-button-height) - 2 * var(--panel-margin));
+  opacity: 1;
 }
 
 .collapsed-queried-videos {
@@ -47,14 +65,64 @@
 .video-search-button {
   border-radius: 1em 0 0 1em;
   background-color: var(--main-background-color);
-  height: 2.5em;
-  width: 2.5em;
+  height: var(--search-button-height);
+  width: var(--search-button-height);
+  transition: border-radius 0.3s ease;
 }
 
-.search-panel input {
-  border-radius: 5px;
+.video-search-bar.queried .video-search-button {
+  border-radius: 1em 0 0 0;
 }
 
-.search-panel label {
-  font-weight: bold;
+.song-search-input {
+  flex: 1; /* Makes it take up the remaining space */
+  min-width: 5em;
+  font-size: inherit;
+  border-radius: 0em 1em 1em 0em;
+  transition: border-radius 0.3s ease;
+}
+
+.video-search-bar.queried .song-search-input {
+  border-radius: 0 1em 0 0;
+}
+
+.tutorials-filters-flex {
+  display: flex;
+  margin: 0.5em;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.tutorial-filter-input {
+  flex-shrink: 1;
+  width: 5em;
+  font-size: inherit;
+  font-family: inherit;
+}
+
+/* width */
+.queried-videos::-webkit-scrollbar {
+  width: 1em;
+  right: -8px;
+  position: absolute;
+}
+
+/* Track */
+.queried-videos::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+.queried-videos::-webkit-scrollbar-thumb {
+  background-color: var(--lightest-background-color);
+  border-radius: 0.5em;
+  border: 0.25em solid transparent;
+  background-clip: content-box;
+  width: 0.5em;
+  cursor: grab;
+  transform: translateX(-0.25em);
+}
+
+/* Handle on hover */
+.queried-videos::-webkit-scrollbar-thumb:hover {
 }
