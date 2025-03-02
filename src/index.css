@@ -1,11 +1,11 @@
 :root {
   color-scheme: light dark;
 
-  --main-background-color: light-dark(#ffffff, #333333);
-  --lighter-background-color: light-dark(#f8f8f8, #414141);
-  --lightest-background-color: light-dark(#f0f0f0, #4d4d4d);
+  --main-background-color: light-dark(#dddddd, #333333);
+  --lighter-background-color: light-dark(#eeeeee, #414141);
+  --lightest-background-color: light-dark(#ffffff, #4d4d4d);
   --main-color: light-dark(#000000, #d3d9dc);
-  --secondary-color: light-dark(#a5a5a5, #9ea8ae);
+  --secondary-color: light-dark(#333333, #9ea8ae);
   --text-glow-color: light-dark(#000000, #ffffff);
   --shadow-color: light-dark(rgb(0 0 0 / 0.2), rgb(128 128 128 / 0.2));
   --primary-hue: light-dark(#23a8f2, #6d7ab5);
@@ -77,7 +77,7 @@ svg text {
 }
 
 .acrylic {
-  background: rgba(0, 0, 0, 0.8);
+  background: light-dark((0, 0, 0, 0.8), (0, 0, 0, 0.8));
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }

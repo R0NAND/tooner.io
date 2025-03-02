@@ -73,7 +73,7 @@ const VideoSearchPanel = ({ addVideoCallback, playVideoCallback }: Props) => {
           />
         </button>
         <input
-          className="song-search-input"
+          className="song-search-input acrylic"
           onFocus={() => {
             setIsSearchBarExpanded(true);
             setChannel("");
@@ -112,7 +112,7 @@ const VideoSearchPanel = ({ addVideoCallback, playVideoCallback }: Props) => {
             enterKeyHint="search"
           ></input>
           <input
-            className="tutorial-filter-input"
+            className="tutorial-filter-input acrylic"
             value={channel}
             onChange={(e) => setChannel(e.target.value)}
             placeholder="Channel"
@@ -124,7 +124,7 @@ const VideoSearchPanel = ({ addVideoCallback, playVideoCallback }: Props) => {
             enterKeyHint="search"
           ></input>
           <select
-            className="tutorial-filter-input"
+            className="tutorial-filter-input acrylic"
             value={instrument}
             onChange={(e) => setInstrument(e.target.value)}
           >

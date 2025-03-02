@@ -69,7 +69,7 @@
 .video-playlist::-webkit-scrollbar-thumb:hover {
 }
 
-@media only screen and (max-width: 1500px) {
+@media only screen and (max-width: 600px) {
   .tutorials-panel {
     flex-direction: column;
     align-items: center;

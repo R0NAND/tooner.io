@@ -52,7 +52,7 @@ button.instrument-select-button.is-selected {
   width: 4.5em;
 }
 
-@media only screen and (max-width: 1500px) {
+@media only screen and (max-width: 600px) {
   .tuning-ui {
     flex-direction: column;
     padding: 0em 1em;
