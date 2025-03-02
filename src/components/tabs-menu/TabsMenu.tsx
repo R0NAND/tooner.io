@@ -1,6 +1,6 @@
 import { Tab } from "../../types/tabs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAdd, faRemove } from "@fortawesome/free-solid-svg-icons";
+import { faRemove } from "@fortawesome/free-solid-svg-icons";
 import EditableText from "../editable-text/EditableText";
 import "./TabsMenu.css";
 import { forwardRef } from "react";
@@ -12,19 +12,11 @@ interface Props {
   onClicked: (t: Tab) => void;
   onDeleted: (t: Tab) => void;
   onNameEdited: (newString: string, oldString: string) => boolean;
-  onCreateNew: () => void;
 }
 
 const TabsMenu = forwardRef<HTMLDivElement, Props>(
   (
-    {
-      tabs,
-      className = "",
-      onClicked,
-      onDeleted,
-      onNameEdited,
-      onCreateNew,
-    }: Props,
+    { tabs, className = "", onClicked, onDeleted, onNameEdited }: Props,
     ref
   ) => {
     return (
@@ -59,9 +51,6 @@ const TabsMenu = forwardRef<HTMLDivElement, Props>(
               </div>
             );
           })}
-          <button className="new-tab-button" onClick={() => onCreateNew()}>
-            <FontAwesomeIcon icon={faAdd}></FontAwesomeIcon>
-          </button>
         </div>
       </>
     );

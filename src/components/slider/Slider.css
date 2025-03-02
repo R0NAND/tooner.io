@@ -17,13 +17,12 @@
 }
 
 .custom-slider-track-right {
-  background-color: var(--lighter-background-color);
+  background-color: var(--main-background-color);
   transition: background-color 0.25s;
   width: 100%;
   height: 0.5em;
   position: absolute;
   top: 0.25em;
-  border: none;
   border-radius: 0.25em;
 }
 

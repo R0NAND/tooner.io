@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Tab } from "../types/tabs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
+import { faAdd, faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
 import { generateNewString } from "../utils/generateNewString";
 import useLocalStorageArray from "../hooks/useLocalStorageArray";
 import defaultTabs from "../defaults/tabs";
@@ -102,9 +102,11 @@ const TabsPage = () => {
             ref={tabsMenuRef}
             onClicked={(t) => setSelectedTab(t)}
             onDeleted={deleteTab}
-            onCreateNew={createNewTab}
             onNameEdited={onNameEdited}
           ></TabsMenu>
+          <button className="new-tab-button" onClick={() => createNewTab()}>
+            <FontAwesomeIcon icon={faAdd}></FontAwesomeIcon>
+          </button>
           <h3 style={{ textAlign: "left", marginBottom: "0.25em" }}>
             Autoscroll
           </h3>

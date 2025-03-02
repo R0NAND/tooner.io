@@ -109,6 +109,7 @@ const VideoSearchPanel = ({ addVideoCallback, playVideoCallback }: Props) => {
                 queryVideos();
               }
             }}
+            enterKeyHint="search"
           ></input>
           <input
             className="tutorial-filter-input"
@@ -120,6 +121,7 @@ const VideoSearchPanel = ({ addVideoCallback, playVideoCallback }: Props) => {
                 queryVideos();
               }
             }}
+            enterKeyHint="search"
           ></input>
           <select
             className="tutorial-filter-input"

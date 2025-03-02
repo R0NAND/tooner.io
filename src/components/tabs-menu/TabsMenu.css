@@ -22,9 +22,3 @@
 .tab-menu-item:hover .tab-delete {
   visibility: visible;
 }
-
-.new-tab-button {
-  width: 100%;
-  border: 0.125em solid var(--main-color);
-  border-radius: 1em;
-}

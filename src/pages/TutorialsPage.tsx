@@ -10,6 +10,7 @@ import DualSlider from "../components/dual-slider/DualSlider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRepeat, faStop } from "@fortawesome/free-solid-svg-icons";
 import { OnProgressProps } from "react-player/base";
+import Metronome from "../components/metronome/Metronome";
 
 const TutorialsPage = () => {
   const [tutorials, setTutorials] = useLocalStorageArray<VideoData>(
@@ -120,13 +121,19 @@ const TutorialsPage = () => {
           )}
         </div>
         <div className="tutorials-queue">
-          <h3 style={{ textAlign: "left" }}>Tutorials Playlist</h3>
+          <h3
+            style={{ textAlign: "left", marginTop: 0, marginBottom: "0.5em" }}
+          >
+            Tutorials Playlist
+          </h3>
           <VideoPlaylist
             className="video-playlist"
             videos={tutorials}
             playVideoCallback={playVideo}
             deleteVideoCallback={deleteVideo}
           ></VideoPlaylist>
+          <h3 style={{ textAlign: "left", margin: "0.5em 0" }}>Metronome</h3>
+          <Metronome></Metronome>
         </div>
       </div>
     </div>

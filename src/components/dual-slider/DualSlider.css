@@ -10,7 +10,7 @@
 }
 
 .dual-slider-track-left {
-  background-color: var(--lighter-background-color);
+  background-color: var(--main-background-color);
   transition: background-color 0.25s;
   height: 0.5em;
   border-radius: 0.25em;
@@ -24,7 +24,7 @@
 }
 
 .dual-slider-track-right {
-  background-color: var(--lighter-background-color);
+  background-color: var(--main-background-color);
   transition: background-color 0.25s;
   width: 100%;
   height: 0.5em;
