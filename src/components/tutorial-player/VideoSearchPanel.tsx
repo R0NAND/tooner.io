@@ -83,6 +83,7 @@ const VideoSearchPanel = ({ addVideoCallback, playVideoCallback }: Props) => {
           ref={songRef}
           value={song}
           onChange={(e) => setSong(e.target.value)}
+          enterKeyHint="search"
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               queryVideos();

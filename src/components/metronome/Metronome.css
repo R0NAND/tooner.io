@@ -1,8 +1,7 @@
 .metronome {
-  display: flex;
-  margin: 0.5em;
-  row-gap: 0.5em;
-  column-gap: 0.5em;
+  display: grid;
+  grid-template-columns: min-content auto;
+  gap: 0.5em;
   align-items: center;
 }
 
@@ -30,17 +29,24 @@
 }
 
 .metronome-note {
-  fill: var(--secondary-color);
-  height: var(--button-font-size);
+  fill: var(--main-color);
+  height: 1em;
 }
 
 .metronome-note-active {
-  fill: var(--main-color);
+  fill: var(--confirm-color);
   height: var(--button-font-size);
 }
 
 .metronome-note-flex {
   display: flex;
+  flex-wrap: wrap;
   justify-content: left;
   align-items: center;
+  font-size: 0.5em;
+}
+
+.metronome-base-button:disabled {
+  color: transparent;
+  cursor: default;
 }

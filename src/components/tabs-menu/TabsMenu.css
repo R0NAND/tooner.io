@@ -1,16 +1,7 @@
-.tabs-sidebar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  background: rgba(0, 0, 0, 0.5);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  height: 100%;
-}
-
 .tab-menu-item {
   padding: 0.125em 0.5em 0.125em 0.5em;
   display: flex;
+  align-items: center;
   gap: 0.125em;
 }
 
@@ -21,8 +12,19 @@
 
 .tab-delete {
   visibility: hidden;
+  margin-left: auto;
+}
+
+.tab-delete:hover {
+  color: var(--deny-color);
 }
 
 .tab-menu-item:hover .tab-delete {
   visibility: visible;
+}
+
+.new-tab-button {
+  width: 100%;
+  border: 0.125em solid var(--main-color);
+  border-radius: 1em;
 }
