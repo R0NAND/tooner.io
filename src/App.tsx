@@ -9,7 +9,7 @@ import TestComponent from "./components/TestComponent";
 
 function App() {
   return (
-    <div className="app-container">
+    <>
       <Navbar></Navbar>
       <div className="app-content">
         <Routes>
@@ -26,7 +26,7 @@ function App() {
           <Route path="/about" element={<AboutPage></AboutPage>}></Route>
         </Routes>
       </div>
-    </div>
+    </>
   );
 }
 

@@ -15,7 +15,7 @@
   font-size: clamp(16px, 1.5vw, 64px);
   --main-margin: 1em;
 
-  --navbar-height: 4em;
+  --navbar-height: 3em;
   --button-font-size: 1em;
   background-color: var(--main-background-color);
   color: var(--main-color);
@@ -33,12 +33,14 @@
 body {
   margin: 0;
   padding: 0;
+  overflow: hidden;
   font-family: "Merriweather", sans-serif;
 }
 
 html {
   margin: 0;
   padding: 0;
+  overflow: hidden;
 }
 
 * {

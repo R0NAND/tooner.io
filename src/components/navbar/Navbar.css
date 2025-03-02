@@ -1,14 +1,14 @@
 .navbar {
-  width: 45em;
-  margin: 1em auto;
+  position: sticky;
+  top: 0;
+  width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
   background-color: var(--lighter-background-color);
   color: var(--main-color);
-  border-radius: 2em;
   z-index: 999;
-  padding: 0em 2em;
+  height: var(--navbar-height);
 }
 
 .navbar a {

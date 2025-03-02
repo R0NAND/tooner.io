@@ -10,12 +10,6 @@
   background: var(--lighter-background-color);
 }
 
-@media only screen and (max-width: 600px) {
-  .tuning-menu {
-    width: 100%;
-  }
-}
-
 .instrument-select-button {
   flex-basis: 25%;
   padding: 0.5em 0 0.5em 0;
@@ -69,10 +63,10 @@ button.tuning-save-button {
 .tunings-list {
   flex: 1 1 0;
   padding: 1em;
-  max-height: 10em;
+  min-height: 10em;
+  max-height: 15em;
   overflow-y: auto;
   overflow-x: hidden;
-  min-height: 0;
   background-color: var(--main-background-color);
   border-radius: 0.5em;
 }

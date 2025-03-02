@@ -3,14 +3,19 @@
   text-align: center;
 }
 
-.app-container {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
 .app-content {
   width: 100%;
-  position: relative;
+  display: flex;
+  justify-content: baseline;
+  align-items: center;
   height: calc(100vh - var(--navbar-height));
+  min-height: 600px;
+  position: relative;
+  overflow-y: auto;
+}
+
+@media only screen and (max-width: 600px) {
+  .app-content {
+    align-items: flex-start;
+  }
 }
