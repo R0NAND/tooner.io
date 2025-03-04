@@ -1,15 +1,17 @@
 .tabs-page {
   display: flex;
+  justify-content: center;
+  margin: auto;
+  width: fit-content;
   gap: 1em;
   padding: 1em;
-  margin: auto 15vw;
   height: 85%;
 }
 
 .tab-display {
   margin: auto;
-  flex-grow: 1;
   height: 100%;
+  width: fit-content;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -19,6 +21,7 @@
 .tab-text-area {
   padding: 0.5em;
   height: 100%;
+  width: 50em;
   background-color: var(--main-background-color);
   border-radius: 1em;
   resize: none;

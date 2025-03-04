@@ -10,16 +10,20 @@
 }
 
 .mic-button {
-  fill: var(--secondary-color);
   stroke: none;
+  cursor: pointer;
   transition: fill 0.25s;
 }
 
-.mic-button:hover {
-  fill: var(--main-color);
-  cursor: pointer;
+.mic-button.on {
+  fill: var(--deny-color);
+}
+
+.mic-button.off {
+  fill: var(--confirm-color);
 }
 
 .mic-button-icon {
+  fill: var(--main-color);
   pointer-events: none;
 }

@@ -1,7 +1,7 @@
 .dual-slider {
+  display: flex;
+  align-items: center;
   height: 1em;
-  border: none;
-  display: inline-block;
   position: relative;
 }
 
@@ -10,6 +10,8 @@
 }
 
 .dual-slider-track-left {
+  display: inline-block;
+  border: 1px solid var(--main-color);
   background-color: var(--main-background-color);
   transition: background-color 0.25s;
   height: 0.5em;
@@ -17,37 +19,26 @@
 }
 
 .dual-slider-track-middle {
-  background-color: var(--secondary-color);
+  display: inline-block;
+  background-color: var(--primary-hue);
   transition: background-color 0.25s;
   height: 0.5em;
   border-radius: 0.25em;
 }
 
 .dual-slider-track-right {
+  display: inline-block;
+  border: 1px solid var(--main-color);
   background-color: var(--main-background-color);
   transition: background-color 0.25s;
-  width: 100%;
   height: 0.5em;
-  position: absolute;
-  top: 0.25em;
   border: none;
   border-radius: 0.25em;
 }
 
-.dual-slider-track-left.activated {
-  background-color: var(--secondary-color);
-}
-
-.dual-slider-track-middle.activated {
-  background-color: var(--primary-hue);
-}
-
-.dual-slider-track-right.activated {
-  background-color: var(--secondary-color);
-}
-
 .dual-slider-thumb {
-  background-color: var(--main-color);
+  background-color: var(--lightest-background-color);
+  border: 1px solid var(--main-color);
   height: 1em;
   width: 1em;
   top: 0;

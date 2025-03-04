@@ -2,7 +2,8 @@
   padding: 0.125em 0.5em 0.125em 0.5em;
   display: flex;
   gap: 0.125em;
-  border-radius: 1em;
+  border-radius: 0.5em;
+  cursor: pointer;
 }
 
 .tuning-menu-item:hover {
@@ -35,69 +36,20 @@
   border-radius: 1em 1em 0em 0em;
 }
 
-button.tuning-save-button {
-  cursor: pointer;
-  margin: 0em;
-  width: auto;
-  font-size: 2em;
-  border-radius: 0.25em;
-  background-color: var(--lightest-background-color);
-  color: var(--primary-color);
-  border: 0.0625em solid transparent;
-  transition: border-color 0.25s, color 0.25s, background-color 0.25s;
-}
-
-.tuning-save-button:hover {
-  cursor: pointer;
-  border-color: var(--secondary-color);
-  color: var(--text-glow-color);
-}
-
-.tuning-save-button:disabled {
-  cursor: default;
-  color: var(--main-background-color);
-  background-color: transparent;
-  border: 0.0625em solid var(--main-background-color);
-}
-
 .tunings-list {
   flex: 1 1 0;
-  padding: 1em;
+  padding: 0em 0.5em;
   min-height: 10em;
   max-height: 15em;
   overflow-y: auto;
   overflow-x: hidden;
   background-color: var(--main-background-color);
   border-radius: 0.5em;
+  margin-bottom: 0.25em;
 }
 
-/* width */
-.tunings-list::-webkit-scrollbar {
-  width: 1em;
-  right: -8px;
-  position: absolute;
-}
-
-/* Track */
-.tunings-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-/* Handle */
-.tunings-list::-webkit-scrollbar-thumb {
-  background-color: var(--lightest-background-color);
-  border-radius: 0.5em;
-  border: 0.25em solid transparent;
-  background-clip: content-box;
-  width: 0.5em;
-  cursor: grab;
-  transform: translateX(-0.25em);
-}
-
-/* Handle on hover */
-.tunings-list::-webkit-scrollbar-thumb:hover {
-}
-
-.tuning-slider {
-  margin-top: auto;
+.tuning-menu-header {
+  text-align: left;
+  margin-top: 0em;
+  margin-bottom: 0.25em;
 }

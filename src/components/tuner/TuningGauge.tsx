@@ -72,7 +72,6 @@ const TuningGauge = ({
       const isTuned = Math.abs(centsOff) <= cents;
       setNote(newNote);
       setRadianError(newRadianError);
-      console.log(centsOff);
       setColor(isTuned ? colorMap(0) : colorMap(Math.abs(centsOff) / 50));
       if (isTuned) {
         if (newNote === lastHeardNote.current) {
@@ -119,7 +118,7 @@ const TuningGauge = ({
           ></circle>
           <circle
             stroke={color}
-            fill="black"
+            className="tuning-hole"
             strokeWidth="2px"
             r="15"
             cx="50"

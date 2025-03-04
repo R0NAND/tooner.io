@@ -1,12 +1,11 @@
 .tutorials-page {
   width: 100%;
-  margin: var(--main-margin) auto;
-  padding: 0em 3.5vw;
 }
 
 .tutorials-panel {
   display: flex;
   flex-direction: row;
+  width: fit-content;
   column-gap: 1em;
   align-items: stretch;
 }
@@ -29,7 +28,7 @@
 }
 
 .tutorials-player-container {
-  flex-grow: 1;
+  width: 40em;
 }
 
 .video-playlist {
@@ -42,37 +41,16 @@
   border-radius: 0.5em;
 }
 
-/* width */
-.video-playlist::-webkit-scrollbar {
-  width: 1em;
-  right: -8px;
-  position: absolute;
-}
-
-/* Track */
-.video-playlist::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-/* Handle */
-.video-playlist::-webkit-scrollbar-thumb {
-  background-color: var(--lightest-background-color);
-  border-radius: 0.5em;
-  border: 0.25em solid transparent;
-  background-clip: content-box;
-  width: 0.5em;
-  cursor: grab;
-  transform: translateX(-0.25em);
-}
-
-/* Handle on hover */
-.video-playlist::-webkit-scrollbar-thumb:hover {
-}
-
 @media only screen and (max-width: 600px) {
+  .tutorials-page {
+    margin: 0;
+  }
   .tutorials-panel {
     flex-direction: column;
     align-items: center;
+    width: 100%;
+    margin: 0;
+    padding: 0;
   }
   .tutorials-player-container {
     width: 100%;

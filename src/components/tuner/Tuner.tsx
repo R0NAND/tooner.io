@@ -219,7 +219,7 @@ const Tuner = ({ instrument, tuning, pitchShift, onNoteChange }: Props) => {
       <g>
         {renderHeadstock()}
         <circle
-          className="mic-button"
+          className={`mic-button ${isMicEnabled ? "on" : "off"}`}
           cx={transforms.mic.x}
           cy={transforms.mic.y}
           r={transforms.mic.r}

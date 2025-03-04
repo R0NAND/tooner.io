@@ -45,26 +45,44 @@ const Slider = ({
   const minThumbRef = useRef<HTMLDivElement | null>(null);
   const maxThumbRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
-  const [minThumbPos, setMinThumbPos] = useState(0);
-  const [maxThumbPos, setMaxThumbPos] = useState(0);
-  const trackWidthRef = useRef(0);
-  const minThumbWidthRef = useRef(0);
   const [topThumb, setTopThumb] = useState("max");
+  const [minPercentage, setMinPercentage] = useState(0);
+  const [maxPercentage, setMaxPercentage] = useState(0);
+  const trackWidthRef = useRef(0);
+  const thumbWidthRef = useRef(0);
+  useEffect(() => {
+    if (!trackRef.current) return;
+
+    const observer = new ResizeObserver(() => {
+      if (trackRef.current && minThumbRef.current) {
+        trackWidthRef.current = trackRef.current.getBoundingClientRect().width;
+        thumbWidthRef.current =
+          minThumbRef.current.getBoundingClientRect().width;
+      }
+    });
+
+    observer.observe(trackRef.current);
+
+    return () => observer.disconnect();
+  }, []);
 
   const positionToValue = (pos: number) => {
-    const adjustedPos = pos - 0.5 * minThumbWidthRef.current;
+    const adjustedPos = pos - 0.5 * thumbWidthRef.current;
     return (
       min +
       (max - min) *
-        (adjustedPos / (trackWidthRef.current - minThumbWidthRef.current))
+        (adjustedPos / (trackWidthRef.current - thumbWidthRef.current))
     );
   };
 
-  const valueToPosition = (minValue: number) => {
+  const valueToPercentage = (value: number) => {
+    const thumbPadding =
+      100 * 0.5 * (thumbWidthRef.current / trackWidthRef.current);
+    const valuePercentage = (100 * (value - min)) / (max - min);
+    const adjustedTrackWidth = trackWidthRef.current - thumbWidthRef.current;
     return (
-      0.5 * minThumbWidthRef.current +
-      (trackWidthRef.current - minThumbWidthRef.current) *
-        ((minValue - min) / (max - min))
+      thumbPadding +
+      (valuePercentage * adjustedTrackWidth) / trackWidthRef.current
     );
   };
 
@@ -72,26 +90,14 @@ const Slider = ({
     const setDimensions = () => {
       if (trackRef.current !== null && minThumbRef.current !== null) {
         trackWidthRef.current = trackRef.current.getBoundingClientRect().width;
-        minThumbWidthRef.current =
+        thumbWidthRef.current =
           minThumbRef.current.getBoundingClientRect().width;
-        let pos =
-          0.5 * minThumbRef.current.getBoundingClientRect().width +
-          (trackRef.current.getBoundingClientRect().width -
-            minThumbRef.current.getBoundingClientRect().width) *
-            ((minValue - min) / (max - min));
-        setMinThumbPos(pos);
-        pos =
-          0.5 * minThumbRef.current.getBoundingClientRect().width +
-          (trackRef.current.getBoundingClientRect().width -
-            minThumbRef.current.getBoundingClientRect().width) *
-            ((maxValue - min) / (max - min));
-        setMaxThumbPos(pos);
+        setMinPercentage(valueToPercentage(minValue));
+        setMaxPercentage(valueToPercentage(maxValue));
       }
     };
 
-    window.addEventListener("resize", setDimensions);
     setDimensions();
-    return () => window.removeEventListener("resize", setDimensions);
   }, []);
 
   const getTrackX = () => {
@@ -111,15 +117,17 @@ const Slider = ({
   const minDragPositionRef = useRef(0);
   const minDragHandler = (e: MouseEvent | TouchEvent) => {
     minDragPositionRef.current = clamp(
-      0.5 * minThumbWidthRef.current,
+      0.5 * thumbWidthRef.current,
       getEventX(e) - getTrackX(),
-      maxThumbPos - 1
+      Math.floor(0.01 * maxPercentage * trackWidthRef.current - 1)
     );
 
     if (updateOnDrag) {
       onMinChange(rounding(positionToValue(minDragPositionRef.current)));
     } else {
-      setMinThumbPos(minDragPositionRef.current);
+      setMinPercentage(
+        (100 * minDragPositionRef.current) / trackWidthRef.current
+      );
       setMinInputValue(
         rounding(positionToValue(minDragPositionRef.current)).toString()
       );
@@ -133,23 +141,21 @@ const Slider = ({
   const onPressDown = (downEvent: React.MouseEvent | React.TouchEvent) => {
     downEvent.preventDefault();
     const clickPosition = getEventX(downEvent.nativeEvent) - getTrackX();
-    console.log({ minThumbPos, maxThumbPos });
     if (
-      Math.abs(minThumbPos - clickPosition) <
-      Math.abs(maxThumbPos - clickPosition)
+      Math.abs(0.01 * minPercentage * trackWidthRef.current - clickPosition) <
+      Math.abs(0.01 * maxPercentage * trackWidthRef.current - clickPosition)
     ) {
-      console.log("ayoo");
       setTopThumb("min");
       setIsDragging(true);
       minDragPositionRef.current = clamp(
-        0.5 * minThumbWidthRef.current,
+        0.5 * thumbWidthRef.current,
         clickPosition,
-        trackWidthRef.current - 0.5 * minThumbWidthRef.current
+        trackWidthRef.current - 0.5 * thumbWidthRef.current
       );
       if (updateOnDrag) {
         onMinChange(rounding(positionToValue(minDragPositionRef.current)));
       } else {
-        setMinThumbPos(minDragPositionRef.current);
+        setMinPercentage(minDragPositionRef.current / trackWidthRef.current);
         setMinInputValue(
           rounding(positionToValue(minDragPositionRef.current)).toString()
         );
@@ -162,14 +168,16 @@ const Slider = ({
       setTopThumb("max");
       setIsDragging(true);
       maxDragPositionRef.current = clamp(
-        0.5 * minThumbWidthRef.current,
+        0.5 * thumbWidthRef.current,
         clickPosition,
-        trackWidthRef.current - 0.5 * minThumbWidthRef.current
+        trackWidthRef.current - 0.5 * thumbWidthRef.current
       );
       if (updateOnDrag) {
         onMaxChange(rounding(positionToValue(maxDragPositionRef.current)));
       } else {
-        setMaxThumbPos(maxDragPositionRef.current);
+        setMaxPercentage(
+          (100 * maxDragPositionRef.current) / trackWidthRef.current
+        );
         setMaxInputValue(
           rounding(positionToValue(maxDragPositionRef.current)).toString()
         );
@@ -194,7 +202,7 @@ const Slider = ({
 
   const [minInputValue, setMinInputValue] = useState(minValue.toString());
   useEffect(() => {
-    setMinThumbPos(valueToPosition(minValue));
+    setMinPercentage(valueToPercentage(minValue));
     if (displayType === "number") {
       setMinInputValue(minValue.toString());
     } else if (displayType === "time") {
@@ -224,15 +232,17 @@ const Slider = ({
   const maxDragPositionRef = useRef(0);
   const maxDragHandler = (e: MouseEvent | TouchEvent) => {
     maxDragPositionRef.current = clamp(
-      minThumbPos + 1,
+      Math.ceil(0.01 * minPercentage * trackWidthRef.current + 1),
       getEventX(e) - getTrackX(),
-      trackWidthRef.current - 0.5 * minThumbWidthRef.current
+      trackWidthRef.current - 0.5 * thumbWidthRef.current
     );
 
     if (updateOnDrag) {
       onMaxChange(rounding(positionToValue(maxDragPositionRef.current)));
     } else {
-      setMaxThumbPos(maxDragPositionRef.current);
+      setMaxPercentage(
+        (100 * maxDragPositionRef.current) / trackWidthRef.current
+      );
       setMaxInputValue(
         rounding(positionToValue(maxDragPositionRef.current)).toString()
       );
@@ -255,7 +265,7 @@ const Slider = ({
 
   const [maxInputValue, setMaxInputValue] = useState(maxValue.toString());
   useEffect(() => {
-    setMaxThumbPos(valueToPosition(maxValue));
+    setMaxPercentage(valueToPercentage(maxValue));
     if (displayType === "number") {
       setMaxInputValue(maxValue.toString());
     } else if (displayType === "time") {
@@ -328,7 +338,6 @@ const Slider = ({
     isMaxInputHovering,
     isMaxInputFocused,
   ]);
-
   return (
     <div
       ref={trackRef}
@@ -336,32 +345,30 @@ const Slider = ({
       style={{
         width: width,
       }}
+      onMouseDown={onPressDown}
+      onTouchStart={onPressDown}
+      onMouseEnter={() => setIsSliderHovering(true)}
+      onMouseLeave={() => setIsSliderHovering(false)}
     >
       <div
+        className={`dual-slider-track-left ${isActivated ? "activated" : ""}`}
+        style={{ width: `${minPercentage}%` }}
+      ></div>
+      <div
+        className={`dual-slider-track-middle ${isActivated ? "activated" : ""}`}
+        style={{ width: `${maxPercentage - minPercentage}%` }}
+      ></div>
+      <div
         className={`dual-slider-track-right ${isActivated ? "activated" : ""}`}
-        onMouseDown={onPressDown}
-        onTouchStart={onPressDown}
-        onMouseEnter={() => setIsSliderHovering(true)}
-        onMouseLeave={() => setIsSliderHovering(false)}
-      >
-        <div
-          className={`dual-slider-track-middle ${
-            isActivated ? "activated" : ""
-          }`}
-          style={{ width: maxThumbPos }}
-        >
-          <div
-            className={`dual-slider-track-left ${
-              isActivated ? "activated" : ""
-            }`}
-            style={{ width: minThumbPos }}
-          ></div>
-        </div>
-      </div>
+        style={{ width: `${100 - maxPercentage}%` }}
+      ></div>
       <div
         className="dual-slider-thumb"
         ref={minThumbRef}
-        style={{ left: minThumbPos, zIndex: topThumb === "min" ? 10 : 1 }}
+        style={{
+          left: `${minPercentage}%`,
+          zIndex: topThumb === "min" ? 10 : 1,
+        }}
       ></div>
       <div
         className={`dual-slider-panel acrylic ${
@@ -369,7 +376,7 @@ const Slider = ({
         }`}
         style={{
           top: inputPosition === "bottom" ? "1.25em" : "-1.75em",
-          left: minThumbPos,
+          left: `${minPercentage}%`,
           zIndex: topThumb === "min" ? 10 : 1,
         }}
         onMouseEnter={() => setIsMinInputHovering(true)}
@@ -411,7 +418,10 @@ const Slider = ({
       <div
         className="dual-slider-thumb"
         ref={maxThumbRef}
-        style={{ left: maxThumbPos, zIndex: topThumb === "max" ? 10 : 1 }}
+        style={{
+          left: `${maxPercentage}%`,
+          zIndex: topThumb === "max" ? 10 : 1,
+        }}
       ></div>
       <div
         className={`dual-slider-panel acrylic ${
@@ -419,7 +429,7 @@ const Slider = ({
         }`}
         style={{
           top: inputPosition === "bottom" ? "-1.75em" : "1.25em",
-          left: maxThumbPos,
+          left: `${maxPercentage}%`,
           zIndex: topThumb === "max" ? 10 : 1,
         }}
         onMouseEnter={() => setIsMaxInputHovering(true)}

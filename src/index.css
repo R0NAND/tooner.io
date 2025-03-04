@@ -15,7 +15,7 @@
   font-size: clamp(16px, 1.5vw, 64px);
   --main-margin: 1em;
 
-  --navbar-height: 3em;
+  --navbar-height: 2em;
   --button-font-size: 1em;
   background-color: var(--main-background-color);
   color: var(--main-color);
@@ -79,11 +79,58 @@ svg text {
 }
 
 .acrylic {
-  background: light-dark((0, 0, 0, 0.8), (0, 0, 0, 0.8));
+  background: light-dark(rgba(255, 255, 255, 0.8), rgba(0, 0, 0, 0.8));
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
 
+button.big-button {
+  cursor: pointer;
+  margin-bottom: 1rem;
+  width: auto;
+  font-size: 2em;
+  border-radius: 0.25em;
+  background-color: var(--primary-hue);
+  color: var(--primary-color);
+  border: 0.0625em solid transparent;
+  transition: border-color 0.25s, color 0.25s, background-color 0.25s;
+}
+
+.big-button:hover {
+  cursor: pointer;
+  color: var(--text-glow-color);
+}
+
+.big-button:disabled {
+  cursor: default;
+  color: var(--lighter-background-color);
+  background-color: var(--main-background-color);
+}
+
 input {
   color: var(--main-color);
+}
+
+.classy-scroll::-webkit-scrollbar {
+  width: 1em;
+  right: -8px;
+  position: absolute;
+}
+
+.classy-scroll::-webkit-scrollbar-track {
+  background: transparent;
+  cursor: default;
+}
+
+.classy-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--lighter-background-color);
+  border-radius: 0.5em;
+  border: 0.25em solid transparent;
+  background-clip: content-box;
+  width: 0.5em;
+  cursor: default;
+}
+
+.classy-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: var(--lightest-background-color);
 }

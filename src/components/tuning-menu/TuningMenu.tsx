@@ -52,22 +52,11 @@ const TuningMenu = ({
   return (
     <>
       <div className={className}>
-        <h3
-          style={{ margin: "0.5em", textAlign: "left", marginBottom: "0.5em" }}
-        >{`${tuning.name} Tuning`}</h3>
-        <button
-          className="tuning-save-button"
-          disabled={!canSaveTuning}
-          onClick={onSave}
-        >
-          <FontAwesomeIcon icon={faSave}></FontAwesomeIcon>
-        </button>
-        <h3
-          style={{ margin: "0.5em", textAlign: "left", marginBottom: "0.5em" }}
-        >
-          Saved Tunings
-        </h3>
-        <div style={{ margin: "0.5em" }} className="tunings-list">
+        <h2
+          style={{ textAlign: "left", marginTop: 0 }}
+        >{`${tuning.name} Tuning`}</h2>
+        <h3 className="tuning-menu-header">Saved Tunings</h3>
+        <div className="tunings-list classy-scroll">
           {tunings
             .filter((t) => t.instrument === selectedInstrument)
             .map((t) => {
@@ -105,22 +94,25 @@ const TuningMenu = ({
               );
             })}
         </div>
-        <div
-          style={{ display: "flex", alignItems: "end", padding: "0.5em" }}
-          className="tuning-slider"
+        <button
+          className="big-button"
+          title="Save tuning"
+          disabled={!canSaveTuning}
+          onClick={onSave}
         >
-          <label>Detune:</label>
-          <Slider
-            min={-50}
-            max={50}
-            value={pitchShift}
-            width={"100%"}
-            updateOnDrag={false}
-            label={"cents"}
-            inputPosition="top"
-            onChange={(n) => onPitchShift(n)}
-          ></Slider>
-        </div>
+          <FontAwesomeIcon icon={faSave}></FontAwesomeIcon>
+        </button>
+        <h3 className="tuning-menu-header">Shift Pitch</h3>
+        <Slider
+          min={-50}
+          max={50}
+          value={pitchShift}
+          width={"100%"}
+          updateOnDrag={false}
+          label={"cents"}
+          inputPosition="top"
+          onChange={(n) => onPitchShift(n)}
+        ></Slider>
       </div>
     </>
   );

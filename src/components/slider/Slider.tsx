@@ -39,9 +39,25 @@ const Slider = ({
   const inputRef = useRef<HTMLInputElement | null>(null);
   const thumbRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
-  const [thumbPos, setThumbPos] = useState(0);
+
+  const [percentage, setPercentage] = useState(0);
+
   const trackWidthRef = useRef(0);
   const thumbWidthRef = useRef(0);
+  useEffect(() => {
+    if (!trackRef.current) return;
+
+    const observer = new ResizeObserver(() => {
+      if (trackRef.current && thumbRef.current) {
+        trackWidthRef.current = trackRef.current.getBoundingClientRect().width;
+        thumbWidthRef.current = thumbRef.current.getBoundingClientRect().width;
+      }
+    });
+
+    observer.observe(trackRef.current);
+
+    return () => observer.disconnect();
+  }, []);
 
   const positionToValue = (pos: number) => {
     const adjustedPos = pos - 0.5 * thumbWidthRef.current;
@@ -53,10 +69,13 @@ const Slider = ({
   };
 
   const valueToPosition = (value: number) => {
+    const thumbPadding =
+      100 * 0.5 * (thumbWidthRef.current / trackWidthRef.current);
+    const valuePercentage = (100 * (value - min)) / (max - min);
+    const adjustedTrackWidth = trackWidthRef.current - thumbWidthRef.current;
     return (
-      0.5 * thumbWidthRef.current +
-      (trackWidthRef.current - thumbWidthRef.current) *
-        ((value - min) / (max - min))
+      thumbPadding +
+      (valuePercentage * adjustedTrackWidth) / trackWidthRef.current
     );
   };
 
@@ -65,18 +84,11 @@ const Slider = ({
       if (trackRef.current !== null && thumbRef.current !== null) {
         trackWidthRef.current = trackRef.current.getBoundingClientRect().width;
         thumbWidthRef.current = thumbRef.current.getBoundingClientRect().width;
-        const pos =
-          0.5 * thumbRef.current.getBoundingClientRect().width +
-          (trackRef.current.getBoundingClientRect().width -
-            thumbRef.current.getBoundingClientRect().width) *
-            ((value - min) / (max - min));
-        setThumbPos(pos);
+        const pos = valueToPosition(value);
+        setPercentage(pos);
       }
     };
-
-    window.addEventListener("resize", setDimensions);
     setDimensions();
-    return () => window.removeEventListener("resize", setDimensions);
   }, []);
 
   const getTrackX = () => {
@@ -104,7 +116,7 @@ const Slider = ({
     if (updateOnDrag) {
       onChange(rounding(positionToValue(dragPositionRef.current)));
     } else {
-      setThumbPos(dragPositionRef.current);
+      setPercentage((100 * dragPositionRef.current) / trackWidthRef.current);
       setInputValue(
         rounding(positionToValue(dragPositionRef.current)).toString()
       );
@@ -126,7 +138,7 @@ const Slider = ({
     if (updateOnDrag) {
       onChange(rounding(positionToValue(dragPositionRef.current)));
     } else {
-      setThumbPos(dragPositionRef.current);
+      setPercentage((100 * dragPositionRef.current) / trackWidthRef.current);
       setInputValue(
         rounding(positionToValue(dragPositionRef.current)).toString()
       );
@@ -150,7 +162,7 @@ const Slider = ({
 
   const [inputValue, setInputValue] = useState(value.toString());
   useEffect(() => {
-    setThumbPos(valueToPosition(value));
+    setPercentage(valueToPosition(value));
     if (displayType === "number") {
       setInputValue(value.toString());
     } else if (displayType === "time") {
@@ -219,23 +231,21 @@ const Slider = ({
       }}
     >
       <div
+        className={`custom-slider-track-left ${isActivated ? "activated" : ""}`}
+        style={{ width: `${percentage}%` }}
+      ></div>
+      <div
         className={`custom-slider-track-right ${
           isActivated ? "activated" : ""
         }`}
-      >
-        <div
-          className={`custom-slider-track-left ${
-            isActivated ? "activated" : ""
-          }`}
-          style={{ width: thumbPos }}
-        ></div>
-      </div>
+        style={{ width: `${100 - percentage}%` }}
+      ></div>
       <div
         className="custom-slider-thumb"
         onMouseDown={onPressDown}
         onTouchStart={onPressDown}
         ref={thumbRef}
-        style={{ left: thumbPos }}
+        style={{ left: `${percentage}%` }}
       ></div>
       <div
         className={`custom-slider-panel acrylic ${
@@ -243,7 +253,7 @@ const Slider = ({
         }`}
         style={{
           top: inputPosition === "bottom" ? "1.25em" : "-1.75em",
-          left: thumbPos,
+          left: `${percentage}%`,
         }}
         onMouseEnter={() => setIsInputHovering(true)}
         onMouseLeave={() => setIsInputHovering(false)}

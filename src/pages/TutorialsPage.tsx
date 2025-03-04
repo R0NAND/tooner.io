@@ -92,6 +92,7 @@ const TutorialsPage = () => {
             >
               <button
                 style={{ fontSize: "1.5em", marginRight: "1em" }}
+                title={isLooping ? "Stop loop" : "Loop video"}
                 onClick={() => {
                   if (!isLooping) {
                     setIsPlaying(true);
@@ -127,7 +128,7 @@ const TutorialsPage = () => {
             Tutorials Playlist
           </h3>
           <VideoPlaylist
-            className="video-playlist"
+            className="video-playlist classy-scroll"
             videos={tutorials}
             playVideoCallback={playVideo}
             deleteVideoCallback={deleteVideo}

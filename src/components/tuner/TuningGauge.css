@@ -39,3 +39,7 @@
   fill: var(--deny-color);
   filter: drop-shadow(0px 0px 4px var(--deny-color));
 }
+
+.tuning-hole {
+  fill: var(--main-background-color);
+}

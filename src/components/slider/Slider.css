@@ -1,7 +1,8 @@
 .custom-slider {
   height: 1em;
   border: none;
-  display: inline-block;
+  display: flex;
+  align-items: center;
   position: relative;
 }
 
@@ -10,32 +11,27 @@
 }
 
 .custom-slider-track-left {
-  background-color: var(--secondary-color);
+  display: inline-block;
+  background-color: var(--primary-hue);
   transition: background-color 0.25s;
   height: 0.5em;
   border-radius: 0.25em;
 }
 
 .custom-slider-track-right {
+  border: 1px solid var(--main-color);
+  display: inline-block;
   background-color: var(--main-background-color);
   transition: background-color 0.25s;
   width: 100%;
   height: 0.5em;
-  position: absolute;
   top: 0.25em;
   border-radius: 0.25em;
 }
 
-.custom-slider-track-left.activated {
-  background-color: var(--primary-hue);
-}
-
-.custom-slider-track-right.activated {
-  background-color: var(--secondary-color);
-}
-
 .custom-slider-thumb {
-  background-color: var(--main-color);
+  background-color: var(--lightest-background-color);
+  border: 1px solid var(--main-color);
   height: 1em;
   width: 1em;
   top: 0;

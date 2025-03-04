@@ -103,6 +103,7 @@ const Metronome = () => {
       <button
         ref={playButton}
         className={"metronome-base-button"}
+        title={isPlaying ? "Stop metronome" : "Start metronome"}
         onClick={() => {
           setIsPlaying(!isPlaying);
         }}
@@ -154,7 +155,11 @@ const Metronome = () => {
           );
         })}
       </div>
-      <button className="metronome-base-button" onClick={onTapClick}>
+      <button
+        className="metronome-base-button"
+        title="Tap tempo"
+        onClick={onTapClick}
+      >
         <FontAwesomeIcon icon={faDrum} />
       </button>
       <div

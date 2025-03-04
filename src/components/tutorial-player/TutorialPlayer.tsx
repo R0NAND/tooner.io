@@ -55,7 +55,6 @@ const TutorialPlayer = () => {
             <VideoSearchPanel
               addVideoCallback={(vid: VideoData) => {
                 const newTutorials = [...tutorials, vid];
-                console.log(JSON.stringify(newTutorials));
                 setTutorials(newTutorials);
                 setLocalStorage(newTutorials);
               }}

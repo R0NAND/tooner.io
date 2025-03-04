@@ -3,8 +3,8 @@
   top: 0;
   width: 100%;
   display: flex;
-  align-items: center;
-  justify-content: space-around;
+  align-items: stretch;
+  justify-content: center;
   background-color: var(--lighter-background-color);
   color: var(--main-color);
   z-index: 999;
@@ -13,22 +13,27 @@
 
 .navbar a {
   transition: color border 0.25s;
-  display: block;
+  align-items: center;
+  display: flex;
   color: inherit;
   text-decoration: none;
-  padding: 0.25em;
+}
+
+.navbar > ul a {
+  width: 7em;
+  justify-content: center;
 }
 
 .navbar > ul {
+  display: flex;
+  align-items: stretch;
   margin: 0px;
   padding: 0px;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
 }
 
 .navbar > ul > li {
   list-style: none;
+  display: flex;
 }
 
 .navbar > ul > li > a {
@@ -38,4 +43,15 @@
 
 .navbar > ul > li > a:hover {
   color: var(--text-glow-color);
+}
+
+@media only screen and (max-width: 400px) {
+  .navbar span {
+    display: none;
+  }
+
+  .navbar > ul a {
+    width: 3em;
+    justify-content: center;
+  }
 }

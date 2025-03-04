@@ -85,9 +85,8 @@ const TabsPage = () => {
           <textarea
             style={{ fontSize: "0.61em" }}
             ref={textAreaRef}
-            className="tab-text-area"
+            className="tab-text-area classy-scroll"
             value={selectedTab.tab}
-            cols={80}
             onChange={(e) => onTextAreaChange(e.target.value)}
           ></textarea>
         </div>
@@ -96,7 +95,7 @@ const TabsPage = () => {
             Saved Tabs
           </h3>
           <TabsMenu
-            className="tabs-menu"
+            className="tabs-menu classy-scroll"
             tabs={tabs}
             desktopWidth={tabsMenuWidth.toString() + "ch"}
             ref={tabsMenuRef}
@@ -104,7 +103,12 @@ const TabsPage = () => {
             onDeleted={deleteTab}
             onNameEdited={onNameEdited}
           ></TabsMenu>
-          <button className="new-tab-button" onClick={() => createNewTab()}>
+          <button
+            className="big-button"
+            title="Create new tab"
+            onClick={() => createNewTab()}
+            style={{ fontSize: "1em", borderRadius: "0.5em" }}
+          >
             <FontAwesomeIcon icon={faAdd}></FontAwesomeIcon>
           </button>
           <h3 style={{ textAlign: "left", marginBottom: "0.25em" }}>

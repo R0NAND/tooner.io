@@ -1,12 +1,7 @@
 import { useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./VideoSearchPanel.css";
-import {
-  faAdd,
-  faClose,
-  faPlay,
-  faSearch,
-} from "@fortawesome/free-solid-svg-icons";
+import { faAdd, faClose, faSearch } from "@fortawesome/free-solid-svg-icons";
 import type { VideoData } from "../../types/VideoData";
 
 interface Props {
@@ -31,7 +26,6 @@ const VideoSearchPanel = ({ addVideoCallback, playVideoCallback }: Props) => {
     const qartist = artist.replace(" ", "+");
     const qchannel = channel.replace(" ", "+");
     const qinstrument = instrument.replace(" ", "+");
-    debugger;
     const request = `https://tklwhs2x3m.execute-api.us-east-2.amazonaws.com/default/fetchMusicTutorials?song=${qsong}&artist=${qartist}&channel=${qchannel}&instrument=${qinstrument}`;
     try {
       fetch(request)
@@ -93,7 +87,7 @@ const VideoSearchPanel = ({ addVideoCallback, playVideoCallback }: Props) => {
         ></input>
       </div>
       <div
-        className={`queried-videos ${
+        className={`queried-videos classy-scroll ${
           queriedTutorials.length !== 0 ? "visible" : ""
         } acrylic`}
       >
@@ -112,7 +106,7 @@ const VideoSearchPanel = ({ addVideoCallback, playVideoCallback }: Props) => {
             enterKeyHint="search"
           ></input>
           <input
-            className="tutorial-filter-input acrylic"
+            className="tutorial-filter-input"
             value={channel}
             onChange={(e) => setChannel(e.target.value)}
             placeholder="Channel"
@@ -124,7 +118,7 @@ const VideoSearchPanel = ({ addVideoCallback, playVideoCallback }: Props) => {
             enterKeyHint="search"
           ></input>
           <select
-            className="tutorial-filter-input acrylic"
+            className="tutorial-instrument-filter"
             value={instrument}
             onChange={(e) => setInstrument(e.target.value)}
           >
@@ -141,16 +135,12 @@ const VideoSearchPanel = ({ addVideoCallback, playVideoCallback }: Props) => {
             <div
               className="queried-video-card"
               key={video.snippet.thumbnails.default.url}
+              onClick={() => playVideoCallback(video)}
+              title={video.snippet.title}
             >
               <button
-                onClick={() => {
-                  playVideoCallback(video);
-                }}
-              >
-                <FontAwesomeIcon icon={faPlay} />
-              </button>
-              <button
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
                   addVideoCallback(video);
                 }}
               >
@@ -169,7 +159,7 @@ const VideoSearchPanel = ({ addVideoCallback, playVideoCallback }: Props) => {
                 </div>
                 <div
                   className="queried-video-title"
-                  style={{ fontSize: "0.61em", marginLeft: "auto" }}
+                  style={{ fontSize: "0.61em" }}
                 >
                   {video.snippet.channelTitle}
                 </div>
