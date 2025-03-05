@@ -14,13 +14,6 @@ import metronomeHi from "./assets/Metronome-hi.wav";
 import metronomeLo from "./assets/Metronome-lo.wav";
 import "./Metronome.css";
 
-const player = new Tone.Players({
-  urls: {
-    hi: metronomeHi,
-    lo: metronomeLo,
-  },
-}).toDestination();
-
 const Metronome = () => {
   const minBpm = 30;
   const maxBpm = 300;
@@ -33,11 +26,21 @@ const Metronome = () => {
     Array(defaultBeats).fill(false)
   );
   const sequencer = useRef<Tone.Sequence | null>(null);
+  const player = useRef<Tone.Players | null>(null);
 
   const prevTapTime = useRef(Date.now());
   const tapTimeQueue = useRef<number[]>([]);
 
   const playButton = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    player.current = new Tone.Players({
+      urls: {
+        hi: metronomeHi,
+        lo: metronomeLo,
+      },
+    }).toDestination();
+  }, []);
 
   useEffect(() => {
     Tone.getTransport().bpm.value = bpm;
@@ -48,7 +51,7 @@ const Metronome = () => {
       sequencer.current?.dispose();
       sequencer.current = new Tone.Sequence(
         (time, beat) => {
-          player.player(beat === 0 ? "hi" : "lo").start(time);
+          player.current?.player(beat === 0 ? "hi" : "lo").start(time);
           setBeatValues(
             beats.map((b) => {
               return beat === b;
