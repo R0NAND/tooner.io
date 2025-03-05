@@ -1,10 +1,15 @@
 .playlist-row {
+  padding: 0 0.5em;
   display: flex;
   align-items: center;
-  padding: 0.5em;
-  gap: 1em;
+  gap: 0.5em;
   border-radius: 0.5em;
   cursor: pointer;
+}
+
+.playlist-row img {
+  height: 2.5em;
+  border-radius: 0.25em;
 }
 
 .playlist-row:hover {
@@ -13,6 +18,7 @@
 
 .playlist-video-delete {
   visibility: hidden;
+  margin-left: auto;
 }
 
 .playlist-video-play {
@@ -44,6 +50,7 @@
 }
 
 .playlist-video-info {
+  font-size: 0.618em;
   text-align: left;
-  flex-grow: 1;
+  flex: 1 1 0;
 }

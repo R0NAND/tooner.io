@@ -26,10 +26,7 @@ const VideoPlaylist = ({
             onClick={() => playVideoCallback(vid)}
             title={vid.snippet.title}
           >
-            <img
-              style={{ height: "3em" }}
-              src={vid.snippet.thumbnails.default.url}
-            />
+            <img src={vid.snippet.thumbnails.default.url} />
             <div className="playlist-video-info">
               <span className="playlist-row-title">{vid.snippet.title}</span>
               <div style={{ fontSize: "0.61em" }}>

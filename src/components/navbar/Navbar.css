@@ -45,7 +45,7 @@
   color: var(--text-glow-color);
 }
 
-@media only screen and (max-width: 400px) {
+@media only screen and (max-width: 450px) {
   .navbar span {
     display: none;
   }

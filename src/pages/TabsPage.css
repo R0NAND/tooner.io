@@ -1,27 +1,21 @@
 .tabs-page {
+  min-height: calc(100vh - var(--navbar-height));
   display: flex;
   justify-content: center;
-  margin: auto;
-  width: fit-content;
-  gap: 1em;
-  padding: 1em;
-  height: 85%;
+  align-items: stretch;
 }
 
-.tab-display {
-  margin: auto;
-  height: 100%;
-  width: fit-content;
+.tabs-ui {
+  margin: 1em;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 0.25em;
+  gap: 1em;
 }
 
 .tab-text-area {
+  flex-grow: 1;
   padding: 0.5em;
+  width: 40em;
   height: 100%;
-  width: 50em;
   background-color: var(--main-background-color);
   border-radius: 1em;
   resize: none;
@@ -31,7 +25,8 @@
 }
 
 .tabs-page-sidebar {
-  width: 10em;
+  flex: 1 1 0;
+  width: 7em;
   display: flex;
   flex-direction: column;
 }
@@ -44,6 +39,17 @@
   min-height: 0;
 }
 
+.saved-tabs-flex {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.tabs-tools-flex {
+  display: flex;
+  flex-direction: column;
+}
+
 .new-tab-button {
   width: 100%;
   border-radius: 1em;
@@ -53,10 +59,25 @@
 }
 
 @media only screen and (max-width: 600px) {
-  .tabs-page {
-    margin: auto;
+  .tabs-ui {
     flex-direction: column;
+    width: 100%;
+    margin: 0;
+    padding: 0;
     align-items: center;
+  }
+
+  .tabs-page-sidebar {
+    flex-direction: row;
+    gap: 0.5em;
     width: fit-content;
+  }
+
+  .tab-text-area {
+    width: 100%;
+  }
+
+  .tabs-menu {
+    min-height: 10em;
   }
 }

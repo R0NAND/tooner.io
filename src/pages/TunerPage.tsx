@@ -89,61 +89,65 @@ const TunerPage = () => {
   };
 
   return (
-    <div className="tuning-ui">
-      <div className="instrument-select-box">
-        <button
-          className={`instrument-select-button ${
-            selectedInstrument === InstrumentEnum.guitar ? "is-selected" : ""
-          }`}
-          onClick={() => {
-            instrumentSelect(InstrumentEnum.guitar);
-          }}
-        >
-          Guitar
-        </button>
-        <button
-          className={`instrument-select-button ${
-            selectedInstrument === InstrumentEnum.bass ? "is-selected" : ""
-          }`}
-          onClick={() => {
-            instrumentSelect(InstrumentEnum.bass);
-          }}
-        >
-          Bass
-        </button>
-        <button
-          className={`instrument-select-button ${
-            selectedInstrument === InstrumentEnum.ukulele ? "is-selected" : ""
-          }`}
-          onClick={() => {
-            instrumentSelect(InstrumentEnum.ukulele);
-          }}
-        >
-          Ukulele
-        </button>
-        <button className="instrument-select-button">8-string</button>
+    <div className="tuner-ui-container">
+      <div className="tuner-ui-flex">
+        <div className="instrument-select-box">
+          <button
+            className={`instrument-select-button ${
+              selectedInstrument === InstrumentEnum.guitar ? "is-selected" : ""
+            }`}
+            onClick={() => {
+              instrumentSelect(InstrumentEnum.guitar);
+            }}
+          >
+            Guitar
+          </button>
+          <button
+            className={`instrument-select-button ${
+              selectedInstrument === InstrumentEnum.bass ? "is-selected" : ""
+            }`}
+            onClick={() => {
+              instrumentSelect(InstrumentEnum.bass);
+            }}
+          >
+            Bass
+          </button>
+          <button
+            className={`instrument-select-button ${
+              selectedInstrument === InstrumentEnum.ukulele ? "is-selected" : ""
+            }`}
+            onClick={() => {
+              instrumentSelect(InstrumentEnum.ukulele);
+            }}
+          >
+            Ukulele
+          </button>
+          <button className="instrument-select-button">8-string</button>
+        </div>
+        <div className="tuner-divider-flex">
+          <div className="tuner-container">
+            <Tuner
+              instrument={tuning.instrument}
+              tuning={tuning.notes}
+              onNoteChange={changeNote}
+              pitchShift={pitchShift}
+            ></Tuner>
+          </div>
+          <TuningMenu
+            className="tuning-menu main-panel"
+            tuning={tuning}
+            tunings={tunings}
+            selectedInstrument={selectedInstrument}
+            pitchShift={pitchShift}
+            onInstrumentSelect={instrumentSelect}
+            onClicked={setTuning}
+            onDeleted={deleteTuning}
+            onNameEdited={onNameEdited}
+            onSave={saveTuning}
+            onPitchShift={setPitchShift}
+          ></TuningMenu>
+        </div>
       </div>
-      <div className="tuner-container">
-        <Tuner
-          instrument={tuning.instrument}
-          tuning={tuning.notes}
-          onNoteChange={changeNote}
-          pitchShift={pitchShift}
-        ></Tuner>
-      </div>
-      <TuningMenu
-        className="tuning-menu main-panel"
-        tuning={tuning}
-        tunings={tunings}
-        selectedInstrument={selectedInstrument}
-        pitchShift={pitchShift}
-        onInstrumentSelect={instrumentSelect}
-        onClicked={setTuning}
-        onDeleted={deleteTuning}
-        onNameEdited={onNameEdited}
-        onSave={saveTuning}
-        onPitchShift={setPitchShift}
-      ></TuningMenu>
     </div>
   );
 };

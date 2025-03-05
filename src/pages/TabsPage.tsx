@@ -77,73 +77,96 @@ const TabsPage = () => {
 
   const tabsMenuWidth = 20; // In Characters
   const tabsMenuRef = useRef<HTMLDivElement | null>(null);
-  const tabDisplayRef = useRef<HTMLDivElement | null>(null);
   return (
     <>
-      <div className="tabs-page main-panel">
-        <div ref={tabDisplayRef} className="tab-display">
+      <div className="tabs-page">
+        <div className="tabs-ui main-panel">
           <textarea
-            style={{ fontSize: "0.61em" }}
+            style={{ fontSize: "0.618em" }}
             ref={textAreaRef}
             className="tab-text-area classy-scroll"
             value={selectedTab.tab}
             onChange={(e) => onTextAreaChange(e.target.value)}
           ></textarea>
-        </div>
-        <div className="tabs-page-sidebar">
-          <h3 style={{ textAlign: "left", marginBottom: "0.25em" }}>
-            Saved Tabs
-          </h3>
-          <TabsMenu
-            className="tabs-menu classy-scroll"
-            tabs={tabs}
-            desktopWidth={tabsMenuWidth.toString() + "ch"}
-            ref={tabsMenuRef}
-            onClicked={(t) => setSelectedTab(t)}
-            onDeleted={deleteTab}
-            onNameEdited={onNameEdited}
-          ></TabsMenu>
-          <button
-            className="big-button"
-            title="Create new tab"
-            onClick={() => createNewTab()}
-            style={{ fontSize: "1em", borderRadius: "0.5em" }}
-          >
-            <FontAwesomeIcon icon={faAdd}></FontAwesomeIcon>
-          </button>
-          <h3 style={{ textAlign: "left", marginBottom: "0.25em" }}>
-            Autoscroll
-          </h3>
-          <div style={{ display: "flex", gap: "0.5em" }}>
-            <button
-              onClick={() => {
-                setIsScrolling(!isScrolling);
+          <div className="tabs-page-sidebar">
+            <div
+              className="saved-tabs-flex"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                flexGrow: "1",
               }}
-              title={isScrolling ? "stop autoscroll" : "begin autoscroll"}
             >
-              <FontAwesomeIcon
-                icon={isScrolling ? faPause : faPlay}
-              ></FontAwesomeIcon>
-            </button>
-            <Slider
-              value={scrollRate}
-              min={10}
-              max={100}
-              width="100%"
-              onChange={(v: number) => {
-                setScrollRate(v);
-              }}
-            ></Slider>
+              <h3
+                style={{
+                  textAlign: "left",
+                  marginBottom: "0.25em",
+                  marginTop: "0em",
+                }}
+              >
+                Saved Tabs
+              </h3>
+              <TabsMenu
+                className="tabs-menu classy-scroll"
+                tabs={tabs}
+                desktopWidth={tabsMenuWidth.toString() + "ch"}
+                ref={tabsMenuRef}
+                onClicked={(t) => setSelectedTab(t)}
+                onDeleted={deleteTab}
+                onNameEdited={onNameEdited}
+              ></TabsMenu>
+              <button
+                className="big-button"
+                title="Create new tab"
+                onClick={() => createNewTab()}
+                style={{ fontSize: "1em", borderRadius: "0.5em" }}
+              >
+                <FontAwesomeIcon icon={faAdd}></FontAwesomeIcon>
+              </button>
+            </div>
+            <div className="tab-tools-flex">
+              <h3
+                style={{
+                  textAlign: "left",
+                  marginBottom: "0.25em",
+                  marginTop: 0,
+                }}
+              >
+                Autoscroll
+              </h3>
+              <div style={{ display: "flex", gap: "0.5em" }}>
+                <button
+                  onClick={() => {
+                    setIsScrolling(!isScrolling);
+                  }}
+                  title={isScrolling ? "stop autoscroll" : "begin autoscroll"}
+                >
+                  <FontAwesomeIcon
+                    icon={isScrolling ? faPause : faPlay}
+                  ></FontAwesomeIcon>
+                </button>
+                <Slider
+                  value={scrollRate}
+                  min={10}
+                  max={100}
+                  width="100%"
+                  onChange={(v: number) => {
+                    setScrollRate(v);
+                  }}
+                ></Slider>
+              </div>
+              <h3
+                style={{
+                  textAlign: "left",
+                  marginBottom: "0.25em",
+                  marginTop: 0,
+                }}
+              >
+                Metronome
+              </h3>
+              <Metronome></Metronome>
+            </div>
           </div>
-          <h3
-            style={{
-              textAlign: "left",
-              marginBottom: "0.25em",
-            }}
-          >
-            Metronome
-          </h3>
-          <Metronome></Metronome>
         </div>
       </div>
     </>
