@@ -113,15 +113,8 @@ const Metronome = () => {
       >
         <FontAwesomeIcon icon={isPlaying ? faStop : faPlay} />
       </button>
-      <div className="metronome-note-flex">
-        <div
-          style={{
-            display: "flex",
-            justifyItems: "space-between",
-            flexDirection: "column",
-            marginRight: "auto",
-          }}
-        >
+      <div className="metronome-bar-flex">
+        <div className="metronome-time-sig-flex">
           <button
             className="metronome-base-button"
             disabled={beats.length >= 10}
@@ -148,15 +141,20 @@ const Metronome = () => {
             <FontAwesomeIcon icon={faCaretDown}></FontAwesomeIcon>
           </button>
         </div>
-        {beatValues.map((n, i) => {
-          return (
-            <QuarterNote
-              key={i}
-              style={{ marginRight: "auto" }}
-              className={n ? "metronome-note-active" : "metronome-note"}
-            ></QuarterNote>
-          );
-        })}
+        <div
+          className={`metronome-note-flex ${
+            beatValues.length > 5 ? "metronome-note-overflow" : ""
+          }`}
+        >
+          {beatValues.map((n, i) => {
+            return (
+              <QuarterNote
+                key={i}
+                className={n ? "metronome-note-active" : "metronome-note"}
+              ></QuarterNote>
+            );
+          })}
+        </div>
       </div>
       <button
         className="metronome-base-button"

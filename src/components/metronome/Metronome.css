@@ -38,12 +38,35 @@
   height: var(--button-font-size);
 }
 
-.metronome-note-flex {
+.metronome-bar-flex {
   display: flex;
-  flex-wrap: wrap;
   justify-content: left;
   align-items: center;
+  gap: 0.5em;
+}
+
+.metronome-time-sig-flex {
+  display: flex;
+  justify-items: space-between;
+  flex-direction: column;
+  margin-right: auto;
   font-size: 0.5em;
+}
+
+.metronome-note-flex {
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.metronome-note-overflow {
+  font-size: 0.5em;
+  display: grid;
+  gap: 0.5em;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: auto auto;
+  justify-content: center;
 }
 
 .metronome-base-button:disabled {
