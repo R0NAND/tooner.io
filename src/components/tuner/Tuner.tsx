@@ -17,6 +17,14 @@ import guitarD3 from "./assets/acoustic-guitar-d3.wav";
 import guitarG3 from "./assets/acoustic-guitar-g3.wav";
 import guitarB3 from "./assets/acoustic-guitar-b3.wav";
 import guitarE4 from "./assets/acoustic-guitar-e4.wav";
+import bassE1 from "./assets/bass-e1.wav";
+import bassA1 from "./assets/bass-a1.wav";
+import bassD2 from "./assets/bass-d2.wav";
+import bassG2 from "./assets/bass-g2.wav";
+import ukuleleG3 from "./assets/ukulele-g3.wav";
+import ukuleleC4 from "./assets/ukulele-c4.wav";
+import ukuleleE4 from "./assets/ukulele-e4.wav";
+import ukuleleA4 from "./assets/ukulele-a4.wav";
 import confirmationSound from "./assets/confirmation.mp3";
 import pitchAnalysisNode from "./PitchAnalysis?worker&url";
 import "./Tuner.css";
@@ -41,7 +49,8 @@ const Tuner = ({ instrument, tuning, pitchShift, onNoteChange }: Props) => {
       "Invalid pitch shift detected. Value must be between -50 and 50 cents"
     );
   }
-  const guitarSampler = useRef(
+
+  const sampler = useRef(
     new Tone.Sampler({
       urls: {
         E2: guitarE2,
@@ -53,6 +62,42 @@ const Tuner = ({ instrument, tuning, pitchShift, onNoteChange }: Props) => {
       },
     }).toDestination()
   );
+  useEffect(() => {
+    switch (instrument) {
+      case InstrumentEnum.guitar:
+        sampler.current = new Tone.Sampler({
+          urls: {
+            E2: guitarE2,
+            A2: guitarA2,
+            D3: guitarD3,
+            G3: guitarG3,
+            B3: guitarB3,
+            E4: guitarE4,
+          },
+        }).toDestination();
+        break;
+      case InstrumentEnum.bass:
+        sampler.current = new Tone.Sampler({
+          urls: {
+            E1: bassE1,
+            A1: bassA1,
+            D2: bassD2,
+            G2: bassG2,
+          },
+        }).toDestination();
+        break;
+      case InstrumentEnum.ukulele:
+        sampler.current = new Tone.Sampler({
+          urls: {
+            G3: ukuleleG3,
+            C4: ukuleleC4,
+            E4: ukuleleE4,
+            A4: ukuleleA4,
+          },
+        }).toDestination();
+        break;
+    }
+  }, [instrument]);
 
   const [tuningState, setTuningState] = useState(
     tuning.map((n) => {
@@ -67,10 +112,10 @@ const Tuner = ({ instrument, tuning, pitchShift, onNoteChange }: Props) => {
       return { note: n, isFocused: false, isTuned: false };
     });
     setTuningState(newTuningState);
-    if (guitarSampler.current.loaded) {
+    if (sampler.current.loaded) {
       if (noteChangeRef.current === "") {
         newTuningState.forEach((element, i) => {
-          guitarSampler.current.triggerAttackRelease(
+          sampler.current.triggerAttackRelease(
             Tone.Frequency(element.note).toFrequency() *
               Math.pow(1.0005777895, pitchShift),
             "1n",
@@ -78,7 +123,7 @@ const Tuner = ({ instrument, tuning, pitchShift, onNoteChange }: Props) => {
           );
         });
       } else {
-        guitarSampler.current.triggerAttackRelease(
+        sampler.current.triggerAttackRelease(
           Tone.Frequency(noteChangeRef.current).toFrequency() *
             Math.pow(1.0005777895, pitchShift),
           "1n"
@@ -181,7 +226,7 @@ const Tuner = ({ instrument, tuning, pitchShift, onNoteChange }: Props) => {
         : { note: n.note, isFocused: false, isTuned: n.isTuned };
     });
     setTuningState(newTuningState);
-    guitarSampler.current.triggerAttackRelease(
+    sampler.current.triggerAttackRelease(
       Tone.Frequency(note).toFrequency() * Math.pow(1.0005777895, pitchShift),
       "1n"
     );
