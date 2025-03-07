@@ -5,6 +5,7 @@
   display: flex;
   align-items: stretch;
   justify-content: space-between;
+  font-family: var(--strong-font);
   background-color: var(--lighter-background-color);
   color: var(--main-color);
   z-index: 999;
@@ -22,7 +23,6 @@
 }
 
 .navbar > a {
-  flex: 1;
   font-size: 1.61em;
 }
 

@@ -74,7 +74,10 @@ const TuningMenu = ({
                     <EditableText onEditCompleted={onNameEdited}>
                       {t.name}
                     </EditableText>
-                    <div style={{ fontSize: "0.61em" }}>
+                    <div
+                      className="secondary-font"
+                      style={{ fontSize: "0.61em" }}
+                    >
                       {t.notes.toString()}
                     </div>
                   </div>

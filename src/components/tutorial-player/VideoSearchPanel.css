@@ -24,7 +24,6 @@
   margin: var(--panel-margin) var(--panel-margin) 0em var(--panel-margin);
   width: 30%;
   display: flex;
-  box-shadow: var(--main-shadow);
   transition: width 0.3s ease-in-out;
 }
 
@@ -74,9 +73,10 @@
 .video-search-button {
   font-size: 1em;
   border-radius: 1em 0 0 1em;
+  border: 0.0625em solid var(--secondary-color);
   background-color: var(--main-background-color);
   height: var(--search-button-height);
-  width: var(--search-button-height);
+  width: calc(1.5 * var(--search-button-height));
   box-shadow: var(--main-shadow);
   transition: border-radius 0.3s ease;
 }
@@ -87,9 +87,11 @@
 
 .song-search-input {
   flex: 1; /* Makes it take up the remaining space */
-  min-width: 5em;
+  min-width: 0;
   font-size: inherit;
+  font-family: inherit;
   border-radius: 0em 1em 1em 0em;
+  box-shadow: var(--main-shadow);
   transition: border-radius 0.3s ease;
 }
 

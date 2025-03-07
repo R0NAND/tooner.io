@@ -16,6 +16,9 @@
   --confirm-color: light-dark(#06df67, #479e6e);
   --deny-color: light-dark(#f91905, #b0564e);
 
+  --strong-font: "Merriweather", sans-serif;
+  --secondary-font: "Open Sans", sans-serif;
+
   font-size: clamp(16px, calc(10.2px + 0.97vw), 64px);
   --main-margin: 1em;
 
@@ -34,10 +37,24 @@
   color-scheme: dark;
 }
 
+.strong-font {
+  font-family: var(--strong-font);
+}
+
+.secondary-font {
+  font-family: var(--strong-font);
+}
+
 body {
   margin: 0;
   padding: 0;
-  font-family: "Merriweather", sans-serif;
+  font-family: var(--secondary-font);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--strong-font);
 }
 
 html {

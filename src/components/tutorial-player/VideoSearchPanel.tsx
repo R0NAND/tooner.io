@@ -92,7 +92,7 @@ const VideoSearchPanel = ({ addVideoCallback, playVideoCallback }: Props) => {
         } acrylic`}
       >
         <div className="tutorials-filters-flex">
-          <span>Filters:</span>
+          <span className="strong-font">Filters:</span>
           <input
             className="tutorial-filter-input"
             value={artist}
@@ -152,7 +152,7 @@ const VideoSearchPanel = ({ addVideoCallback, playVideoCallback }: Props) => {
               ></img>
               <div style={{ textAlign: "left" }}>
                 <div
-                  className="queried-video-title"
+                  className="queried-video-title strong-font"
                   style={{ fontSize: "1em" }}
                 >
                   {video.snippet.title}

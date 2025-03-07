@@ -28,7 +28,9 @@ const VideoPlaylist = ({
           >
             <img src={vid.snippet.thumbnails.default.url} />
             <div className="playlist-video-info">
-              <span className="playlist-row-title">{vid.snippet.title}</span>
+              <span className="playlist-row-title strong-font">
+                {vid.snippet.title}
+              </span>
               <div style={{ fontSize: "0.61em" }}>
                 {vid.snippet.channelTitle}
               </div>
