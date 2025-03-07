@@ -68,16 +68,14 @@ const TuningMenu = ({
                     onClicked(t);
                   }}
                 >
-                  <div
-                    style={{ textAlign: "left", width: "20ch", height: "2em" }}
-                  >
-                    <EditableText onEditCompleted={onNameEdited}>
+                  <div style={{ textAlign: "left" }}>
+                    <EditableText
+                      className="strong-font"
+                      onEditCompleted={onNameEdited}
+                    >
                       {t.name}
                     </EditableText>
-                    <div
-                      className="secondary-font"
-                      style={{ fontSize: "0.61em" }}
-                    >
+                    <div style={{ fontSize: "0.61em" }}>
                       {t.notes.toString()}
                     </div>
                   </div>

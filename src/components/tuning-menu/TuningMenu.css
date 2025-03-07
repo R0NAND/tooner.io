@@ -19,6 +19,7 @@
 }
 
 .tuning-table-delete {
+  margin-left: auto;
   visibility: hidden;
 }
 
