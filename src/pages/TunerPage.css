@@ -39,7 +39,7 @@
 button.instrument-select-button {
   font-family: inherit;
   background-color: var(--lighter-background-color);
-  color: var(--main-color);
+  color: var(--secondary-color);
   border-radius: 1em;
   box-shadow: 0 3px 10px var(--shadow-color);
   border: 0.125em solid transparent;
@@ -48,6 +48,17 @@ button.instrument-select-button {
   transition: border-color 0.25s, background-color 0.25s, width 0.25s,
     height 0.25s;
   flex: 0 0 auto;
+  box-shadow: var(--main-shadow);
+}
+
+button.instrument-select-button svg {
+  height: 2em;
+  margin-top: 0.15em;
+  transition: height 0.25s;
+}
+
+button.instrument-select-button.is-selected svg {
+  height: 3em;
 }
 
 .instrument-select-button:hover {

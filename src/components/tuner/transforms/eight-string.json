@@ -4,60 +4,57 @@
     "y": 25,
     "r": 6
   },
-  "pegs": [
-    {
-      "height": 14.646,
-      "x": 7.187,
-      "y": 64.68,
-      "transformX": 5.3265,
-      "transformY": 7.323,
-      "transform": ""
-    },
-    {
-      "height": 14.646,
-      "x": 7.187,
-      "y": 40.129,
-      "transformX": 5.3265,
-      "transformY": 7.323,
-      "transform": ""
-    },
-    {
-      "height": 14.646,
-      "x": 7.187,
-      "y": 15.578,
-      "transformX": 5.3265,
-      "transformY": 7.323,
-      "transform": ""
-    },
-    {
-      "height": 14.646,
-      "x": 62.16,
-      "y": 15.578,
-      "transformX": 5.3265,
-      "transformY": 7.323,
-      "transform": "scale(-1 1)"
-    },
-    {
-      "height": 14.646,
-      "x": 62.16,
-      "y": 40.129,
-      "transformX": 5.3265,
-      "transformY": 7.323,
-      "transform": "scale(-1 1)"
-    },
-    {
-      "height": 14.646,
-      "x": 62.16,
-      "y": 64.68,
-      "transformX": 5.3265,
-      "transformY": 7.323,
-      "transform": "scale(-1 1)"
+  "pegs": {
+    "height": 14.135,
+    "width": 10.611,
+    "transformX": 5.3055,
+    "transformY": 7.0675,
+    "transforms": [
+      {
+        "x": 7.263,
+        "y": 67.294,
+        "isMirrored": false
+      },
+      {
+        "x": 10.968,
+        "y": 51.294,
+        "isMirrored": false
+      },
+      {
+        "x": 12.555,
+        "y": 35.294,
+        "isMirrored": false
+      },
+      {
+        "x": 12.555,
+        "y": 19.764,
+        "isMirrored": false
+      },
+      {
+        "x": 57.835,
+        "y": 12.227,
+        "isMirrored": true
+      },
+      {
+        "x": 57.835,
+        "y": 28.227,
+        "isMirrored": true
+      },
+      {
+        "x": 59.423,
+        "y": 44.227,
+        "isMirrored": true
+      },
+      {
+        "x": 62.598,
+        "y": 60.227,
+        "isMirrored": true
+      }
+    ],
+    "text": {
+      "up": { "x": 5, "y": 2.5 },
+      "note": { "x": 5, "y": 7.0675 },
+      "down": { "x": 5, "y": 11.635 }
     }
-  ],
-  "pegElements": {
-    "centerLine": 5.3265,
-    "downY": 12.4845,
-    "playY": 7.323,
-    "upY": 2.1615
   }
 }

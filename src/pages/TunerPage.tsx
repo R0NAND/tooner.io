@@ -1,6 +1,10 @@
 import { useState } from "react";
 import Tuner from "../components/tuner/Tuner";
 import { InstrumentEnum } from "../components/tuner/Tuner";
+import GuitarHead from "../resources/guitar-head.svg?react";
+import BassHead from "../resources/bass-head.svg?react";
+import UkuleleHead from "../resources/ukulele-head.svg?react";
+import EightStringHead from "../resources/eight-string-head.svg?react";
 import "./TunerPage.css";
 import { Tuning } from "../types/tunings";
 import { generateNewString } from "../utils/generateNewString";
@@ -99,8 +103,9 @@ const TunerPage = () => {
             onClick={() => {
               instrumentSelect(InstrumentEnum.guitar);
             }}
+            title="guitar tuner"
           >
-            Guitar
+            <GuitarHead></GuitarHead>
           </button>
           <button
             className={`instrument-select-button ${
@@ -109,8 +114,9 @@ const TunerPage = () => {
             onClick={() => {
               instrumentSelect(InstrumentEnum.bass);
             }}
+            title="bass tuner"
           >
-            Bass
+            <BassHead></BassHead>
           </button>
           <button
             className={`instrument-select-button ${
@@ -119,10 +125,23 @@ const TunerPage = () => {
             onClick={() => {
               instrumentSelect(InstrumentEnum.ukulele);
             }}
+            title="ukulele tuner"
           >
-            Ukulele
+            <UkuleleHead></UkuleleHead>
           </button>
-          <button className="instrument-select-button">8-string</button>
+          <button
+            className={`instrument-select-button ${
+              selectedInstrument === InstrumentEnum.eightString
+                ? "is-selected"
+                : ""
+            }`}
+            onClick={() => {
+              instrumentSelect(InstrumentEnum.eightString);
+            }}
+            title="8 string tuner"
+          >
+            <EightStringHead></EightStringHead>
+          </button>
         </div>
         <div className="tuner-divider-flex">
           <div className="tuner-container">

@@ -73,7 +73,7 @@ const defaultTunings: Tuning[] = [
     notes: ["D1", "G1", "C2", "F2"],
   },
   {
-    instrument: InstrumentEnum.eigthString,
+    instrument: InstrumentEnum.eightString,
     name: "Standard",
     notes: ["F#1", "B1", "E2", "A2", "D3", "G3", "B3", "E4"],
   },

@@ -11,9 +11,7 @@ import {
 const Navbar = () => {
   return (
     <nav className="navbar">
-      <Link to="/" style={{ fontSize: "1.61em" }}>
-        Tooner.io
-      </Link>
+      <Link to="/">Tooner.io</Link>
       <ul>
         <li>
           <Link to={"/tuner"}>

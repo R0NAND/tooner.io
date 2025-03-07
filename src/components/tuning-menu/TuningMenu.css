@@ -46,6 +46,7 @@
   background-color: var(--main-background-color);
   border-radius: 0.5em;
   margin-bottom: 0.25em;
+  box-shadow: var(--inner-shadow);
 }
 
 .tuning-menu-header {

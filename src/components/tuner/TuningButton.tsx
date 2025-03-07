@@ -3,10 +3,11 @@ import * as Tone from "tone";
 import GuitarPeg from "./assets/guitar-peg.svg?react";
 import UkulelePeg from "./assets/ukulele-peg.svg?react";
 import BassPeg from "./assets/bass-peg.svg?react";
+import EightStringPeg from "./assets/eight-string-peg.svg?react";
 import guitarTransforms from "./transforms/guitar.json";
 import ukuleleTransforms from "./transforms/ukulele.json";
 import bassTransforms from "./transforms/bass.json";
-// import eightStringTransforms from "./transforms/eight-string.json";
+import eightStringTransforms from "./transforms/eight-string.json";
 import "./TuningButton.css";
 import { InstrumentEnum } from "./Tuner";
 
@@ -35,9 +36,19 @@ const TuningButton = ({
       'TuningButton child must be a string specifying a musical note followed by an integer between 0 and 8. e.g: "C#4", "E2", "F#8", etc.'
     );
   }
+  const [transforms, setTransforms] = useState(() => {
+    switch (instrument) {
+      case InstrumentEnum.guitar:
+        return guitarTransforms;
+      case InstrumentEnum.ukulele:
+        return ukuleleTransforms;
+      case InstrumentEnum.bass:
+        return bassTransforms;
+      case InstrumentEnum.eightString:
+        return eightStringTransforms;
+    }
+  });
 
-  const [transforms, setTransforms] =
-    useState<typeof guitarTransforms>(guitarTransforms);
   useEffect(() => {
     switch (instrument) {
       case InstrumentEnum.guitar:
@@ -49,9 +60,9 @@ const TuningButton = ({
       case InstrumentEnum.bass:
         setTransforms(bassTransforms);
         break;
-      // case InstrumentEnum.eigthString:
-      //   setTransforms(eightStringTransforms);
-      //   break;
+      case InstrumentEnum.eightString:
+        setTransforms(eightStringTransforms);
+        break;
     }
   }, [instrument]);
 
@@ -94,7 +105,6 @@ const TuningButton = ({
             }}
           ></GuitarPeg>
         );
-        break;
       case InstrumentEnum.ukulele:
         return (
           <UkulelePeg
@@ -110,7 +120,6 @@ const TuningButton = ({
             }}
           ></UkulelePeg>
         );
-        break;
       case InstrumentEnum.bass:
         return (
           <BassPeg
@@ -126,10 +135,9 @@ const TuningButton = ({
             }}
           ></BassPeg>
         );
-        break;
-      case InstrumentEnum.eigthString:
+      case InstrumentEnum.eightString:
         return (
-          <GuitarPeg
+          <EightStringPeg
             height={transforms.pegs.height}
             x={transforms.pegs.transforms[i].x}
             y={transforms.pegs.transforms[i].y}
@@ -140,9 +148,8 @@ const TuningButton = ({
             onClick={() => {
               playNoteCallback(children);
             }}
-          ></GuitarPeg>
+          ></EightStringPeg>
         );
-        break;
     }
   };
 

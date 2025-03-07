@@ -1,12 +1,14 @@
 .headstock {
   width: 100%;
   height: auto;
-  fill: var(--lighter-background-color);
+  fill: var(--headstock-color);
   fill-opacity: 1;
   stroke: var(--secondary-color);
-  stroke-width: 1;
+  stroke-width: 0.5;
   stroke-dasharray: none;
+  overflow: visible;
   stroke-opacity: 1;
+  filter: var(--instrument-shadow);
 }
 
 .mic-button {

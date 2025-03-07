@@ -24,6 +24,7 @@
   margin: var(--panel-margin) var(--panel-margin) 0em var(--panel-margin);
   width: 30%;
   display: flex;
+  box-shadow: var(--main-shadow);
   transition: width 0.3s ease-in-out;
 }
 
@@ -54,6 +55,7 @@
   max-height: 0;
   opacity: 0;
   border-radius: 0 0 1em 1em;
+  box-shadow: var(--main-shadow);
   transition: max-height 0.4s ease, opacity 0.3s ease;
 }
 
@@ -75,6 +77,7 @@
   background-color: var(--main-background-color);
   height: var(--search-button-height);
   width: var(--search-button-height);
+  box-shadow: var(--main-shadow);
   transition: border-radius 0.3s ease;
 }
 

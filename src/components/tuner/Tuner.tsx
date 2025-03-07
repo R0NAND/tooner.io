@@ -7,10 +7,11 @@ import MicOff from "./assets/mic-off.svg?react";
 import GuitarHeadstock from "./assets/guitar-headstock.svg?react";
 import UkuleleHeadstock from "./assets/ukulele-headstock.svg?react";
 import BassHeadstock from "./assets/bass-headstock.svg?react";
+import EightStringHeadstock from "./assets/eight-string-headstock.svg?react";
 import guitarTransforms from "./transforms/guitar.json";
 import bassTransforms from "./transforms/bass.json";
 import ukuleleTransforms from "./transforms/ukulele.json";
-// import eightStringTransforms from "./transforms/eight-string.json";
+import eightStringTransforms from "./transforms/eight-string.json";
 import guitarE2 from "./assets/acoustic-guitar-e2.wav";
 import guitarA2 from "./assets/acoustic-guitar-a2.wav";
 import guitarD3 from "./assets/acoustic-guitar-d3.wav";
@@ -25,6 +26,12 @@ import ukuleleG3 from "./assets/ukulele-g3.wav";
 import ukuleleC4 from "./assets/ukulele-c4.wav";
 import ukuleleE4 from "./assets/ukulele-e4.wav";
 import ukuleleA4 from "./assets/ukulele-a4.wav";
+import eguitarA2 from "./assets/electric-guitar-a2.wav";
+import eguitarE2 from "./assets/electric-guitar-e2.wav";
+import eguitarD3 from "./assets/electric-guitar-d3.wav";
+import eguitarG3 from "./assets/electric-guitar-g3.wav";
+import eguitarB3 from "./assets/electric-guitar-b3.wav";
+import eguitarE4 from "./assets/electric-guitar-e4.wav";
 import confirmationSound from "./assets/confirmation.mp3";
 import pitchAnalysisNode from "./PitchAnalysis?worker&url";
 import "./Tuner.css";
@@ -33,7 +40,7 @@ export enum InstrumentEnum {
   guitar = "guitar",
   bass = "bass",
   ukulele = "ukulele",
-  eigthString = "8-String",
+  eightString = "8-String",
 }
 
 interface Props {
@@ -50,18 +57,7 @@ const Tuner = ({ instrument, tuning, pitchShift, onNoteChange }: Props) => {
     );
   }
 
-  const sampler = useRef(
-    new Tone.Sampler({
-      urls: {
-        E2: guitarE2,
-        A2: guitarA2,
-        D3: guitarD3,
-        G3: guitarG3,
-        B3: guitarB3,
-        E4: guitarE4,
-      },
-    }).toDestination()
-  );
+  const sampler = useRef(new Tone.Sampler());
   useEffect(() => {
     switch (instrument) {
       case InstrumentEnum.guitar:
@@ -93,6 +89,18 @@ const Tuner = ({ instrument, tuning, pitchShift, onNoteChange }: Props) => {
             C4: ukuleleC4,
             E4: ukuleleE4,
             A4: ukuleleA4,
+          },
+        }).toDestination();
+        break;
+      case InstrumentEnum.eightString:
+        sampler.current = new Tone.Sampler({
+          urls: {
+            E2: eguitarE2,
+            A2: eguitarA2,
+            D3: eguitarD3,
+            G3: eguitarG3,
+            B3: eguitarB3,
+            E4: eguitarE4,
           },
         }).toDestination();
         break;
@@ -133,22 +141,33 @@ const Tuner = ({ instrument, tuning, pitchShift, onNoteChange }: Props) => {
     }
   }, [tuning, instrument, pitchShift]);
 
-  const [transforms, setTransforms] =
-    useState<typeof guitarTransforms>(guitarTransforms);
+  const [transforms, setTransforms] = useState(() => {
+    switch (instrument) {
+      case InstrumentEnum.guitar:
+        return guitarTransforms;
+      case InstrumentEnum.ukulele:
+        return ukuleleTransforms;
+      case InstrumentEnum.bass:
+        return bassTransforms;
+      case InstrumentEnum.eightString:
+        return eightStringTransforms;
+    }
+  });
+
   useEffect(() => {
     switch (instrument) {
       case InstrumentEnum.guitar:
         setTransforms(guitarTransforms);
         break;
-      case InstrumentEnum.bass:
-        setTransforms(bassTransforms);
-        break;
       case InstrumentEnum.ukulele:
         setTransforms(ukuleleTransforms);
         break;
-      // case InstrumentEnum.eigthString:
-      //   setTransform(eightStringTransforms);
-      //   break;
+      case InstrumentEnum.bass:
+        setTransforms(bassTransforms);
+        break;
+      case InstrumentEnum.eightString:
+        setTransforms(eightStringTransforms);
+        break;
     }
   }, [instrument]);
 
@@ -252,8 +271,8 @@ const Tuner = ({ instrument, tuning, pitchShift, onNoteChange }: Props) => {
         return <BassHeadstock></BassHeadstock>;
       case InstrumentEnum.ukulele:
         return <UkuleleHeadstock></UkuleleHeadstock>;
-      case InstrumentEnum.eigthString:
-        return <GuitarHeadstock></GuitarHeadstock>;
+      case InstrumentEnum.eightString:
+        return <EightStringHeadstock></EightStringHeadstock>;
     }
   };
 
