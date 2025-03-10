@@ -16,8 +16,8 @@
   --confirm-color: light-dark(#06df67, #479e6e);
   --deny-color: light-dark(#f91905, #b0564e);
 
-  --strong-font: "Merriweather", sans-serif;
-  --secondary-font: "Open Sans", sans-serif;
+  --strong-font: "Fjalla One", sans-serif;
+  --secondary-font: "Libre Baskerville", sans-serif;
 
   font-size: clamp(16px, calc(10.2px + 0.97vw), 64px);
   --main-margin: 1em;

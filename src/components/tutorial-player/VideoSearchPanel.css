@@ -34,12 +34,13 @@
 .queried-video-card {
   display: flex;
   align-items: center;
-  align-content: left;
-  padding: 0 0.5em;
-  column-gap: 1em;
+  align-content: baseline;
+  padding: 0 0 0 0.5em;
+  gap: 1em;
   height: 3.5em;
   margin: 0em;
   cursor: pointer;
+  overflow: hidden;
 }
 
 .queried-video-card:hover {
@@ -71,6 +72,7 @@
 }
 
 .video-search-button {
+  position: relative;
   font-size: 1em;
   border-radius: 1em 0 0 1em;
   border: 0.0625em solid var(--secondary-color);
@@ -83,6 +85,28 @@
 
 .video-search-bar.queried .video-search-button {
   border-radius: 1em 0 0 0;
+}
+
+.spinner {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  width: 1em;
+  height: 1em;
+  border: 0.125em solid var(--main-color);
+  border-top-color: var(--main-background-color);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  transform: translateY(-50%);
+}
+
+@keyframes spin {
+  0% {
+    transform: translateY(-50%) rotate(0deg);
+  }
+  100% {
+    transform: translateY(-50%) rotate(360deg);
+  }
 }
 
 .song-search-input {
@@ -101,24 +125,61 @@
 
 .tutorials-filters-flex {
   display: flex;
-  margin: 0.5em;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-around;
+  justify-content: baseline;
+  gap: 0.5em;
+  margin: 0 0 0.5em 1em;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out;
+}
+
+.tutorials-filters-flex.expanded {
+  max-height: 2em;
+}
+
+.tutorials-filters-expand-button {
+  font-family: var(--strong-font);
+  color: var(--main-color);
+  display: block;
+  margin: 0.5em 0 0 0.5em;
+  text-align: left;
 }
 
 .tutorial-filter-input {
-  flex-shrink: 1;
   width: 5em;
-  border-radius: 0.25em;
+  border-radius: 0.5em;
   background-color: transparent;
   font-size: inherit;
   font-family: inherit;
 }
 
 .tutorial-instrument-filter {
-  flex-shrink: 1;
   width: 5em;
-  border-radius: 0.25em;
+  border-radius: 0.5em;
+  background-color: transparent;
   font-size: inherit;
   font-family: inherit;
+}
+
+.tutorial-instrument-filter-option {
+  background-color: var(--main-background-color);
+}
+
+.filters-search-button {
+  width: 5em;
+  border-radius: 0.5em;
+  height: 1.5em;
+  background-color: var(--lighter-background-color);
+  border: 0.0625em solid var(--secondary-color);
+}
+
+@media only screen and (max-width: 600px) {
+  .tutorials-filters-flex.expanded {
+    max-height: 4.5em;
+  }
+  .queried-video-card {
+    height: 2.5em;
+  }
 }

@@ -1,7 +1,13 @@
 import { useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./VideoSearchPanel.css";
-import { faAdd, faClose, faSearch } from "@fortawesome/free-solid-svg-icons";
+import {
+  faAdd,
+  faAngleDown,
+  faAngleUp,
+  faClose,
+  faSearch,
+} from "@fortawesome/free-solid-svg-icons";
 import type { VideoData } from "../../types/VideoData";
 
 interface Props {
@@ -12,6 +18,8 @@ interface Props {
 const VideoSearchPanel = ({ addVideoCallback, playVideoCallback }: Props) => {
   const [queriedTutorials, setQueriedTutorials] = useState<VideoData[]>([]);
   const [isSearchBarExpanded, setIsSearchBarExpanded] = useState(false);
+  const [areFiltersExpanded, setAreFiltersExpanded] = useState(false);
+  const [isQuerying, setIsQuerying] = useState(false);
 
   const [song, setSong] = useState("");
   const [artist, setArtist] = useState("");
@@ -28,13 +36,15 @@ const VideoSearchPanel = ({ addVideoCallback, playVideoCallback }: Props) => {
     const qinstrument = instrument.replace(" ", "+");
     const request = `https://tklwhs2x3m.execute-api.us-east-2.amazonaws.com/default/fetchMusicTutorials?song=${qsong}&artist=${qartist}&channel=${qchannel}&instrument=${qinstrument}`;
     try {
+      setIsQuerying(true);
       fetch(request)
         .then((res) => {
           return res.json();
         })
         .then((data) => {
           setQueriedTutorials(data.items);
-        });
+        })
+        .finally(() => setIsQuerying(false));
     } catch {
       throw Error("Failed to Query Videos");
     }
@@ -62,9 +72,13 @@ const VideoSearchPanel = ({ addVideoCallback, playVideoCallback }: Props) => {
             }
           }}
         >
-          <FontAwesomeIcon
-            icon={queriedTutorials.length > 0 ? faClose : faSearch}
-          />
+          {!isQuerying ? (
+            <FontAwesomeIcon
+              icon={queriedTutorials.length > 0 ? faClose : faSearch}
+            />
+          ) : (
+            <div className="spinner"></div>
+          )}
         </button>
         <input
           className="song-search-input acrylic"
@@ -91,8 +105,20 @@ const VideoSearchPanel = ({ addVideoCallback, playVideoCallback }: Props) => {
           queriedTutorials.length !== 0 ? "visible" : ""
         } acrylic`}
       >
-        <div className="tutorials-filters-flex">
-          <span className="strong-font">Filters:</span>
+        <button
+          className="tutorials-filters-expand-button"
+          onClick={() => setAreFiltersExpanded(!areFiltersExpanded)}
+        >
+          <FontAwesomeIcon
+            icon={areFiltersExpanded ? faAngleUp : faAngleDown}
+          ></FontAwesomeIcon>{" "}
+          More Filters
+        </button>
+        <div
+          className={`tutorials-filters-flex ${
+            areFiltersExpanded ? "expanded" : ""
+          }`}
+        >
           <input
             className="tutorial-filter-input"
             value={artist}
@@ -123,10 +149,17 @@ const VideoSearchPanel = ({ addVideoCallback, playVideoCallback }: Props) => {
             onChange={(e) => setInstrument(e.target.value)}
           >
             {instruments.map((inst) => {
-              return <option value={inst}>{inst}</option>;
+              return (
+                <option
+                  className="tutorial-instrument-filter-option"
+                  value={inst}
+                >
+                  {inst}
+                </option>
+              );
             })}
           </select>
-          <button onClick={queryVideos}>
+          <button className="filters-search-button" onClick={queryVideos}>
             <FontAwesomeIcon icon={faSearch} />
           </button>
         </div>
@@ -151,10 +184,7 @@ const VideoSearchPanel = ({ addVideoCallback, playVideoCallback }: Props) => {
                 src={video.snippet.thumbnails.default.url}
               ></img>
               <div style={{ textAlign: "left" }}>
-                <div
-                  className="queried-video-title strong-font"
-                  style={{ fontSize: "1em" }}
-                >
+                <div className="queried-video-title strong-font">
                   {video.snippet.title}
                 </div>
                 <div

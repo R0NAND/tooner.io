@@ -10,8 +10,8 @@ import QuarterNote from "./assets/quater-note.svg?react";
 import Slider from "../slider/Slider";
 import { useEffect, useRef, useState } from "react";
 import * as Tone from "tone";
-import metronomeHi from "./assets/Metronome-hi.wav";
-import metronomeLo from "./assets/Metronome-lo.wav";
+import metronomeHi from "./assets/metronome-hi.wav";
+import metronomeLo from "./assets/metronome-lo.wav";
 import "./Metronome.css";
 
 const Metronome = () => {
@@ -40,6 +40,10 @@ const Metronome = () => {
         lo: metronomeLo,
       },
     }).toDestination();
+    return () => {
+      player.current?.dispose(); // Free up resources
+      player.current = null;
+    };
   }, []);
 
   useEffect(() => {
