@@ -289,7 +289,9 @@ const Slider = ({
           }
           onKeyDown={handleKeyDown}
         ></input>
-        <label style={{ fontSize: "0.5em" }}>{label}</label>
+        <label style={{ fontSize: label === "%" ? "1em" : "0.5em" }}>
+          {label}
+        </label>
       </div>
     </div>
   );

@@ -12,11 +12,16 @@
 }
 
 .tab-text-area {
+  white-space: pre;
+  overflow-wrap: normal;
+  overflow-x: scroll;
+  font-family: "Roboto Mono", "Courier New", Courier, monospace;
+  line-height: 1.3333;
   flex-grow: 1;
   padding: 0.5em;
-  width: 40em;
+  width: 23rem;
   height: 100%;
-  background-color: var(--main-background-color);
+  background-color: var(--text-area-color);
   border-radius: 1em;
   resize: none;
   -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
@@ -27,7 +32,7 @@
 
 .tabs-page-sidebar {
   flex: 1 1 0;
-  width: 8em;
+  width: 17em;
   display: flex;
   flex-direction: column;
 }
@@ -50,29 +55,25 @@
 .tabs-tools-flex {
   display: flex;
   flex-direction: column;
+  margin-top: 0.5em;
 }
 
-.new-tab-button {
-  width: 100%;
-  border-radius: 1em;
-  margin-top: 0.25em;
-  border: 0.125em solid var(--secondary-color);
-  background-color: var(--lightest-background-color);
-}
-
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 768px) {
   .tabs-ui {
     flex-direction: column;
     width: 100%;
-    margin: 0;
-    padding: 0;
     align-items: center;
+  }
+
+  .tabs-tools-flex {
+    margin-top: 0em;
   }
 
   .tabs-page-sidebar {
     flex-direction: row;
     gap: 0.5em;
     width: fit-content;
+    align-items: stretch;
   }
 
   .tab-text-area {
@@ -80,6 +81,17 @@
   }
 
   .tabs-menu {
-    min-height: 10em;
+    width: 10em;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .tabs-ui {
+    margin: 0 0;
+    padding: 0 0 1em 0;
+  }
+
+  .tabs-text-area {
+    padding: 0.25em;
   }
 }

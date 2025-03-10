@@ -39,15 +39,11 @@
 
 .tunings-list {
   flex: 1 1 0;
-  padding: 0em 0.5em;
   min-height: 10em;
   max-height: 15em;
   overflow-y: auto;
   overflow-x: hidden;
-  background-color: var(--main-background-color);
-  border-radius: 0.5em;
   margin-bottom: 0.25em;
-  box-shadow: var(--inner-shadow);
 }
 
 .tuning-menu-header {

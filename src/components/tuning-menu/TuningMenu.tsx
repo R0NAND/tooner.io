@@ -56,7 +56,7 @@ const TuningMenu = ({
           style={{ textAlign: "left", marginTop: 0 }}
         >{`${tuning.name} Tuning`}</h2>
         <h3 className="tuning-menu-header">Saved Tunings</h3>
-        <div className="tunings-list classy-scroll">
+        <div className="tunings-list classy-scroll inner-panel">
           {tunings
             .filter((t) => t.instrument === selectedInstrument)
             .map((t) => {
@@ -104,16 +104,18 @@ const TuningMenu = ({
           <FontAwesomeIcon icon={faSave}></FontAwesomeIcon>
         </button>
         <h3 className="tuning-menu-header">Shift Pitch</h3>
-        <Slider
-          min={-50}
-          max={50}
-          value={pitchShift}
-          width={"100%"}
-          updateOnDrag={false}
-          label={"cents"}
-          inputPosition="top"
-          onChange={(n) => onPitchShift(n)}
-        ></Slider>
+        <div className="inner-panel">
+          <Slider
+            min={-50}
+            max={50}
+            value={pitchShift}
+            width={"100%"}
+            updateOnDrag={false}
+            label={"cents"}
+            inputPosition="top"
+            onChange={(n) => onPitchShift(n)}
+          ></Slider>
+        </div>
       </div>
     </>
   );

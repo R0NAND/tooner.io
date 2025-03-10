@@ -44,6 +44,24 @@
   box-shadow: var(--inner-shadow);
 }
 
+.tutorials-loop-controls {
+  display: flex;
+  gap: 1em;
+  margin-top: 1em;
+  align-items: center;
+  padding: 0.5em;
+  background-color: var(--main-background-color);
+  border-radius: 0.5em;
+  box-shadow: var(--inner-shadow);
+}
+
+.tutorials-metronome-container {
+  padding: 0.5em;
+  background-color: var(--main-background-color);
+  border-radius: 0.5em;
+  box-shadow: var(--inner-shadow);
+}
+
 @media only screen and (max-width: 1024px) {
   .tutorials-page {
     align-items: stretch;
@@ -62,5 +80,9 @@
     width: 100%;
     min-height: 15em;
     height: 100%;
+  }
+
+  .tutorials-loop-controls {
+    margin-bottom: 1em;
   }
 }

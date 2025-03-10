@@ -12,6 +12,7 @@
   --main-shadow: 0.125em 0.25em 0.25em rgb(0 0 0 / 0.5);
   --inner-shadow: inset 0 0 0.25em rgb(0 0 0 / 0.5);
   --instrument-shadow: drop-shadow(5px 10px 10px rgba(0, 0, 0, 0.5));
+  --text-area-color: light-dark(#ffffff, #333333);
   --primary-hue: light-dark(#23a8f2, #6d7ab5);
   --confirm-color: light-dark(#06df67, #479e6e);
   --deny-color: light-dark(#f91905, #b0564e);
@@ -95,6 +96,13 @@ svg text {
   margin: 1em;
   padding: 1em;
   box-shadow: var(--main-shadow);
+}
+
+.inner-panel {
+  padding: 0.5em;
+  background-color: var(--main-background-color);
+  border-radius: 0.5em;
+  box-shadow: var(--inner-shadow);
 }
 
 .acrylic {

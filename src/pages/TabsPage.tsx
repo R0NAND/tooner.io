@@ -1,7 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { Tab } from "../types/tabs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAdd, faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
+import {
+  faAdd,
+  faMagnifyingGlassMinus,
+  faMagnifyingGlassPlus,
+  faPause,
+  faPlay,
+} from "@fortawesome/free-solid-svg-icons";
 import { generateNewString } from "../utils/generateNewString";
 import useLocalStorageArray from "../hooks/useLocalStorageArray";
 import defaultTabs from "../defaults/tabs";
@@ -60,20 +66,25 @@ const TabsPage = () => {
 
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
   const [isScrolling, setIsScrolling] = useState<boolean>(false);
-  const [scrollRate, setScrollRate] = useState(20);
+  const [scrollRate, setScrollRate] = useState(10);
   const scrollIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   useEffect(() => {
     if (scrollIntervalRef.current !== null) {
       clearInterval(scrollIntervalRef.current);
     }
-    if (isScrolling) {
+    if (isScrolling && textAreaRef.current) {
+      const lineHeight = parseFloat(
+        window.getComputedStyle(textAreaRef.current).lineHeight
+      );
       scrollIntervalRef.current = setInterval(() => {
         if (textAreaRef.current) {
           textAreaRef.current.scrollTop += 1;
         }
-      }, Math.round(1500 / scrollRate));
+      }, Math.round(60000 / (scrollRate * lineHeight)));
     }
   }, [isScrolling, scrollRate]);
+
+  const [fontSize, setFontSize] = useState(100);
 
   const tabsMenuWidth = 20; // In Characters
   const tabsMenuRef = useRef<HTMLDivElement | null>(null);
@@ -82,7 +93,7 @@ const TabsPage = () => {
       <div className="tabs-page">
         <div className="tabs-ui main-panel">
           <textarea
-            style={{ fontSize: "0.618em" }}
+            style={{ fontSize: `${(0.00618 * fontSize).toString()}em` }}
             ref={textAreaRef}
             className="tab-text-area classy-scroll"
             value={selectedTab.tab}
@@ -119,12 +130,38 @@ const TabsPage = () => {
                 className="big-button"
                 title="Create new tab"
                 onClick={() => createNewTab()}
-                style={{ fontSize: "1em", borderRadius: "0.5em" }}
+                style={{
+                  fontSize: "1em",
+                  borderRadius: "0.5em",
+                  marginTop: "0.25em",
+                  marginBottom: 0,
+                }}
               >
                 <FontAwesomeIcon icon={faAdd}></FontAwesomeIcon>
               </button>
             </div>
-            <div className="tab-tools-flex">
+            <div className="tabs-tools-flex">
+              <h3
+                style={{
+                  textAlign: "left",
+                  marginBottom: "0.25em",
+                  marginTop: 0,
+                }}
+              >
+                Font Size
+              </h3>
+              <div className="inner-panel" style={{ marginBottom: "0.5em" }}>
+                <Slider
+                  value={fontSize}
+                  min={50}
+                  max={150}
+                  label="%"
+                  width={"100%"}
+                  onChange={(v: number) => {
+                    setFontSize(v);
+                  }}
+                ></Slider>
+              </div>
               <h3
                 style={{
                   textAlign: "left",
@@ -134,7 +171,10 @@ const TabsPage = () => {
               >
                 Autoscroll
               </h3>
-              <div style={{ display: "flex", gap: "0.5em" }}>
+              <div
+                className="inner-panel"
+                style={{ display: "flex", gap: "0.5em", marginBottom: "0.5em" }}
+              >
                 <button
                   onClick={() => {
                     setIsScrolling(!isScrolling);
@@ -147,9 +187,10 @@ const TabsPage = () => {
                 </button>
                 <Slider
                   value={scrollRate}
-                  min={10}
-                  max={100}
+                  min={4}
+                  max={40}
                   width="100%"
+                  label="Lines/Min"
                   onChange={(v: number) => {
                     setScrollRate(v);
                   }}
@@ -164,7 +205,9 @@ const TabsPage = () => {
               >
                 Metronome
               </h3>
-              <Metronome></Metronome>
+              <div className="inner-panel">
+                <Metronome></Metronome>
+              </div>
             </div>
           </div>
         </div>

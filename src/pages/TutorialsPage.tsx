@@ -83,15 +83,7 @@ const TutorialsPage = () => {
             ></VideoSearchPanel>
           </div>
           {videoDuration > 0 && (
-            <div
-              style={{
-                display: "flex",
-                gap: "1em",
-                marginTop: "1em",
-                alignItems: "center",
-                paddingRight: "1em",
-              }}
-            >
+            <div className="tutorials-loop-controls">
               <button
                 style={{ fontSize: "1.5em" }}
                 title={isLooping ? "Stop loop" : "Loop video"}
@@ -136,7 +128,9 @@ const TutorialsPage = () => {
             deleteVideoCallback={deleteVideo}
           ></VideoPlaylist>
           <h3 style={{ textAlign: "left", margin: "0.5em 0" }}>Metronome</h3>
-          <Metronome></Metronome>
+          <div className="tutorials-metronome-container">
+            <Metronome></Metronome>
+          </div>
         </div>
       </div>
     </div>
