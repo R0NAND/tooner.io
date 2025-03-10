@@ -1,13 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Tab } from "../types/tabs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faAdd,
-  faMagnifyingGlassMinus,
-  faMagnifyingGlassPlus,
-  faPause,
-  faPlay,
-} from "@fortawesome/free-solid-svg-icons";
+import { faAdd, faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
 import { generateNewString } from "../utils/generateNewString";
 import useLocalStorageArray from "../hooks/useLocalStorageArray";
 import defaultTabs from "../defaults/tabs";
