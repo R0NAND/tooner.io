@@ -5,8 +5,7 @@
   --lighter-background-color: light-dark(#eeeeee, #414141);
   --lightest-background-color: light-dark(#ffffff, #4d4d4d);
   --main-color: light-dark(#000000, #d3d9dc);
-  --secondary-color: light-dark(#333333, #9ea8ae);
-  --text-glow-color: light-dark(#000000, #ffffff);
+  --secondary-color: light-dark(#606060, #9ea8ae);
   --headstock-color: light-dark(#faf4f0, #3f14147a);
   --peg-color: light-dark(#faf4f0, #3f14147a);
   --main-shadow: 0.125em 0.25em 0.25em rgb(0 0 0 / 0.5);
@@ -77,6 +76,22 @@ button {
   transition: color 0.25s;
 }
 
+button.green {
+  color: var(--confirm-color);
+}
+
+button.red {
+  color: var(--deny-color);
+}
+
+button.green:hover {
+  color: var(--confirm-color);
+}
+
+button.red:hover {
+  color: var(--deny-color);
+}
+
 button:hover {
   color: var(--main-color);
   cursor: pointer;
@@ -125,7 +140,7 @@ button.big-button {
 
 .big-button:hover {
   cursor: pointer;
-  color: var(--text-glow-color);
+  color: var(--main-color);
 }
 
 .big-button:disabled {

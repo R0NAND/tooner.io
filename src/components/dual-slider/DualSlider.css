@@ -32,7 +32,6 @@
   background-color: var(--main-background-color);
   transition: background-color 0.25s;
   height: 0.5em;
-  border: none;
   border-radius: 0.25em;
 }
 

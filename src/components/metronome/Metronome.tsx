@@ -109,7 +109,7 @@ const Metronome = () => {
     <div id="metronome" className="metronome">
       <button
         ref={playButton}
-        className={"metronome-base-button"}
+        className={`metronome-base-button ${isPlaying ? "red" : "green"}`}
         title={isPlaying ? "Stop metronome" : "Start metronome"}
         onClick={() => {
           setIsPlaying(!isPlaying);
@@ -161,7 +161,7 @@ const Metronome = () => {
         </div>
       </div>
       <button
-        className="metronome-base-button"
+        className="metronome-tap-button"
         title="Tap tempo"
         onClick={onTapClick}
       >

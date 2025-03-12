@@ -26,6 +26,7 @@ const TabsMenu = forwardRef<HTMLDivElement, Props>(
           ref={ref}
           style={{
             textAlign: "left",
+            padding: "0.25em",
           }}
         >
           {tabs?.map((t, i) => {
@@ -37,7 +38,7 @@ const TabsMenu = forwardRef<HTMLDivElement, Props>(
                   </EditableText>
                 </div>
                 <button
-                  className="tab-delete"
+                  className="tab-delete red"
                   onClick={(e) => {
                     e.stopPropagation();
                     onDeleted(t);

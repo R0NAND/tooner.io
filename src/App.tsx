@@ -6,12 +6,14 @@ import AboutPage from "./pages/AboutPage";
 import TabsPage from "./pages/TabsPage";
 import TutorialsPage from "./pages/TutorialsPage";
 import TestComponent from "./components/TestComponent";
+import HomePage from "./pages/HomePage";
 
 function App() {
   return (
     <>
       <Navbar></Navbar>
       <Routes>
+        <Route path="/" element={<HomePage></HomePage>}></Route>
         <Route path="/tuner" element={<TunerPage></TunerPage>}></Route>
         <Route
           path="/tutorials"

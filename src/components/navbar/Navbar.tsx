@@ -3,10 +3,7 @@ import "./Navbar.css";
 import "./tuning-fork.css";
 import TuningFork from "../../resources/tuning-fork.svg?react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBookOpen,
-  faPersonChalkboard,
-} from "@fortawesome/free-solid-svg-icons";
+import { faBookOpen, faPlayCircle } from "@fortawesome/free-solid-svg-icons";
 
 const Navbar = () => {
   return (
@@ -21,7 +18,7 @@ const Navbar = () => {
         </li>
         <li>
           <Link to={"/tutorials"}>
-            <FontAwesomeIcon icon={faPersonChalkboard}></FontAwesomeIcon>
+            <FontAwesomeIcon icon={faPlayCircle}></FontAwesomeIcon>
             <span>&nbsp;Tutorials</span>
           </Link>
         </li>

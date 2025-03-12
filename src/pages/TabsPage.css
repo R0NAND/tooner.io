@@ -14,7 +14,7 @@
 .tab-text-area {
   white-space: pre;
   overflow-wrap: normal;
-  overflow-x: scroll;
+  overflow-x: hidden;
   font-family: "Roboto Mono", "Courier New", Courier, monospace;
   line-height: 1.3333;
   flex-grow: 1;

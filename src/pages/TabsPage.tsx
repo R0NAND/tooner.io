@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Tab } from "../types/tabs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAdd, faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
+import { faAdd, faPlay, faStop } from "@fortawesome/free-solid-svg-icons";
 import { generateNewString } from "../utils/generateNewString";
 import useLocalStorageArray from "../hooks/useLocalStorageArray";
 import defaultTabs from "../defaults/tabs";
@@ -170,13 +170,14 @@ const TabsPage = () => {
                 style={{ display: "flex", gap: "0.5em", marginBottom: "0.5em" }}
               >
                 <button
+                  className={`${isScrolling ? "red" : "green"}`}
                   onClick={() => {
                     setIsScrolling(!isScrolling);
                   }}
                   title={isScrolling ? "stop autoscroll" : "begin autoscroll"}
                 >
                   <FontAwesomeIcon
-                    icon={isScrolling ? faPause : faPlay}
+                    icon={isScrolling ? faStop : faPlay}
                   ></FontAwesomeIcon>
                 </button>
                 <Slider

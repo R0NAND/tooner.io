@@ -7,13 +7,14 @@
   justify-content: space-between;
   font-family: var(--strong-font);
   background-color: var(--lighter-background-color);
-  color: var(--main-color);
+  color: var(--secondary-color);
   z-index: 999;
   height: var(--navbar-height);
   box-shadow: var(--main-shadow);
 }
 
 .navbar a {
+  color: var(--main-color);
   padding-left: 1em;
   transition: color border 0.25s;
   align-items: center;
@@ -24,6 +25,7 @@
 
 .navbar > a {
   font-size: 1.61em;
+  color: var(--main-color);
 }
 
 .navbar > ul a {
@@ -37,6 +39,7 @@
   margin: 0px;
   padding: 0px;
   position: absolute;
+  height: 100%;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
@@ -49,11 +52,12 @@
 
 .navbar > ul > li > a {
   padding: 0em 1em;
-  border-radius: 0.5em;
-  transition: background-color 0.25s;
+  border-radius: 0.5em 0.5em 0 0;
+  transition: background-color 0.25s, color 0.25s;
 }
 
 .navbar > ul > li > a:hover {
+  color: var(--main-color);
   background-color: var(--lightest-background-color);
 }
 
@@ -75,8 +79,12 @@
     justify-content: space-around;
   }
 
-  .navbar > ul a {
-    width: 3em;
+  .navbar > ul > li {
     justify-content: center;
+    flex-grow: 1;
+  }
+
+  .navbar > ul a {
+    width: 100%;
   }
 }

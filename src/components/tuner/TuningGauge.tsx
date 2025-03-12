@@ -43,7 +43,7 @@ const TuningGauge = ({
     return resolvedColor;
   }
   //Below is not the best practice, but I don't plan on using this component anywhere else for the time being
-  const outline_color = getResolvedColor("--secondary-color");
+  const outline_color = getResolvedColor("--main-color");
   const deny_color = getResolvedColor("--deny-color");
   const confirm_color = getResolvedColor("--confirm-color");
   const colorMap = interpolate([confirm_color, deny_color]);
@@ -72,7 +72,13 @@ const TuningGauge = ({
       const isTuned = Math.abs(centsOff) <= cents;
       setNote(newNote);
       setRadianError(newRadianError);
-      setColor(isTuned ? colorMap(0) : colorMap(Math.abs(centsOff) / 50));
+      setColor(
+        isTuned
+          ? colorMap(0)
+          : note !== ""
+          ? colorMap(Math.abs(centsOff) / 50)
+          : outline_color
+      );
       if (isTuned) {
         if (newNote === lastHeardNote.current) {
           if (Date.now() - initialHeardTime.current >= holdDuration * 1000) {

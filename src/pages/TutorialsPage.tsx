@@ -85,7 +85,8 @@ const TutorialsPage = () => {
           {videoDuration > 0 && (
             <div className="tutorials-loop-controls">
               <button
-                style={{ fontSize: "1.5em" }}
+                style={{ width: "1.5em" }}
+                className={`${isLooping ? "red" : ""}`}
                 title={isLooping ? "Stop loop" : "Loop video"}
                 onClick={() => {
                   if (!isLooping) {

@@ -36,7 +36,7 @@ const VideoPlaylist = ({
               </div>
             </div>
             <button
-              className="playlist-video-delete"
+              className="playlist-video-delete red"
               onClick={(e) => {
                 e.stopPropagation();
                 deleteVideoCallback(vid);

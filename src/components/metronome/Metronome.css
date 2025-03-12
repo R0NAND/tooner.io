@@ -5,31 +5,16 @@
   align-items: center;
 }
 
-.metronome-play-button {
-  border-radius: 50%;
+.metronome-base-button.green {
   color: var(--confirm-color);
-  background-color: var(--main-background-color);
-  transition: background-color 0.25s;
 }
 
-.metronome-play-button:hover {
-  color: var(--main-color);
-  background-color: var(--main-background-color);
-}
-
-.metronome-tap-button {
-  border-radius: 50%;
-  background-color: transparent;
-  color: var(--secondary-color);
-  transition: color 0.25s;
-}
-
-.metronome-tap-button:hover {
-  color: var(--main-color);
+.metronome-base-button.red {
+  color: var(--deny-color);
 }
 
 .metronome-note {
-  fill: var(--main-color);
+  fill: var(--secondary-color);
   height: 1em;
 }
 

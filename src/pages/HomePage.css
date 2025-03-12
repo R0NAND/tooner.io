@@ -1,0 +1,14 @@
+.homepage {
+  min-height: calc(100vh - var(--navbar-height));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.homepage-panel {
+  width: clamp(45ch, 50%, 75ch);
+}
+
+.homepage-text {
+  text-align: left;
+}
